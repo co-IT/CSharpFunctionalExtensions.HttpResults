@@ -3,9 +3,9 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace WebApi.CustomResultErrors.DocumentMissingResult;
 
-public class DocumentMissingResultErrorMapper : IResultErrorMapper<DocumentMissingResultError, Microsoft.AspNetCore.Http.IResult>
+public class DocumentMissingResultErrorMapper : IResultErrorMapper<DocumentMissingResultError, IResult>
 {
-    public Func<DocumentMissingResultError, Microsoft.AspNetCore.Http.IResult> Mapping => error =>
+    public Func<DocumentMissingResultError, IResult> Map => error =>
     {
         var problem = new ProblemDetails
         {

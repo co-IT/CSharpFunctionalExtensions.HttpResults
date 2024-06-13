@@ -26,12 +26,11 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
-// app.MapGet("/foo", () =>
-// {
-//     return Result.Success<string, int>("test")
-//         .Ensure(x => x == "lol", 3)
-//         .ToHttpResult();
-// });
+app.MapGet("/foo", () =>
+{
+    return Result.Success<byte[], DocumentMissingResultError>([])
+        .ToFileHttpResult();
+});
 
 app.MapGet("/foo2", () =>
 {

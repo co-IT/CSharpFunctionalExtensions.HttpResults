@@ -8,6 +8,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CSharpFunctionalExtensions.
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CoIt.WebApi", "CoIt.WebApi\CoIt.WebApi.csproj", "{740720D5-CBA3-48DF-BA60-F710382881FC}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CSharpFunctionalExtensions.MinimalApi.Tests", "CSharpFunctionalExtensions.MinimalApi.Tests\CSharpFunctionalExtensions.MinimalApi.Tests.csproj", "{76898CAD-D321-4116-877D-6588D68405D3}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -30,5 +32,9 @@ Global
 		{740720D5-CBA3-48DF-BA60-F710382881FC}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{740720D5-CBA3-48DF-BA60-F710382881FC}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{740720D5-CBA3-48DF-BA60-F710382881FC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{76898CAD-D321-4116-877D-6588D68405D3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{76898CAD-D321-4116-877D-6588D68405D3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{76898CAD-D321-4116-877D-6588D68405D3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{76898CAD-D321-4116-877D-6588D68405D3}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

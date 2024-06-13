@@ -25,24 +25,27 @@ public class ResultExtensionsGenerator : ISourceGenerator
         sourceBuilder.AppendLine("""
                                  using CSharpFunctionalExtensions;
                                  using IResult = Microsoft.AspNetCore.Http.IResult;
+                                 using Microsoft.AspNetCore.Http;
+                                 using Microsoft.AspNetCore.Mvc;
+                                 using Microsoft.Net.Http.Headers;
                                  """);
         receiver.RequiredNamespaces
             .Where(@namespace => !@namespace.StartsWith("global"))
             .Distinct()
-            .Select(@namespace => $"using {@namespace}")
+            .Select(@namespace => $"using {@namespace};")
             .ToList()
             .ForEach(@using => sourceBuilder.AppendLine(@using));
         
         sourceBuilder.AppendLine();
         
-        sourceBuilder.AppendLine("public static class ResultExtensions2 {");
+        sourceBuilder.AppendLine("public static partial class ResultExtensions {");
         sourceBuilder.AppendLine();
         
         foreach (var mapperClass in receiver.MapperClasses)
         {
             var mapperClassName = mapperClass.Identifier.Text;
             var mappingProperty = mapperClass.Members
-                .FirstOrDefault(member => (member as PropertyDeclarationSyntax)?.Identifier.Text == "Mapping") as PropertyDeclarationSyntax;
+                .FirstOrDefault(member => (member as PropertyDeclarationSyntax)?.Identifier.Text == "Map") as PropertyDeclarationSyntax;
             var mappingTypes = (mappingProperty?.Type as GenericNameSyntax)?.TypeArgumentList.Arguments
                 .Select(type => type.ToString())
                 .ToArray();
@@ -53,21 +56,20 @@ public class ResultExtensionsGenerator : ISourceGenerator
             var resultErrorType = mappingTypes[0];
             var httpResultType = mappingTypes[1];
             
-            var method = $$"""
-                           public static {{httpResultType}} ToHttpResult<T>(this Result<T,{{resultErrorType}}> result) {
-                               if(result.IsFailure)
-                                   return new {{mapperClassName}}().Mapping(result.Error);
-                                   
-                               return TypedResults.Ok(result.Value);
-                           }
-                           """;
-            
-            sourceBuilder.AppendLine(method);
+            sourceBuilder.AppendLine(ResultExtensions.ResultExtensionsGenerator.ToAcceptedAtRouteHttpResultTE(mapperClassName, resultErrorType, httpResultType));
+            sourceBuilder.AppendLine(ResultExtensions.ResultExtensionsGenerator.ToAcceptedHttpResultTE(mapperClassName, resultErrorType, httpResultType));
+            sourceBuilder.AppendLine(ResultExtensions.ResultExtensionsGenerator.ToCreatedAtRouteHttpResultTE(mapperClassName, resultErrorType, httpResultType));
+            sourceBuilder.AppendLine(ResultExtensions.ResultExtensionsGenerator.ToCreatedHttpResultTE(mapperClassName, resultErrorType, httpResultType));
+            sourceBuilder.AppendLine(ResultExtensions.ResultExtensionsGenerator.ToFileHttpResultByteArrayE(mapperClassName, resultErrorType, httpResultType));
+            sourceBuilder.AppendLine(ResultExtensions.ResultExtensionsGenerator.ToFileHttpResultStreamE(mapperClassName, resultErrorType, httpResultType));
+            sourceBuilder.AppendLine(ResultExtensions.ResultExtensionsGenerator.ToFileStreamHttpResultStreamE(mapperClassName, resultErrorType, httpResultType));
+            sourceBuilder.AppendLine(ResultExtensions.ResultExtensionsGenerator.ToHttpResultTE(mapperClassName, resultErrorType, httpResultType));
+            sourceBuilder.AppendLine(ResultExtensions.ResultExtensionsGenerator.ToNoContentHttpResultTE(mapperClassName, resultErrorType, httpResultType));
         }
         
         sourceBuilder.AppendLine();
         sourceBuilder.AppendLine("}");
         
-        context.AddSource("ResultExtensions2.g.cs", SourceText.From(sourceBuilder.ToString(), Encoding.UTF8));
+        context.AddSource("ResultExtensions.g.cs", SourceText.From(sourceBuilder.ToString(), Encoding.UTF8));
     }
 }

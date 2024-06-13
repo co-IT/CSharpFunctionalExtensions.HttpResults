@@ -14,8 +14,8 @@
 
     <ItemGroup>
         <ProjectReference Include="..\CoIt.WebApi\CoIt.WebApi.csproj" />
-        <ProjectReference Include="..\CSharpFunctionalExtensions.MinimalApi.Generators\CSharpFunctionalExtensions.MinimalApi.Generators.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false" />
         <ProjectReference Include="..\CSharpFunctionalExtensions.MinimalApi\CSharpFunctionalExtensions.MinimalApi.csproj" />
+        <ProjectReference Include="..\CSharpFunctionalExtensions.MinimalApi.Generators\CSharpFunctionalExtensions.MinimalApi.Generators.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false" />
     </ItemGroup>
 
 </Project>
