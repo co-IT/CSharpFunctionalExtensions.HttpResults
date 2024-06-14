@@ -5,7 +5,7 @@ namespace CSharpFunctionalExtensions.MinimalApi.ResultExtensions;
 
 public static partial class ResultExtensions
 {
-    public static Microsoft.AspNetCore.Http.IResult ToHttpResult(this Result result, int successStatusCode = 200, int failureStatusCode = 400)
+    public static Microsoft.AspNetCore.Http.IResult ToHttpResult(this Result result, int successStatusCode = 204, int failureStatusCode = 400)
     {
         if (result.IsSuccess) return TypedResults.StatusCode(successStatusCode);
         
@@ -21,7 +21,7 @@ public static partial class ResultExtensions
         return TypedResults.Problem(problemDetails);
     }
     
-    public static async Task<Microsoft.AspNetCore.Http.IResult> ToHttpResult(this Task<Result> result, int successStatusCode = 200, int failureStatusCode = 400)
+    public static async Task<Microsoft.AspNetCore.Http.IResult> ToHttpResult(this Task<Result> result, int successStatusCode = 204, int failureStatusCode = 400)
     {
         return (await result).ToHttpResult(successStatusCode, failureStatusCode);
     }

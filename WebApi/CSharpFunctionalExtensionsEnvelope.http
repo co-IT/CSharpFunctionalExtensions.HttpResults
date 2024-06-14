@@ -1,6 +1,0 @@
-@CSharpFunctionalExtensionsEnvelope_HostAddress = http://localhost:5193
-
-GET {{CSharpFunctionalExtensionsEnvelope_HostAddress}}/foo2/
-Accept: application/json
-
-###

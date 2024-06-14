@@ -7,7 +7,24 @@
         <LangVersion>12</LangVersion>
         <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
         <TargetsForTfmSpecificBuildOutput>$(TargetsForTfmSpecificBuildOutput);CopyProjectReferencesToPackage</TargetsForTfmSpecificBuildOutput>
+
+        <Title>CSharpFunctionalExtensions.MinimalApi</Title>
+        <Authors>Stimmler</Authors>
+        <Description>Extensions for CSharpFunctionalExtensions to map Results to HttpResults in your MinimalApi</Description>
+        <Copyright>Copyright (c) co-IT.eu GmbH 2024</Copyright>
+        <PackageReadmeFile>README.md</PackageReadmeFile>
+        <PackageProjectUrl>https://github.com/co-IT/CSharpFunctionalExtensions.MinimalApi</PackageProjectUrl>
+        <PackageLicenseExpression>MIT</PackageLicenseExpression>
+        <RepositoryUrl>https://github.com/co-IT/CSharpFunctionalExtensions.MinimalApi</RepositoryUrl>
+        <PackageTags>CSharpFunctionalExtensions, HTTP, ActionResult, C#, dotnet, nuget, csharp, package, library, api, minimal, MIT, free</PackageTags>
+        <Company>Stimmler</Company>
+        <GenerateDocumentationFile>true</GenerateDocumentationFile>
+        <PackageVersion>1.1.0</PackageVersion>
     </PropertyGroup>
+
+    <ItemGroup>
+        <None Include="..\README.md" Pack="true" PackagePath="\" />
+    </ItemGroup>
 
     <ItemGroup>
         <FrameworkReference Include="Microsoft.AspNetCore.App"/>
