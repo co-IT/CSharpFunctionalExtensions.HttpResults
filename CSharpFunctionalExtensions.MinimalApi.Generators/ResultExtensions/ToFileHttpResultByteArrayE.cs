@@ -8,7 +8,7 @@ public partial class ResultExtensionsGenerator
                   public static {{httpResultType}} ToFileHttpResult(this Result<byte[],{{resultErrorType}}> result, string? contentType = null,
                    string? fileDownloadName = null, DateTimeOffset? lastModified = null,
                    EntityTagHeaderValue? entityTag = null,
-                   bool enableRangeProcessing = false, int failureStatusCode = 400)
+                   bool enableRangeProcessing = false)
                {
                    if (result.IsSuccess) return TypedResults.File(result.Value, contentType, fileDownloadName, enableRangeProcessing, lastModified, entityTag);
                    
@@ -17,9 +17,9 @@ public partial class ResultExtensionsGenerator
                
                public static async Task<{{httpResultType}}> ToFileHttpResult(this Task<Result<byte[],{{resultErrorType}}>> result, string? contentType = null,
                    string? fileDownloadName = null, DateTimeOffset? lastModified = null,
-                   EntityTagHeaderValue? entityTag = null, bool enableRangeProcessing = false, int failureStatusCode = 400)
+                   EntityTagHeaderValue? entityTag = null, bool enableRangeProcessing = false)
                {
-                   return (await result).ToFileHttpResult(contentType, fileDownloadName, lastModified, entityTag, enableRangeProcessing, failureStatusCode);
+                   return (await result).ToFileHttpResult(contentType, fileDownloadName, lastModified, entityTag, enableRangeProcessing);
                }
                """;
     }

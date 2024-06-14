@@ -39,6 +39,12 @@ app.MapGet("/foo2", () =>
         .ToHttpResult();
 });
 
+app.MapGet("/foo3", () =>
+{
+    return UnitResult.Success<DocumentMissingResultError>()
+        .ToHttpResult();
+});
+
 app.MapGet("/users", (UserRepository repo) => TypedResults.Ok((object?)repo.GetUsers()))
     .WithName("GetUsers")
     .WithOpenApi();
