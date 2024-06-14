@@ -18,10 +18,10 @@ jobs:
         run: dotnet restore
 
       - name: Build
-        run: dotnet build --configuration Release --no-restore
+        run: dotnet build -c Release --no-restore
 
       - name: Test
-        run: dotnet test --no-restore --no-build --verbosity normal --logger "trx;LogFileName=test-results.trx" --results-directory dist/tests --collect:"XPlat Code Coverage"
+        run: dotnet test -c Release --no-restore --no-build --verbosity normal --logger "trx;LogFileName=test-results.trx" --results-directory dist/tests --collect:"XPlat Code Coverage"
 
       - name: Upload dotnet test results
         uses: actions/upload-artifact@v3
@@ -36,15 +36,15 @@ jobs:
           name: dotnet-test-coverage
           path: dist/tests/**/coverage.cobertura.xml
         if: ${{ always() }}
-
-      - name: Upload dotnet test coverage to Codecov
-        uses: codecov/codecov-action@v3
-        with:
-          files: dist/tests/**/coverage.cobertura.xml
-        if: ${{ always() }}
         
       - name: Pack 
-        run: dotnet pack CSharpFunctionalExtensions.HttpResults -c Release --no-restore --no-build --output dist/package
+        run: dotnet pack -c Release --output dist/package
+        
+      - name: Upload Package Artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: package
+          path: dist/package/*.nupkg
         
       - name: Push to NuGet
         run: dotnet nuget push "dist/package/*.nupkg" --api-key ${{secrets.nuget_api_key}} --source https://api.nuget.org/v3/index.json

@@ -21,10 +21,10 @@ jobs:
         run: dotnet restore
 
       - name: Build
-        run: dotnet build --configuration Release --no-restore
+        run: dotnet build -c Release --no-restore
 
       - name: Test
-        run: dotnet test --no-restore --no-build --verbosity normal --logger "trx;LogFileName=test-results.trx" --results-directory dist/tests --collect:"XPlat Code Coverage"
+        run: dotnet test -c Release --no-restore --no-build --verbosity normal --logger "trx;LogFileName=test-results.trx" --results-directory dist/tests --collect:"XPlat Code Coverage"
 
       - name: Upload dotnet test results
         uses: actions/upload-artifact@v3
@@ -38,10 +38,4 @@ jobs:
         with:
           name: dotnet-test-coverage
           path: dist/tests/**/coverage.cobertura.xml
-        if: ${{ always() }}
-
-      - name: Upload dotnet test coverage to Codecov
-        uses: codecov/codecov-action@v3
-        with:
-          files: dist/tests/**/coverage.cobertura.xml
         if: ${{ always() }}

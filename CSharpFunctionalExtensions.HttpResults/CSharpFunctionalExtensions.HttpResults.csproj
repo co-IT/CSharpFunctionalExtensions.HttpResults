@@ -9,7 +9,7 @@
         <TargetsForTfmSpecificBuildOutput>$(TargetsForTfmSpecificBuildOutput);CopyProjectReferencesToPackage</TargetsForTfmSpecificBuildOutput>
 
         <Title>CSharpFunctionalExtensions.HttpResults</Title>
-        <Authors>Stimmler</Authors>
+        <Authors>co-IT,Stimmler</Authors>
         <Description>Extensions for CSharpFunctionalExtensions to map Results to HttpResults in your MinimalApi</Description>
         <Copyright>Copyright (c) co-IT.eu GmbH 2024</Copyright>
         <PackageReadmeFile>README.md</PackageReadmeFile>
