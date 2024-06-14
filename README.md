@@ -24,18 +24,66 @@ PM> Install-Package CSharpFunctionalExtensions.HttpResults
 
 ## Usage
 
-Available Methods:
+This library provides you extension methods to map the following types to `HttpResults`:
 
-| Method                           | Description |
-|----------------------------------|-------------|
-| `.ToHttpResult()`                |             |
-| `.ToNoContentHttpResult()`       |             |
-| `.ToCreatedHttpResult()`         |             |
-| `.ToCreatedAtRouteHttpResult()`  |             |
-| `.ToAcceptedHttpResult()`        |             |
-| `.ToAcceptedAtRouteHttpResult()` |             |
-| `.ToFileHttpResult()`            |             |
-| `.ToFileStreamHttpResult()`      |             |
+- `Result`
+- `Result<T>`
+- `Result<T,E>`
+- `UnitResult<E>`
+
+These methods are available:
+
+| Method                           | Description                                      |
+|----------------------------------|--------------------------------------------------|
+| `.ToHttpResult()`                |                                                  |
+| `.ToNoContentHttpResult()`       | Discards Result value and returns empty response |
+| `.ToCreatedHttpResult()`         |                                                  |
+| `.ToCreatedAtRouteHttpResult()`  |                                                  |
+| `.ToAcceptedHttpResult()`        |                                                  |
+| `.ToAcceptedAtRouteHttpResult()` |                                                  |
+| `.ToFileHttpResult()`            |                                                  |
+| `.ToFileStreamHttpResult()`      |                                                  |
 
 For almost every method you can override the default status codes for Success/Failure by passing corresponding `int`
 values.
+
+By default, failures get mapped to a `ProblemHttpResult`.
+If you want your own mapping logic or even don't want to map to `HttpErrors` read on.
+
+### Custom errors
+
+This library uses a Source Generator to generate extension methods for your own custom error types when using `Result<T,E>` or `UnitResult<E>`.
+
+1. First create a custom error type that implements `IResultError`
+    ```csharp
+    public class UserNotFoundError : IResultError
+    {
+        public required string UserId { get; init; }
+    }
+    ```
+2. Create a mapper that implements `IResultErrorMapper` which maps this custom error type to another type that you want to return in your web api:
+    ```csharp
+    public class UserNotFoundErrorMapper : IResultErrorMapper<UserNotFoundError, Microsoft.AspNetCore.Http.IResult>
+    {
+        public Func<UserNotFoundErrorMapper, Microsoft.AspNetCore.Http.IResult> Map => error => {
+            var problemDetails = new ProblemDetails
+            {
+                Status = 404,
+                Title = "User not found",
+                Type = "https://tools.ietf.org/html/rfc9110#section-15.5.5",
+                Detail = $"The user with ID {error.UserId} couldn't be found.
+            };
+            
+            return TypedResults.Problem(problemDetails);  
+        };
+    }
+    ```
+3. Use the generated extension method:
+    ```csharp
+    app.MapGet("/users/{id}", (string id) => {
+        return userRepository.find(id) //Result<User,UserNotFoundError>
+            .ToHttpResult();
+    });
+    ```
+
+Make sure that every `IResult` implementation only has exactly one corresponding `IResultMapper` implementation.
