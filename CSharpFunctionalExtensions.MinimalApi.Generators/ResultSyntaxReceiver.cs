@@ -17,14 +17,14 @@ public class ResultSyntaxReceiver : ISyntaxReceiver
         {
             foreach (var baseType in classDeclaration.BaseList?.Types ?? new SeparatedSyntaxList<BaseTypeSyntax>())
             {
-                if (baseType.Type is GenericNameSyntax nameSyntax && nameSyntax.Identifier.Text.StartsWith("IResultErrorMapper"))
+                if (baseType.Type is GenericNameSyntax nameSyntax && classDeclaration is not null && nameSyntax.Identifier.Text.StartsWith("IResultErrorMapper"))
                 {
                     MapperClasses.Add(classDeclaration);
                     RequiredNamespaces.Add(GetNamespace(classDeclaration));
                     break;
                 }
                 
-                if (baseType.Type is IdentifierNameSyntax identifierNameSyntax && identifierNameSyntax.Identifier.Text == "IResultError")
+                if (baseType.Type is IdentifierNameSyntax identifierNameSyntax && classDeclaration is not null && identifierNameSyntax.Identifier.Text == "IResultError")
                 {
                     ResultErrorClasses.Add(classDeclaration);
                     RequiredNamespaces.Add(GetNamespace(classDeclaration));
