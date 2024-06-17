@@ -1,10 +1,13 @@
 ﻿namespace CSharpFunctionalExtensions.HttpResults.Generators.ResultExtensions;
 
-public partial class ResultExtensionsGenerator
+internal class ToAcceptedHttpResultTE: IGenerateMethods
 {
-    public static string ToAcceptedHttpResultTE(string mapperClassName, string resultErrorType, string httpResultType)
+    public string Generate(string mapperClassName, string resultErrorType, string httpResultType)
     {
         return $$"""
+                 /// <summary>
+                 /// Returns a <see cref="Accepted{TValue}"/> with Accepted status code in case of success result. Returns custom mapping in case of failure. You can provide an URI to create a location HTTP-Header.
+                 /// </summary>
                  public static {{httpResultType}} ToAcceptedHttpResult<T>(this Result<T,{{resultErrorType}}> result, Uri uri)
                  {
                      if (result.IsSuccess) return TypedResults.Accepted(uri, result.Value);
@@ -12,6 +15,9 @@ public partial class ResultExtensionsGenerator
                      return new {{mapperClassName}}().Map(result.Error);
                  }
                  
+                 /// <summary>
+                 /// Returns a <see cref="Accepted{TValue}"/> with Accepted status code in case of success result. Returns custom mapping in case of failure. You can provide an URI to create a location HTTP-Header.
+                 /// </summary>
                  public static async Task<{{httpResultType}}> ToAcceptedHttpResult<T>(this Task<Result<T,{{resultErrorType}}>> result, Uri uri)
                  {
                      return (await result).ToAcceptedHttpResult(uri);

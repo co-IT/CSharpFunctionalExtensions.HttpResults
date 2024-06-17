@@ -1,10 +1,13 @@
 ﻿namespace CSharpFunctionalExtensions.HttpResults.Generators.ResultExtensions;
 
-public partial class ResultExtensionsGenerator
+internal class ToFileStreamHttpResultStreamE: IGenerateMethods
 {
-    public static string ToFileStreamHttpResultStreamE(string mapperClassName, string resultErrorType, string httpResultType)
+    public string Generate(string mapperClassName, string resultErrorType, string httpResultType)
     {
         return $$"""
+                 /// <summary>
+                 /// Returns a <see cref="FileStreamHttpResult"/> based of a Stream in case of success result. Returns custom mapping in case of failure.
+                 /// </summary>
                  public static {{httpResultType}} ToFileStreamHttpResult(this Result<Stream,{{resultErrorType}}> result, string? contentType = null,
                      string? fileDownloadName = null, DateTimeOffset? lastModified = null,
                      EntityTagHeaderValue? entityTag = null,
@@ -15,6 +18,9 @@ public partial class ResultExtensionsGenerator
                      return new {{mapperClassName}}().Map(result.Error);
                  }
                  
+                 /// <summary>
+                 /// Returns a <see cref="FileStreamHttpResult"/> based of a Stream in case of success result. Returns custom mapping in case of failure.
+                 /// </summary>
                  public static async Task<{{httpResultType}}> ToFileStreamHttpResult(this Task<Result<Stream,{{resultErrorType}}>> result, string? contentType = null,
                      string? fileDownloadName = null, DateTimeOffset? lastModified = null,
                      EntityTagHeaderValue? entityTag = null,

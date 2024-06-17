@@ -3,7 +3,7 @@ using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 namespace CSharpFunctionalExtensions.HttpResults.Generators;
 
-public class ResultExtensionsGeneratorValidator
+internal static class ResultExtensionsGeneratorValidator
 {
     private static readonly DiagnosticDescriptor MissingMapperRule = new(
         "CFEMAPI001",

@@ -18,7 +18,7 @@ public class ToHttpResultTE
             .ToHttpResult() as JsonHttpResult<Document>;
         
         result!.StatusCode.Should().Be(200);
-        result!.Value.DocumentId.Should().Be(document.DocumentId);
+        result!.Value!.DocumentId.Should().Be(document.DocumentId);
     }
     
     [Fact]
@@ -33,7 +33,7 @@ public class ToHttpResultTE
             .ToHttpResult() as JsonHttpResult<Document>;
         
         result!.StatusCode.Should().Be(200);
-        result!.Value.DocumentId.Should().Be(document.DocumentId);
+        result!.Value!.DocumentId.Should().Be(document.DocumentId);
     }
     
     [Fact]

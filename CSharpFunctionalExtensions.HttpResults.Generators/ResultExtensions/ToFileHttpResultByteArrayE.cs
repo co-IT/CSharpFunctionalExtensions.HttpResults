@@ -1,11 +1,14 @@
 ﻿namespace CSharpFunctionalExtensions.HttpResults.Generators.ResultExtensions;
 
-public partial class ResultExtensionsGenerator
+internal class ToFileHttpResultByteArrayE: IGenerateMethods
 {
-    public static string ToFileHttpResultByteArrayE(string mapperClassName, string resultErrorType, string httpResultType)
+    public string Generate(string mapperClassName, string resultErrorType, string httpResultType)
     {
         return $$"""
-                    public static {{httpResultType}} ToFileHttpResult(this Result<byte[],{{resultErrorType}}> result, string? contentType = null,
+                 /// <summary>
+                 /// Returns a <see cref="FileContentHttpResult"/> based of a byte array in case of success result. Returns custom mapping in case of failure.
+                 /// </summary>
+                 public static {{httpResultType}} ToFileHttpResult(this Result<byte[],{{resultErrorType}}> result, string? contentType = null,
                      string? fileDownloadName = null, DateTimeOffset? lastModified = null,
                      EntityTagHeaderValue? entityTag = null,
                      bool enableRangeProcessing = false)
@@ -15,6 +18,9 @@ public partial class ResultExtensionsGenerator
                      return new {{mapperClassName}}().Map(result.Error);
                  }
                  
+                 /// <summary>
+                 /// Returns a <see cref="FileContentHttpResult"/> based of a byte array in case of success result. Returns custom mapping in case of failure.
+                 /// </summary>
                  public static async Task<{{httpResultType}}> ToFileHttpResult(this Task<Result<byte[],{{resultErrorType}}>> result, string? contentType = null,
                      string? fileDownloadName = null, DateTimeOffset? lastModified = null,
                      EntityTagHeaderValue? entityTag = null, bool enableRangeProcessing = false)

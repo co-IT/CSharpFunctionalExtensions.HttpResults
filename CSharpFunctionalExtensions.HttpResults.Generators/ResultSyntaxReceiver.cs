@@ -3,7 +3,7 @@ using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 namespace CSharpFunctionalExtensions.HttpResults.Generators;
 
-public class ResultSyntaxReceiver : ISyntaxReceiver
+internal class ResultSyntaxReceiver : ISyntaxReceiver
 {
     public List<ClassDeclarationSyntax> MapperClasses { get; } = new();
     public List<ClassDeclarationSyntax> ResultErrorClasses { get; } = new();
