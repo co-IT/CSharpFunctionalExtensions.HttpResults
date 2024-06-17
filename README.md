@@ -33,22 +33,39 @@ This library provides you extension methods to map the following types to `HttpR
 
 These methods are available:
 
-| Method                           | Description                                      |
-|----------------------------------|--------------------------------------------------|
-| `.ToHttpResult()`                |                                                  |
-| `.ToNoContentHttpResult()`       | Discards Result value and returns empty response |
-| `.ToCreatedHttpResult()`         |                                                  |
-| `.ToCreatedAtRouteHttpResult()`  |                                                  |
-| `.ToAcceptedHttpResult()`        |                                                  |
-| `.ToAcceptedAtRouteHttpResult()` |                                                  |
-| `.ToFileHttpResult()`            |                                                  |
-| `.ToFileStreamHttpResult()`      |                                                  |
+| Method                                | Short Description                                                                             |
+|---------------------------------------|-----------------------------------------------------------------------------------------------|
+| `.ToHttpResult()`                     | Returns `StatusCodeHttpResult` or `ProblemHttpResult`                                         |
+| `.ToHttpResult<T>()`                  | Returns `JsonHttpResult<T>` or `ProblemHttpResult`                                            |
+| `.ToHttpResult<T,E>()`                | Returns `JsonHttpResult<T>` or custom error                                                   |
+| `.ToNoContentHttpResult<T>()`         | Discards value of `Result<T>` and returns empty `StatusCodeHttpResult` or `ProblemHttpResult` |
+| `.ToNoContentHttpResult<T,E>()`       | Discards value of `Result<T>` and returns empty `StatusCodeHttpResult` or custom error        |
+| `.ToCreatedHttpResult<T>()`           | Returns `Created<T>` or `ProblemHttpResult`                                                   |
+| `.ToCreatedHttpResult<T,E>()`         | Returns `Created<T>` or custom error                                                          |
+| `.ToCreatedAtRouteHttpResult<T>()`    | Returns `CreatedAtRoute<T>` or `ProblemHttpResult`                                            |
+| `.ToCreatedAtRouteHttpResult<T,E>()`  | Returns `CreatedAtRoute<T>` or custom error                                                   |
+| `.ToAcceptedHttpResult<T>()`          | Returns `Accepted<T>` or `ProblemHttpResult`                                                  |
+| `.ToAcceptedHttpResult<T,E>()`        | Returns `Accepted<T>` or custom error                                                         |
+| `.ToAcceptedAtRouteHttpResult<T>()`   | Returns `AcceptedAtRoute<T>` or `ProblemHttpResult`                                           |
+| `.ToAcceptedAtRouteHttpResult<T,E>()` | Returns `AcceptedAtRoute<T>` or custom error                                                  |
+| `.ToFileHttpResult<byte[]>()`         | Returns `FileContentHttpResult` or `ProblemHttpResult`                                        |
+| `.ToFileHttpResult<byte[],E>()`       | Returns `FileContentHttpResult` or custom error                                               |
+| `.ToFileHttpResult<Stream>()`         | Returns `FileStreamHttpResult` or `ProblemHttpResult`                                         |
+| `.ToFileHttpResult<Stream,E>()`       | Returns `FileStreamHttpResult` or custom error                                                |
+| `.ToFileStreamHttpResult<Stream>()`   | Returns `FileStreamHttpResult` or `ProblemHttpResult`                                         |
+| `.ToFileStreamHttpResult<Stream,E>()` | Returns `FileStreamHttpResult` or custom error                                                |
 
-For almost every method you can override the default status codes for Success/Failure by passing corresponding `int`
-values.
+For almost every method you can override the default status codes for Success/Failure.
 
-By default, failures get mapped to a `ProblemHttpResult`.
-If you want your own mapping logic or even don't want to map to `HttpErrors` read on.
+All methods are available in sync and async variants.
+
+By default, failures get mapped to a `ProblemHttpResult` based on [RFC9457](https://www.rfc-editor.org/rfc/rfc9457).
+The status property contains the status code.
+The type property contains a URI to the corresponding [RFC9110](https://tools.ietf.org/html/rfc9110) entry based on the status code.
+The title property contains a generic short messages based on the status code.
+The detail property contains the error property of the `Result`.
+
+If you want your own mapping logic read on.
 
 ### Custom errors
 
@@ -87,3 +104,5 @@ This library uses a Source Generator to generate extension methods for your own 
     ```
 
 Make sure that every `IResult` implementation only has exactly one corresponding `IResultMapper` implementation.
+
+Optionally, you can use the `ProblemDetailsMap.Find()` method to find a title and type for a status code based on [RFC9110](https://tools.ietf.org/html/rfc9110).
