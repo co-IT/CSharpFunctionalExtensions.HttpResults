@@ -1,11 +1,18 @@
 ﻿using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Net.Http.Headers;
 
 namespace CSharpFunctionalExtensions.HttpResults.ResultExtensions;
 
+/// <summary>
+/// Extension methods for <see cref="Result{T}"/>
+/// </summary>
 public static partial class ResultExtensions
 {
+    /// <summary>
+    /// Returns a <see cref="FileContentHttpResult"/> based of a byte array in case of success result. Returns <see cref="ProblemHttpResult"/> in case of failure. You can override the error status code.
+    /// </summary>
     public static Microsoft.AspNetCore.Http.IResult ToFileHttpResult(this Result<byte[]> result, string? contentType = null,
         string? fileDownloadName = null, DateTimeOffset? lastModified = null,
         EntityTagHeaderValue? entityTag = null,
@@ -25,6 +32,9 @@ public static partial class ResultExtensions
         return TypedResults.Problem(problemDetails);
     }
     
+    /// <summary>
+    /// Returns a <see cref="FileContentHttpResult"/> based of a byte array in case of success result. Returns <see cref="ProblemHttpResult"/> in case of failure. You can override the error status code.
+    /// </summary>
     public static async Task<Microsoft.AspNetCore.Http.IResult> ToFileHttpResult(this Task<Result<byte[]>> result, string? contentType = null,
         string? fileDownloadName = null, DateTimeOffset? lastModified = null,
         EntityTagHeaderValue? entityTag = null, bool enableRangeProcessing = false, int failureStatusCode = 400)

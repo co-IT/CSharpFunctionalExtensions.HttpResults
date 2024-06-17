@@ -1,7 +1,13 @@
 ﻿namespace CSharpFunctionalExtensions.HttpResults;
 
-public class ProblemDetailsMap
+/// <summary>
+/// Class for finding title and type of ProblemDetails for status code
+/// </summary>
+public static class ProblemDetailsMap
 {
+    /// <summary>
+    /// Find title and type of ProblemDetails for status code
+    /// </summary>
     public static (string Title, string Type) Find(int statusCode)
     {
         return statusCode switch
