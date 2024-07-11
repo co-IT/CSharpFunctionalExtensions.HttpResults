@@ -12,7 +12,7 @@ public static partial class ResultExtensions
     /// <summary>
     /// Discards the value of <see cref="Result{T}"/> and Returns a <see cref="StatusCodeHttpResult"/> in case of success result. Returns <see cref="ProblemHttpResult"/> in case of failure. You can override the success and error status code.
     /// </summary>
-    public static Microsoft.AspNetCore.Http.IResult ToNoContentHttpResult<T>(this Result<T> result, int successStatusCode = 204, int failureStatusCode = 400)
+    public static Results<StatusCodeHttpResult, ProblemHttpResult> ToNoContentHttpResult<T>(this Result<T> result, int successStatusCode = 204, int failureStatusCode = 400)
     {
         if (result.IsSuccess) return TypedResults.StatusCode(successStatusCode);
         
@@ -31,8 +31,8 @@ public static partial class ResultExtensions
     /// <summary>
     /// Discards the value of <see cref="Result{T}"/> and Returns a <see cref="StatusCodeHttpResult"/> in case of success result. Returns <see cref="ProblemHttpResult"/> in case of failure. You can override the success and error status code.
     /// </summary>
-    public static async Task<Microsoft.AspNetCore.Http.IResult> ToNoContentHttpResult<T>(this Task<Result<T>> result, int successStatusCode = 204, int failureStatusCode = 400)
+    public static async Task<Results<StatusCodeHttpResult, ProblemHttpResult>> ToNoContentHttpResult<T>(this Task<Result<T>> result, int successStatusCode = 204, int failureStatusCode = 400)
     {
-        return (await result).ToHttpResult(successStatusCode, failureStatusCode);
+        return (await result).ToNoContentHttpResult(successStatusCode, failureStatusCode);
     }
 }

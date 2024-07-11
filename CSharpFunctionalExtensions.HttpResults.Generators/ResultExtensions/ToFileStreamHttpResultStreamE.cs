@@ -8,7 +8,7 @@ internal class ToFileStreamHttpResultStreamE: IGenerateMethods
                  /// <summary>
                  /// Returns a <see cref="FileStreamHttpResult"/> based of a Stream in case of success result. Returns custom mapping in case of failure.
                  /// </summary>
-                 public static {{httpResultType}} ToFileStreamHttpResult(this Result<Stream,{{resultErrorType}}> result, string? contentType = null,
+                 public static Results<FileStreamHttpResult, {{httpResultType}}> ToFileStreamHttpResult(this Result<Stream,{{resultErrorType}}> result, string? contentType = null,
                      string? fileDownloadName = null, DateTimeOffset? lastModified = null,
                      EntityTagHeaderValue? entityTag = null,
                      bool enableRangeProcessing = false)
@@ -21,7 +21,7 @@ internal class ToFileStreamHttpResultStreamE: IGenerateMethods
                  /// <summary>
                  /// Returns a <see cref="FileStreamHttpResult"/> based of a Stream in case of success result. Returns custom mapping in case of failure.
                  /// </summary>
-                 public static async Task<{{httpResultType}}> ToFileStreamHttpResult(this Task<Result<Stream,{{resultErrorType}}>> result, string? contentType = null,
+                 public static async Task<Results<FileStreamHttpResult, {{httpResultType}}>> ToFileStreamHttpResult(this Task<Result<Stream,{{resultErrorType}}>> result, string? contentType = null,
                      string? fileDownloadName = null, DateTimeOffset? lastModified = null,
                      EntityTagHeaderValue? entityTag = null,
                      bool enableRangeProcessing = false)

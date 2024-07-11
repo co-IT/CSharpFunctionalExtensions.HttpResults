@@ -13,7 +13,7 @@ public static partial class ResultExtensions
     /// <summary>
     /// Returns a <see cref="FileStreamHttpResult"/> based of a Stream in case of success result. Returns <see cref="ProblemHttpResult"/> in case of failure. You can override the error status code.
     /// </summary>
-    public static Microsoft.AspNetCore.Http.IResult ToFileStreamHttpResult(this Result<Stream> result, string? contentType = null,
+    public static Results<FileStreamHttpResult, ProblemHttpResult> ToFileStreamHttpResult(this Result<Stream> result, string? contentType = null,
         string? fileDownloadName = null, DateTimeOffset? lastModified = null,
         EntityTagHeaderValue? entityTag = null,
         bool enableRangeProcessing = false, int failureStatusCode = 400)
@@ -35,7 +35,7 @@ public static partial class ResultExtensions
     /// <summary>
     /// Returns a <see cref="FileStreamHttpResult"/> based of a Stream in case of success result. Returns <see cref="ProblemHttpResult"/> in case of failure. You can override the error status code.
     /// </summary>
-    public static async Task<Microsoft.AspNetCore.Http.IResult> ToFileStreamHttpResult(this Task<Result<Stream>> result, string? contentType = null,
+    public static async Task<Results<FileStreamHttpResult, ProblemHttpResult>> ToFileStreamHttpResult(this Task<Result<Stream>> result, string? contentType = null,
         string? fileDownloadName = null, DateTimeOffset? lastModified = null,
         EntityTagHeaderValue? entityTag = null,
         bool enableRangeProcessing = false, int failureStatusCode = 400)

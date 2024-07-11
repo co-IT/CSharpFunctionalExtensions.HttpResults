@@ -8,7 +8,7 @@ internal class ToFileHttpResultByteArrayE: IGenerateMethods
                  /// <summary>
                  /// Returns a <see cref="FileContentHttpResult"/> based of a byte array in case of success result. Returns custom mapping in case of failure.
                  /// </summary>
-                 public static {{httpResultType}} ToFileHttpResult(this Result<byte[],{{resultErrorType}}> result, string? contentType = null,
+                 public static Results<FileContentHttpResult, {{httpResultType}}> ToFileHttpResult(this Result<byte[],{{resultErrorType}}> result, string? contentType = null,
                      string? fileDownloadName = null, DateTimeOffset? lastModified = null,
                      EntityTagHeaderValue? entityTag = null,
                      bool enableRangeProcessing = false)
@@ -21,7 +21,7 @@ internal class ToFileHttpResultByteArrayE: IGenerateMethods
                  /// <summary>
                  /// Returns a <see cref="FileContentHttpResult"/> based of a byte array in case of success result. Returns custom mapping in case of failure.
                  /// </summary>
-                 public static async Task<{{httpResultType}}> ToFileHttpResult(this Task<Result<byte[],{{resultErrorType}}>> result, string? contentType = null,
+                 public static async Task<Results<FileContentHttpResult, {{httpResultType}}>> ToFileHttpResult(this Task<Result<byte[],{{resultErrorType}}>> result, string? contentType = null,
                      string? fileDownloadName = null, DateTimeOffset? lastModified = null,
                      EntityTagHeaderValue? entityTag = null, bool enableRangeProcessing = false)
                  {

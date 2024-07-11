@@ -12,9 +12,9 @@ public static partial class ResultExtensions
     /// <summary>
     /// Returns a <see cref="AcceptedAtRoute{TValue}"/> with Accepted status code in case of success result. Returns <see cref="ProblemHttpResult"/> in case of failure. You can provide route info to create a location HTTP-Header. You can override the error status code.
     /// </summary>
-    public static Microsoft.AspNetCore.Http.IResult ToAcceptedAtRouteHttpResult<T>(this Result<T> result, string? routeName = null, object? routeValues = null, int failureStatusCode = 400)
+    public static Results<AcceptedAtRoute<T>, ProblemHttpResult> ToAcceptedAtRouteHttpResult<T>(this Result<T> result, string? routeName = null, Func<T, object>? routeValues = null, int failureStatusCode = 400)
     {
-        if (result.IsSuccess) return TypedResults.AcceptedAtRoute(result.Value, routeName, routeValues);
+        if (result.IsSuccess) return TypedResults.AcceptedAtRoute(result.Value, routeName, routeValues?.Invoke(result.Value));
         
         var problemDetailsInfo = ProblemDetailsMap.Find(failureStatusCode);
         var problemDetails = new ProblemDetails
@@ -31,7 +31,7 @@ public static partial class ResultExtensions
     /// <summary>
     /// Returns a <see cref="AcceptedAtRoute{TValue}"/> with Accepted status code in case of success result. Returns <see cref="ProblemHttpResult"/> in case of failure. You can provide route info to create a location HTTP-Header. You can override the error status code.
     /// </summary>
-    public static async Task<Microsoft.AspNetCore.Http.IResult> ToAcceptedAtHttpResult<T>(this Task<Result<T>> result, string? routeName = null, object? routeValues = null, int failureStatusCode = 400)
+    public static async Task<Results<AcceptedAtRoute<T>, ProblemHttpResult>> ToAcceptedAtRouteHttpResult<T>(this Task<Result<T>> result, string? routeName = null, Func<T, object>? routeValues = null, int failureStatusCode = 400)
     {
         return (await result).ToAcceptedAtRouteHttpResult(routeName, routeValues, failureStatusCode);
     }

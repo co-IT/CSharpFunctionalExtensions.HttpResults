@@ -8,9 +8,9 @@ internal class ToAcceptedHttpResultTE: IGenerateMethods
                  /// <summary>
                  /// Returns a <see cref="Accepted{TValue}"/> with Accepted status code in case of success result. Returns custom mapping in case of failure. You can provide an URI to create a location HTTP-Header.
                  /// </summary>
-                 public static {{httpResultType}} ToAcceptedHttpResult<T>(this Result<T,{{resultErrorType}}> result, Uri uri)
+                 public static Results<Accepted<T>, {{httpResultType}}> ToAcceptedHttpResult<T>(this Result<T,{{resultErrorType}}> result, Func<T, Uri> uri)
                  {
-                     if (result.IsSuccess) return TypedResults.Accepted(uri, result.Value);
+                     if (result.IsSuccess) return TypedResults.Accepted(uri(result.Value), result.Value);
                      
                      return new {{mapperClassName}}().Map(result.Error);
                  }
@@ -18,7 +18,7 @@ internal class ToAcceptedHttpResultTE: IGenerateMethods
                  /// <summary>
                  /// Returns a <see cref="Accepted{TValue}"/> with Accepted status code in case of success result. Returns custom mapping in case of failure. You can provide an URI to create a location HTTP-Header.
                  /// </summary>
-                 public static async Task<{{httpResultType}}> ToAcceptedHttpResult<T>(this Task<Result<T,{{resultErrorType}}>> result, Uri uri)
+                 public static async Task<Results<Accepted<T>, {{httpResultType}}>> ToAcceptedHttpResult<T>(this Task<Result<T,{{resultErrorType}}>> result, Func<T, Uri> uri)
                  {
                      return (await result).ToAcceptedHttpResult(uri);
                  }

@@ -8,7 +8,7 @@ internal class ToHttpResultTE: IGenerateMethods
                  /// <summary>
                  /// Returns a <see cref="JsonHttpResult{TValue}"/> in case of success result. Returns custom mapping in case of failure. You can override the success status code.
                  /// </summary>
-                 public static {{httpResultType}} ToHttpResult<T>(this Result<T,{{resultErrorType}}> result, int successStatusCode = 200)
+                 public static Results<JsonHttpResult<T>, {{httpResultType}}> ToHttpResult<T>(this Result<T,{{resultErrorType}}> result, int successStatusCode = 200)
                  {
                      if (result.IsSuccess) return TypedResults.Json(result.Value, statusCode: successStatusCode);
                      
@@ -18,7 +18,7 @@ internal class ToHttpResultTE: IGenerateMethods
                  /// <summary>
                  /// Returns a <see cref="JsonHttpResult{TValue}"/> in case of success result. Returns custom mapping in case of failure. You can override the success status code.
                  /// </summary>
-                 public static async Task<{{httpResultType}}> ToHttpResult<T>(this Task<Result<T,{{resultErrorType}}>> result, int successStatusCode = 200)
+                 public static async Task<Results<JsonHttpResult<T>, {{httpResultType}}>> ToHttpResult<T>(this Task<Result<T,{{resultErrorType}}>> result, int successStatusCode = 200)
                  {
                      return (await result).ToHttpResult(successStatusCode);
                  }

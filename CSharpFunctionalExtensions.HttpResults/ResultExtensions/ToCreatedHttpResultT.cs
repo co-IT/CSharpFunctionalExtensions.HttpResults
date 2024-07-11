@@ -12,9 +12,9 @@ public static partial class ResultExtensions
     /// <summary>
     /// Returns a <see cref="Created{TValue}"/> with Created status code in case of success result. Returns <see cref="ProblemHttpResult"/> in case of failure. You can provide an URI to create a location HTTP-Header. You can override the error status code.
     /// </summary>
-    public static Microsoft.AspNetCore.Http.IResult ToCreatedHttpResult<T>(this Result<T> result, Uri? uri = null, int failureStatusCode = 400)
+    public static Results<Created<T>, ProblemHttpResult> ToCreatedHttpResult<T>(this Result<T> result, Func<T, Uri>? uri = null, int failureStatusCode = 400)
     {
-        if (result.IsSuccess) return TypedResults.Created(uri, result.Value);
+        if (result.IsSuccess) return TypedResults.Created(uri?.Invoke(result.Value), result.Value);
         
         var problemDetailsInfo = ProblemDetailsMap.Find(failureStatusCode);
         var problemDetails = new ProblemDetails
@@ -31,7 +31,7 @@ public static partial class ResultExtensions
     /// <summary>
     /// Returns a <see cref="Created{TValue}"/> with Created status code in case of success result. Returns <see cref="ProblemHttpResult"/> in case of failure. You can provide an URI to create a location HTTP-Header. You can override the error status code.
     /// </summary>
-    public static async Task<Microsoft.AspNetCore.Http.IResult> ToCreatedHttpResult<T>(this Task<Result<T>> result, Uri? uri = null, int failureStatusCode = 400)
+    public static async Task<Results<Created<T>, ProblemHttpResult>> ToCreatedHttpResult<T>(this Task<Result<T>> result, Func<T, Uri>? uri = null, int failureStatusCode = 400)
     {
         return (await result).ToCreatedHttpResult(uri, failureStatusCode);
     }
