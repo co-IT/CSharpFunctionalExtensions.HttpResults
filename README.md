@@ -50,8 +50,6 @@ These methods are available:
 | `.ToAcceptedAtRouteHttpResult<T,E>()` | Returns `AcceptedAtRoute<T>` or custom error                                                  |
 | `.ToFileHttpResult<byte[]>()`         | Returns `FileContentHttpResult` or `ProblemHttpResult`                                        |
 | `.ToFileHttpResult<byte[],E>()`       | Returns `FileContentHttpResult` or custom error                                               |
-| `.ToFileHttpResult<Stream>()`         | Returns `FileStreamHttpResult` or `ProblemHttpResult`                                         |
-| `.ToFileHttpResult<Stream,E>()`       | Returns `FileStreamHttpResult` or custom error                                                |
 | `.ToFileStreamHttpResult<Stream>()`   | Returns `FileStreamHttpResult` or `ProblemHttpResult`                                         |
 | `.ToFileStreamHttpResult<Stream,E>()` | Returns `FileStreamHttpResult` or custom error                                                |
 
@@ -78,11 +76,11 @@ This library uses a Source Generator to generate extension methods for your own 
         public required string UserId { get; init; }
     }
     ```
-2. Create a mapper that implements `IResultErrorMapper` which maps this custom error type to another type that you want to return in your web api:
+2. Create a mapper that implements `IResultErrorMapper` which maps this custom error type to an `IResult` that you want to return in your WebAPI:
     ```csharp
-    public class UserNotFoundErrorMapper : IResultErrorMapper<UserNotFoundError, Microsoft.AspNetCore.Http.IResult>
+    public class UserNotFoundErrorMapper : IResultErrorMapper<UserNotFoundError, ProblemHttpResult>
     {
-        public Func<UserNotFoundErrorMapper, Microsoft.AspNetCore.Http.IResult> Map => error => {
+        public Func<UserNotFoundErrorMapper, ProblemHttpResult> Map => error => {
             var problemDetails = new ProblemDetails
             {
                 Status = 404,
@@ -105,4 +103,6 @@ This library uses a Source Generator to generate extension methods for your own 
 
 Make sure that every `IResult` implementation only has exactly one corresponding `IResultMapper` implementation.
 
-Optionally, you can use the `ProblemDetailsMap.Find()` method to find a title and type for a status code based on [RFC9110](https://tools.ietf.org/html/rfc9110).
+If extension methods for custom errors are missing, rebuild the project to trigger Source Generation.
+
+Optionally, there is a helper method `ProblemDetailsMap.Find()` to find a suitable title and type for a status code based on [RFC9110](https://tools.ietf.org/html/rfc9110).
