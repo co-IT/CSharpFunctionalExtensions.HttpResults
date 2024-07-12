@@ -6,7 +6,7 @@ namespace CSharpFunctionalExtensions.HttpResults.Generators;
 internal static class ResultExtensionsGeneratorValidator
 {
     private static readonly DiagnosticDescriptor DuplicateMapperRule = new(
-        "CFEMAPI002",
+        "CFEHTTPR002",
         "Duplicate ResultErrorMapper",
         "Class '{0}' does have multiple IResultErrorMapper",
         "Mapping",
