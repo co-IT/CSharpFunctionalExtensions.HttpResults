@@ -69,9 +69,9 @@ If you want your own mapping logic read on.
 
 This library uses a Source Generator to generate extension methods for your own custom error types when using `Result<T,E>` or `UnitResult<E>`.
 
-1. First create a custom error type that implements `IResultError`
+1. First create a custom error type
     ```csharp
-    public class UserNotFoundError : IResultError
+    public class UserNotFoundError
     {
         public required string UserId { get; init; }
     }
@@ -101,7 +101,7 @@ This library uses a Source Generator to generate extension methods for your own 
     });
     ```
 
-Make sure that every `IResult` implementation only has exactly one corresponding `IResultMapper` implementation.
+Make sure that every custom error type has exactly one corresponding `IResultMapper` implementation. Otherwise, the build might fail with diagnostic error [CFEMAPI002](./CSharpFunctionalExtensions.HttpResults.Generators/AnalyzerReleases.Shipped.md). 
 
 If extension methods for custom errors are missing, rebuild the project to trigger Source Generation.
 

@@ -1,12 +1,12 @@
 ﻿namespace CSharpFunctionalExtensions.HttpResults;
 
 /// <summary>
-/// Interface for mapping IResultError to IResult
+/// Interface for mapping custom error to <see cref="Microsoft.AspNetCore.Http.IResult"/>
 /// </summary>
-public interface IResultErrorMapper<TResultError, THttpResult> where TResultError : IResultError where THttpResult : Microsoft.AspNetCore.Http.IResult
+public interface IResultErrorMapper<TError, THttpResult> where THttpResult : Microsoft.AspNetCore.Http.IResult
 {
     /// <summary>
-    /// Map IResultError to IResult
+    /// Map custom error to <see cref="Microsoft.AspNetCore.Http.IResult"/>
     /// </summary>
-    public Func<TResultError, THttpResult> Map { get; }
+    public Func<TError, THttpResult> Map { get; }
 }

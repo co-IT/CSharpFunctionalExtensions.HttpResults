@@ -5,15 +5,6 @@ namespace CSharpFunctionalExtensions.HttpResults.Generators;
 
 internal static class ResultExtensionsGeneratorValidator
 {
-    private static readonly DiagnosticDescriptor MissingMapperRule = new(
-        "CFEMAPI001",
-        "Missing ResultErrorMapper",
-        "Class '{0}' does not have a corresponding IResultErrorMapper",
-        "Mapping",
-        DiagnosticSeverity.Error,
-        true,
-        customTags: ["CompilationEnd"]);
-    
     private static readonly DiagnosticDescriptor DuplicateMapperRule = new(
         "CFEMAPI002",
         "Duplicate ResultErrorMapper",
@@ -22,78 +13,52 @@ internal static class ResultExtensionsGeneratorValidator
         DiagnosticSeverity.Error,
         true,
         customTags: ["CompilationEnd"]);
-    
-    public static bool CheckRules(List<ClassDeclarationSyntax> mapperClasses, List<ClassDeclarationSyntax> resultErrorClasses, GeneratorExecutionContext context)
+
+    public static bool CheckRules(List<ClassDeclarationSyntax> mapperClasses, GeneratorExecutionContext context)
     {
-        var diagnostics = CheckForMissingMappers(mapperClasses, resultErrorClasses)
-            .Concat(CheckForDuplicateMappers(mapperClasses, resultErrorClasses))
+        var diagnostics = CheckForDuplicateMappers(mapperClasses)
             .ToList();
-        
+
         foreach (var diagnostic in diagnostics)
             context.ReportDiagnostic(diagnostic);
-        
+
         return !diagnostics.Any();
     }
-    
-    
-    private static IEnumerable<Diagnostic> CheckForMissingMappers(List<ClassDeclarationSyntax> mapperClasses, List<ClassDeclarationSyntax> resultErrorClasses)
+
+    private static IEnumerable<Diagnostic> CheckForDuplicateMappers(List<ClassDeclarationSyntax> mapperClasses)
     {
-        var mappedResultErrorClassNames = mapperClasses
-            .Select(mapperClass =>
+        var mappedResultErrorTypes = mapperClasses.Select(mapperClass =>
             {
                 var mappingProperty = mapperClass.Members
                     .FirstOrDefault(member => (member as PropertyDeclarationSyntax)?.Identifier.Text == "Map") as PropertyDeclarationSyntax;
                 var mappingTypes = (mappingProperty?.Type as GenericNameSyntax)?.TypeArgumentList.Arguments
-                    .Select(type => type.ToString())
                     .ToArray();
-                
-                return mappingTypes![0];
-            })
-            .Distinct()
-            .ToList();
-        
-        var resultErrorClassNames = resultErrorClasses
-            .Select(classDeclaration => classDeclaration.Identifier.Text)
-            .Distinct()
-            .ToList();
-        
-        var notMappedResultErrorClassNames = resultErrorClassNames.Except(mappedResultErrorClassNames);
-        
-        foreach (var notMappedResultErrorClassName in notMappedResultErrorClassNames)
-        {
-            var resultErrorClass = resultErrorClasses
-                .First(classDeclaration => classDeclaration.Identifier.Text == notMappedResultErrorClassName);
-            
-            yield return Diagnostic.Create(MissingMapperRule, resultErrorClass.GetLocation(), notMappedResultErrorClassName);
-        }
-    }
-    
-    private static IEnumerable<Diagnostic> CheckForDuplicateMappers(List<ClassDeclarationSyntax> mapperClasses, List<ClassDeclarationSyntax> resultErrorClasses)
-    {
-        var mappedResultErrorClassNames = mapperClasses.Select(mapperClass =>
-            {
-                var mappingProperty = mapperClass.Members
-                    .FirstOrDefault(member => (member as PropertyDeclarationSyntax)?.Identifier.Text == "Map") as PropertyDeclarationSyntax;
-                var mappingTypes = (mappingProperty?.Type as GenericNameSyntax)?.TypeArgumentList.Arguments
-                    .Select(type => type.ToString())
-                    .ToArray();
-                
+
                 return mappingTypes![0];
             })
             .ToList();
-        
-        var duplicateMappedResultErrorClassNames = mappedResultErrorClassNames
-            .GroupBy(className => className)
+
+        var duplicateMappedResultErrorClassNames = mappedResultErrorTypes
+            .GroupBy(type => type.ToString())
             .Where(grouping => grouping.Count() > 1)
             .Select(grouping => grouping.Key)
             .ToList();
-        
+
         foreach (var duplicateMappedResultErrorClassName in duplicateMappedResultErrorClassNames)
         {
-            var resultErrorClass = resultErrorClasses
-                .First(classDeclaration => classDeclaration.Identifier.Text == duplicateMappedResultErrorClassName);
-            
-            yield return Diagnostic.Create(DuplicateMapperRule, resultErrorClass.GetLocation(), duplicateMappedResultErrorClassName);
+            var location = mapperClasses.Select(mapperClass =>
+                {
+                    var mappingProperty = mapperClass.Members
+                        .FirstOrDefault(member => (member as PropertyDeclarationSyntax)?.Identifier.Text == "Map") as PropertyDeclarationSyntax;
+                    var mappingTypes = (mappingProperty?.Type as GenericNameSyntax)?.TypeArgumentList.Arguments
+                        .ToArray();
+
+                    return mappingTypes![0];
+                })
+                .Last(typeSyntax => typeSyntax.ToString() == duplicateMappedResultErrorClassName)
+                .GetLocation();
+
+            yield return Diagnostic.Create(DuplicateMapperRule, location, duplicateMappedResultErrorClassName);
         }
     }
 }
