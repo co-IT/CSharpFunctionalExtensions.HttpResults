@@ -101,7 +101,7 @@ This library uses a Source Generator to generate extension methods for your own 
     ```csharp
     app.MapGet("/users/{id}", (string id) => {
         return userRepository.Find(id) //Result<User,UserNotFoundError>
-            .ToHttpResult(); //returns 200 with User as payload or 404 with ProblemDetails object defined above
+            .ToOkHttpResult(); //returns 200 with User as payload or 404 with ProblemDetails object defined above
     });
     ```
 
