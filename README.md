@@ -46,6 +46,7 @@ These methods are available:
 | `.ToNoContentHttpResult()`            | Returns `NoContent` or `ProblemHttpResult`                                   |
 | `.ToNoContentHttpResult<T>()`         | Discards value of `Result<T>` and returns `NoContent` or `ProblemHttpResult` |
 | `.ToNoContentHttpResult<T,E>()`       | Discards value of `Result<T>` and returns `NoContent` or custom error        |
+| `.ToNoContentHttpResult<E>()`         | Returns `NoContent` or custom error                                          |
 | `.ToCreatedHttpResult<T>()`           | Returns `Created<T>` or `ProblemHttpResult`                                  |
 | `.ToCreatedHttpResult<T,E>()`         | Returns `Created<T>` or custom error                                         |
 | `.ToCreatedAtRouteHttpResult<T>()`    | Returns `CreatedAtRoute<T>` or `ProblemHttpResult`                           |

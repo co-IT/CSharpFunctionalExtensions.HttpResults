@@ -13,5 +13,8 @@ public class UnitResultExtensionsClassBuilder(List<string> requiredNamespaces, L
                                               /// </summary>
                                               """;
     
-    internal override List<IGenerateMethods> MethodGenerators => [new ToStatusCodeHttpResultE()];
+    internal override List<IGenerateMethods> MethodGenerators => [
+        new ToStatusCodeHttpResultE(),
+        new ToNoContentHttpResultE()
+    ];
 }
