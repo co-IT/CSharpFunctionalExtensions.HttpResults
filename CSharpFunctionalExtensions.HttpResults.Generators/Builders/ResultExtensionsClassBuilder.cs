@@ -21,7 +21,7 @@ public class ResultExtensionsClassBuilder(List<string> requiredNamespaces, List<
         new ToCreatedHttpResultTE(),
         new ToFileHttpResultByteArrayE(),
         new ToFileStreamHttpResultStreamE(),
-        new ToHttpResultTE(),
+        new ToJsonHttpResultTE(),
         new ToNoContentHttpResultTE(),
         new ToStatusCodeHttpResultTE()
     ];
