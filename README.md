@@ -36,6 +36,7 @@ These methods are available:
 | Method                                | Short Description                                                                             |
 |---------------------------------------|-----------------------------------------------------------------------------------------------|
 | `.ToStatusCodeHttpResult()`           | Returns `StatusCodeHttpResult` or `ProblemHttpResult`                                         |
+| `.ToStatusCodeHttpResult<T>()`        | Returns `StatusCodeHttpResult` or `ProblemHttpResult`                                         |
 | `.ToHttpResult<T>()`                  | Returns `JsonHttpResult<T>` or `ProblemHttpResult`                                            |
 | `.ToHttpResult<T,E>()`                | Returns `JsonHttpResult<T>` or custom error                                                   |
 | `.ToNoContentHttpResult<T>()`         | Discards value of `Result<T>` and returns empty `StatusCodeHttpResult` or `ProblemHttpResult` |
