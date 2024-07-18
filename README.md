@@ -38,6 +38,7 @@ These methods are available:
 | `.ToStatusCodeHttpResult()`           | Returns `StatusCodeHttpResult` or `ProblemHttpResult`                        |
 | `.ToStatusCodeHttpResult<T>()`        | Returns `StatusCodeHttpResult` or `ProblemHttpResult`                        |
 | `.ToStatusCodeHttpResult<T,E>()`      | Returns `StatusCodeHttpResult` or custom error                               |
+| `.ToStatusCodeHttpResult<E>()`        | Returns `StatusCodeHttpResult` or custom error                               |
 | `.ToJsonHttpResult<T>()`              | Returns `JsonHttpResult<T>` or `ProblemHttpResult`                           |
 | `.ToJsonHttpResult<T,E>()`            | Returns `JsonHttpResult<T>` or custom error                                  |
 | `.ToOkHttpResult<T>()`                | Returns `Ok<T>` or `ProblemHttpResult`                                       |
