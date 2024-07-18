@@ -4,22 +4,22 @@ using Microsoft.AspNetCore.Http.HttpResults;
 
 namespace CSharpFunctionalExtensions.HttpResults.Tests.ResultExtensions;
 
-public class ToHttpResult
+public class ToStatusCodeHttpResult
 {
     [Fact]
-    public void Result_Success_can_be_mapped_to_HttpResult()
+    public void Result_Success_can_be_mapped_to_StatusCodeHttpResult()
     {
         var result = Result.Success()
-            .ToHttpResult().Result as StatusCodeHttpResult;
+            .ToStatusCodeHttpResult().Result as StatusCodeHttpResult;
         
         result!.StatusCode.Should().Be(204);
     }
     
     [Fact]
-    public async Task Result_Success_can_be_mapped_to_HttpResult_Async()
+    public async Task Result_Success_can_be_mapped_to_StatusCodeHttpResult_Async()
     {
         var result = (await Task.FromResult(Result.Success())
-            .ToHttpResult()).Result as StatusCodeHttpResult;
+            .ToStatusCodeHttpResult()).Result as StatusCodeHttpResult;
         
         result!.StatusCode.Should().Be(204);
     }
@@ -30,7 +30,7 @@ public class ToHttpResult
         var statusCode = 210;
         
         var result = Result.Success()
-            .ToHttpResult(statusCode).Result as StatusCodeHttpResult;
+            .ToStatusCodeHttpResult(statusCode).Result as StatusCodeHttpResult;
         
         result!.StatusCode.Should().Be(statusCode);
     }
@@ -41,18 +41,18 @@ public class ToHttpResult
         var statusCode = 210;
         
         var result = (await Task.FromResult(Result.Success())
-            .ToHttpResult(statusCode)).Result as StatusCodeHttpResult;
+            .ToStatusCodeHttpResult(statusCode)).Result as StatusCodeHttpResult;
         
         result!.StatusCode.Should().Be(statusCode);
     }
     
     [Fact]
-    public void Result_Failure_can_be_mapped_to_HttpResult()
+    public void Result_Failure_can_be_mapped_to_StatusCodeHttpResult()
     {
         var error = "Error";
         
         var result = Result.Failure(error)
-            .ToHttpResult().Result as ProblemHttpResult;
+            .ToStatusCodeHttpResult().Result as ProblemHttpResult;
         
         result!.StatusCode.Should().Be(400);
         result!.ProblemDetails.Status.Should().Be(400);
@@ -60,12 +60,12 @@ public class ToHttpResult
     }
     
     [Fact]
-    public async Task Result_Failure_can_be_mapped_to_HttpResult_Async()
+    public async Task Result_Failure_can_be_mapped_to_StatusCodeHttpResult_Async()
     {
         var error = "Error";
 
         var result = (await Task.FromResult(Result.Failure(error))
-            .ToHttpResult()).Result as ProblemHttpResult;
+            .ToStatusCodeHttpResult()).Result as ProblemHttpResult;
         
         result!.StatusCode.Should().Be(400);
         result!.ProblemDetails.Status.Should().Be(400);
@@ -79,7 +79,7 @@ public class ToHttpResult
         var error = "Error";
         
         var result = Result.Failure(error)
-            .ToHttpResult(failureStatusCode: statusCode).Result as ProblemHttpResult;
+            .ToStatusCodeHttpResult(failureStatusCode: statusCode).Result as ProblemHttpResult;
         
         result!.StatusCode.Should().Be(statusCode);
         result!.ProblemDetails.Status.Should().Be(statusCode);
@@ -93,7 +93,7 @@ public class ToHttpResult
         var error = "Error";
         
         var result = (await Task.FromResult(Result.Failure(error))
-            .ToHttpResult(failureStatusCode: statusCode)).Result as ProblemHttpResult;
+            .ToStatusCodeHttpResult(failureStatusCode: statusCode)).Result as ProblemHttpResult;
         
         result!.StatusCode.Should().Be(statusCode);
         result!.ProblemDetails.Status.Should().Be(statusCode);
