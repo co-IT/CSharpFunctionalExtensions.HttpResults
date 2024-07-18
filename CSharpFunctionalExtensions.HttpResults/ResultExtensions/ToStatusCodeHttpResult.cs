@@ -12,7 +12,7 @@ public static partial class ResultExtensions
     /// <summary>
     /// Returns a <see cref="StatusCodeHttpResult"/> in case of success result. Returns <see cref="ProblemHttpResult"/> in case of failure. You can override the success and error status code.
     /// </summary>
-    public static Results<StatusCodeHttpResult, ProblemHttpResult> ToHttpResult(this Result result, int successStatusCode = 204, int failureStatusCode = 400)
+    public static Results<StatusCodeHttpResult, ProblemHttpResult> ToStatusCodeHttpResult(this Result result, int successStatusCode = 204, int failureStatusCode = 400)
     {
         if (result.IsSuccess) return TypedResults.StatusCode(successStatusCode);
         
@@ -31,8 +31,8 @@ public static partial class ResultExtensions
     /// <summary>
     /// Returns a <see cref="StatusCodeHttpResult"/> in case of success result. Returns <see cref="ProblemHttpResult"/> in case of failure. You can override the success and error status code.
     /// </summary>
-    public static async Task<Results<StatusCodeHttpResult, ProblemHttpResult>> ToHttpResult(this Task<Result> result, int successStatusCode = 204, int failureStatusCode = 400)
+    public static async Task<Results<StatusCodeHttpResult, ProblemHttpResult>> ToStatusCodeHttpResult(this Task<Result> result, int successStatusCode = 204, int failureStatusCode = 400)
     {
-        return (await result).ToHttpResult(successStatusCode, failureStatusCode);
+        return (await result).ToStatusCodeHttpResult(successStatusCode, failureStatusCode);
     }
 }
