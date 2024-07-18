@@ -6,21 +6,21 @@ internal class ToNoContentHttpResultTE: IGenerateMethods
     {
         return $$"""
                  /// <summary>
-                 /// Discards the value of <see cref="Result{T,E}"/> and Returns a <see cref="StatusCodeHttpResult"/> in case of success result. Returns custom mapping in case of failure. You can override the success status code.
+                 /// Discards the value of <see cref="Result{T,E}"/> and Returns a <see cref="NoContent"/> in case of success result. Returns custom mapping in case of failure.
                  /// </summary>
-                 public static Results<StatusCodeHttpResult, {{httpResultType}}> ToNoContentHttpResult<T>(this Result<T,{{resultErrorType}}> result, int successStatusCode = 204)
+                 public static Results<NoContent, {{httpResultType}}> ToNoContentHttpResult<T>(this Result<T,{{resultErrorType}}> result)
                  {
-                     if (result.IsSuccess) return TypedResults.StatusCode(successStatusCode);
+                     if (result.IsSuccess) return TypedResults.NoContent();
                      
                      return new {{mapperClassName}}().Map(result.Error);
                  }
                  
                  /// <summary>
-                 /// Discards the value of <see cref="Result{T,E}"/> and Returns a <see cref="StatusCodeHttpResult"/> in case of success result. Returns custom mapping in case of failure. You can override the success status code.
+                 /// Discards the value of <see cref="Result{T,E}"/> and Returns a <see cref="NoContent"/> in case of success result. Returns custom mapping in case of failure.
                  /// </summary>
-                 public static async Task<Results<StatusCodeHttpResult, {{httpResultType}}>> ToNoContentHttpResult<T>(this Task<Result<T,{{resultErrorType}}>> result, int successStatusCode = 204)
+                 public static async Task<Results<NoContent, {{httpResultType}}>> ToNoContentHttpResult<T>(this Task<Result<T,{{resultErrorType}}>> result)
                  {
-                     return (await result).ToNoContentHttpResult(successStatusCode);
+                     return (await result).ToNoContentHttpResult();
                  }
                  """;
     }

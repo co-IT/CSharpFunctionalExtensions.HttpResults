@@ -33,27 +33,27 @@ This library provides you extension methods to map the following types to `HttpR
 
 These methods are available:
 
-| Method                                | Short Description                                                                      |
-|---------------------------------------|----------------------------------------------------------------------------------------|
-| `.ToStatusCodeHttpResult()`           | Returns `StatusCodeHttpResult` or `ProblemHttpResult`                                  |
-| `.ToStatusCodeHttpResult<T>()`        | Returns `StatusCodeHttpResult` or `ProblemHttpResult`                                  |
-| `.ToStatusCodeHttpResult<T,E>()`      | Returns `StatusCodeHttpResult` or custom error                                         |
-| `.ToJsonHttpResult<T>()`              | Returns `JsonHttpResult<T>` or `ProblemHttpResult`                                     |
-| `.ToJsonHttpResult<T,E>()`            | Returns `JsonHttpResult<T>` or custom error                                            |
-| `.ToNoContentHttpResult<T>()`         | Discards value of `Result<T>` and returns `NoContent` or `ProblemHttpResult`           |
-| `.ToNoContentHttpResult<T,E>()`       | Discards value of `Result<T>` and returns empty `StatusCodeHttpResult` or custom error |
-| `.ToCreatedHttpResult<T>()`           | Returns `Created<T>` or `ProblemHttpResult`                                            |
-| `.ToCreatedHttpResult<T,E>()`         | Returns `Created<T>` or custom error                                                   |
-| `.ToCreatedAtRouteHttpResult<T>()`    | Returns `CreatedAtRoute<T>` or `ProblemHttpResult`                                     |
-| `.ToCreatedAtRouteHttpResult<T,E>()`  | Returns `CreatedAtRoute<T>` or custom error                                            |
-| `.ToAcceptedHttpResult<T>()`          | Returns `Accepted<T>` or `ProblemHttpResult`                                           |
-| `.ToAcceptedHttpResult<T,E>()`        | Returns `Accepted<T>` or custom error                                                  |
-| `.ToAcceptedAtRouteHttpResult<T>()`   | Returns `AcceptedAtRoute<T>` or `ProblemHttpResult`                                    |
-| `.ToAcceptedAtRouteHttpResult<T,E>()` | Returns `AcceptedAtRoute<T>` or custom error                                           |
-| `.ToFileHttpResult<byte[]>()`         | Returns `FileContentHttpResult` or `ProblemHttpResult`                                 |
-| `.ToFileHttpResult<byte[],E>()`       | Returns `FileContentHttpResult` or custom error                                        |
-| `.ToFileStreamHttpResult<Stream>()`   | Returns `FileStreamHttpResult` or `ProblemHttpResult`                                  |
-| `.ToFileStreamHttpResult<Stream,E>()` | Returns `FileStreamHttpResult` or custom error                                         |
+| Method                                | Short Description                                                            |
+|---------------------------------------|------------------------------------------------------------------------------|
+| `.ToStatusCodeHttpResult()`           | Returns `StatusCodeHttpResult` or `ProblemHttpResult`                        |
+| `.ToStatusCodeHttpResult<T>()`        | Returns `StatusCodeHttpResult` or `ProblemHttpResult`                        |
+| `.ToStatusCodeHttpResult<T,E>()`      | Returns `StatusCodeHttpResult` or custom error                               |
+| `.ToJsonHttpResult<T>()`              | Returns `JsonHttpResult<T>` or `ProblemHttpResult`                           |
+| `.ToJsonHttpResult<T,E>()`            | Returns `JsonHttpResult<T>` or custom error                                  |
+| `.ToNoContentHttpResult<T>()`         | Discards value of `Result<T>` and returns `NoContent` or `ProblemHttpResult` |
+| `.ToNoContentHttpResult<T,E>()`       | Discards value of `Result<T>` and returns `NoContent` or custom error        |
+| `.ToCreatedHttpResult<T>()`           | Returns `Created<T>` or `ProblemHttpResult`                                  |
+| `.ToCreatedHttpResult<T,E>()`         | Returns `Created<T>` or custom error                                         |
+| `.ToCreatedAtRouteHttpResult<T>()`    | Returns `CreatedAtRoute<T>` or `ProblemHttpResult`                           |
+| `.ToCreatedAtRouteHttpResult<T,E>()`  | Returns `CreatedAtRoute<T>` or custom error                                  |
+| `.ToAcceptedHttpResult<T>()`          | Returns `Accepted<T>` or `ProblemHttpResult`                                 |
+| `.ToAcceptedHttpResult<T,E>()`        | Returns `Accepted<T>` or custom error                                        |
+| `.ToAcceptedAtRouteHttpResult<T>()`   | Returns `AcceptedAtRoute<T>` or `ProblemHttpResult`                          |
+| `.ToAcceptedAtRouteHttpResult<T,E>()` | Returns `AcceptedAtRoute<T>` or custom error                                 |
+| `.ToFileHttpResult<byte[]>()`         | Returns `FileContentHttpResult` or `ProblemHttpResult`                       |
+| `.ToFileHttpResult<byte[],E>()`       | Returns `FileContentHttpResult` or custom error                              |
+| `.ToFileStreamHttpResult<Stream>()`   | Returns `FileStreamHttpResult` or `ProblemHttpResult`                        |
+| `.ToFileStreamHttpResult<Stream,E>()` | Returns `FileStreamHttpResult` or custom error                               |
 
 For almost every method you can override the default status codes for Success/Failure.
 
