@@ -13,7 +13,7 @@ public class ToNoContentHttpResultTE
         var value = "foo";
         
         var result = Result.Success<string, DocumentMissingError>(value)
-            .ToNoContentHttpResult().Result as StatusCodeHttpResult;
+            .ToNoContentHttpResult().Result as NoContent;
         
         result!.StatusCode.Should().Be(204);
     }
@@ -24,33 +24,9 @@ public class ToNoContentHttpResultTE
         var value = "foo";
         
         var result = (await Task.FromResult(Result.Success<string, DocumentMissingError>(value))
-            .ToNoContentHttpResult()).Result as StatusCodeHttpResult;
+            .ToNoContentHttpResult()).Result as NoContent;
         
         result!.StatusCode.Should().Be(204);
-    }
-    
-    [Fact]
-    public void ResultTE_Success_StatusCode_can_be_changed()
-    {
-        var statusCode = 210;
-        var value = "foo";
-        
-        var result = Result.Success<string, DocumentMissingError>(value)
-            .ToNoContentHttpResult(statusCode).Result as StatusCodeHttpResult;
-        
-        result!.StatusCode.Should().Be(statusCode);
-    }
-    
-    [Fact]
-    public async Task ResultTE_Success_StatusCode_can_be_changed_Async()
-    {
-        var statusCode = 210;
-        var value = "foo";
-        
-        var result = (await Task.FromResult(Result.Success<string, DocumentMissingError>(value))
-            .ToNoContentHttpResult(statusCode)).Result as StatusCodeHttpResult;
-        
-        result!.StatusCode.Should().Be(statusCode);
     }
     
     [Fact]
