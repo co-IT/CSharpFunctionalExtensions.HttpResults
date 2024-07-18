@@ -96,8 +96,8 @@ This library uses a Source Generator to generate extension methods for your own 
 3. Use the generated extension method:
     ```csharp
     app.MapGet("/users/{id}", (string id) => {
-        return userRepository.find(id) //Result<User,UserNotFoundError>
-            .ToHttpResult();
+        return userRepository.Find(id) //Result<User,UserNotFoundError>
+            .ToHttpResult(); //returns 200 with User as payload or 404 with ProblemDetails object defined above
     });
     ```
 
