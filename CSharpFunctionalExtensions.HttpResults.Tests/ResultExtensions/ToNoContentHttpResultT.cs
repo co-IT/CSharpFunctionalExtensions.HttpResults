@@ -12,7 +12,7 @@ public class ToNoContentHttpResultT
         var value = "foo";
         
         var result = Result.Success(value)
-            .ToNoContentHttpResult().Result as StatusCodeHttpResult;
+            .ToNoContentHttpResult().Result as NoContent;
         
         result!.StatusCode.Should().Be(204);
     }
@@ -23,33 +23,9 @@ public class ToNoContentHttpResultT
         var value = "foo";
         
         var result = (await Task.FromResult(Result.Success(value))
-            .ToNoContentHttpResult()).Result as StatusCodeHttpResult;
+            .ToNoContentHttpResult()).Result as NoContent;
         
         result!.StatusCode.Should().Be(204);
-    }
-    
-    [Fact]
-    public void ResultT_Success_StatusCode_can_be_changed()
-    {
-        var statusCode = 210;
-        var value = "foo";
-        
-        var result = Result.Success(value)
-            .ToNoContentHttpResult(statusCode).Result as StatusCodeHttpResult;
-        
-        result!.StatusCode.Should().Be(statusCode);
-    }
-    
-    [Fact]
-    public async Task ResultT_Success_StatusCode_can_be_changed_Async()
-    {
-        var statusCode = 210;
-        var value = "foo";
-        
-        var result = (await Task.FromResult(Result.Success(value))
-            .ToNoContentHttpResult(statusCode)).Result as StatusCodeHttpResult;
-        
-        result!.StatusCode.Should().Be(statusCode);
     }
     
     [Fact]
