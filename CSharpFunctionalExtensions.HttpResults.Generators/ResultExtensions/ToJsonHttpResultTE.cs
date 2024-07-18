@@ -1,6 +1,6 @@
 ﻿namespace CSharpFunctionalExtensions.HttpResults.Generators.ResultExtensions;
 
-internal class ToHttpResultTE: IGenerateMethods
+internal class ToJsonHttpResultTE: IGenerateMethods
 {
     public string Generate(string mapperClassName, string resultErrorType, string httpResultType)
     {
@@ -8,7 +8,7 @@ internal class ToHttpResultTE: IGenerateMethods
                  /// <summary>
                  /// Returns a <see cref="JsonHttpResult{TValue}"/> in case of success result. Returns custom mapping in case of failure. You can override the success status code.
                  /// </summary>
-                 public static Results<JsonHttpResult<T>, {{httpResultType}}> ToHttpResult<T>(this Result<T,{{resultErrorType}}> result, int successStatusCode = 200)
+                 public static Results<JsonHttpResult<T>, {{httpResultType}}> ToJsonHttpResult<T>(this Result<T,{{resultErrorType}}> result, int successStatusCode = 200)
                  {
                      if (result.IsSuccess) return TypedResults.Json(result.Value, statusCode: successStatusCode);
                      
@@ -18,9 +18,9 @@ internal class ToHttpResultTE: IGenerateMethods
                  /// <summary>
                  /// Returns a <see cref="JsonHttpResult{TValue}"/> in case of success result. Returns custom mapping in case of failure. You can override the success status code.
                  /// </summary>
-                 public static async Task<Results<JsonHttpResult<T>, {{httpResultType}}>> ToHttpResult<T>(this Task<Result<T,{{resultErrorType}}>> result, int successStatusCode = 200)
+                 public static async Task<Results<JsonHttpResult<T>, {{httpResultType}}>> ToJsonHttpResult<T>(this Task<Result<T,{{resultErrorType}}>> result, int successStatusCode = 200)
                  {
-                     return (await result).ToHttpResult(successStatusCode);
+                     return (await result).ToJsonHttpResult(successStatusCode);
                  }
                  """;
     }

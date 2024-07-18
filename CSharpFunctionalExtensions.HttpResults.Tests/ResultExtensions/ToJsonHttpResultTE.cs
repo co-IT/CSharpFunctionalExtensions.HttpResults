@@ -4,10 +4,10 @@ using Microsoft.AspNetCore.Http.HttpResults;
 
 namespace CSharpFunctionalExtensions.HttpResults.Tests.ResultExtensions;
 
-public class ToHttpResultTE
+public class ToJsonHttpResultTE
 {
     [Fact]
-    public void ResultTE_Success_can_be_mapped_to_HttpResult()
+    public void ResultTE_Success_can_be_mapped_to_JsonHttpResult()
     {
         var document = new Document
         {
@@ -15,14 +15,14 @@ public class ToHttpResultTE
         };
         
         var result = Result.Success<Document, DocumentMissingError>(document)
-            .ToHttpResult().Result as JsonHttpResult<Document>;
+            .ToJsonHttpResult().Result as JsonHttpResult<Document>;
         
         result!.StatusCode.Should().Be(200);
         result!.Value!.DocumentId.Should().Be(document.DocumentId);
     }
     
     [Fact]
-    public async Task ResultTE_Success_can_be_mapped_to_HttpResult_Async()
+    public async Task ResultTE_Success_can_be_mapped_to_JsonHttpResult_Async()
     {
         var document = new Document
         {
@@ -30,7 +30,7 @@ public class ToHttpResultTE
         };
         
         var result = (await Task.FromResult(Result.Success<Document, DocumentMissingError>(document))
-            .ToHttpResult()).Result as JsonHttpResult<Document>;
+            .ToJsonHttpResult()).Result as JsonHttpResult<Document>;
         
         result!.StatusCode.Should().Be(200);
         result!.Value!.DocumentId.Should().Be(document.DocumentId);
@@ -46,7 +46,7 @@ public class ToHttpResultTE
         };
         
         var result = Result.Success<Document, DocumentMissingError>(document)
-            .ToHttpResult(statusCode).Result as JsonHttpResult<Document>;
+            .ToJsonHttpResult(statusCode).Result as JsonHttpResult<Document>;
         
         result!.StatusCode.Should().Be(statusCode);
     }
@@ -61,13 +61,13 @@ public class ToHttpResultTE
         };
         
         var result = (await Task.FromResult(Result.Success<Document, DocumentMissingError>(document))
-            .ToHttpResult(statusCode)).Result as JsonHttpResult<Document>;
+            .ToJsonHttpResult(statusCode)).Result as JsonHttpResult<Document>;
         
         result!.StatusCode.Should().Be(statusCode);
     }
     
     [Fact]
-    public void ResultTE_Failure_can_be_mapped_to_HttpResult()
+    public void ResultTE_Failure_can_be_mapped_to_JsonHttpResult()
     {
         var error = new DocumentMissingError
         {
@@ -75,14 +75,14 @@ public class ToHttpResultTE
         };
         
         var result = Result.Failure<Document, DocumentMissingError>(error)
-            .ToHttpResult().Result as NotFound<string>;
+            .ToJsonHttpResult().Result as NotFound<string>;
         
         result!.StatusCode.Should().Be(404);
         result!.Value.Should().Be(error.DocumentId);
     }
     
     [Fact]
-    public async Task ResultTE_Failure_can_be_mapped_to_HttpResult_Async()
+    public async Task ResultTE_Failure_can_be_mapped_to_JsonHttpResult_Async()
     {
         var error = new DocumentMissingError
         {
@@ -90,7 +90,7 @@ public class ToHttpResultTE
         };
         
         var result = (await Task.FromResult(Result.Failure<Document, DocumentMissingError>(error))
-            .ToHttpResult()).Result as NotFound<string>;
+            .ToJsonHttpResult()).Result as NotFound<string>;
         
         result!.StatusCode.Should().Be(404);
         result!.Value.Should().Be(error.DocumentId);

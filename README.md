@@ -39,7 +39,7 @@ These methods are available:
 | `.ToStatusCodeHttpResult<T>()`        | Returns `StatusCodeHttpResult` or `ProblemHttpResult`                                         |
 | `.ToStatusCodeHttpResult<T,E>()`      | Returns `StatusCodeHttpResult` or custom error                                                |
 | `.ToJsonHttpResult<T>()`              | Returns `JsonHttpResult<T>` or `ProblemHttpResult`                                            |
-| `.ToHttpResult<T,E>()`                | Returns `JsonHttpResult<T>` or custom error                                                   |
+| `.ToJsonHttpResult<T,E>()`            | Returns `JsonHttpResult<T>` or custom error                                                   |
 | `.ToNoContentHttpResult<T>()`         | Discards value of `Result<T>` and returns empty `StatusCodeHttpResult` or `ProblemHttpResult` |
 | `.ToNoContentHttpResult<T,E>()`       | Discards value of `Result<T>` and returns empty `StatusCodeHttpResult` or custom error        |
 | `.ToCreatedHttpResult<T>()`           | Returns `Created<T>` or `ProblemHttpResult`                                                   |
