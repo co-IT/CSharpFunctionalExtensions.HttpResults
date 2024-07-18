@@ -4,27 +4,27 @@ using Microsoft.AspNetCore.Http.HttpResults;
 
 namespace CSharpFunctionalExtensions.HttpResults.Tests.ResultExtensions;
 
-public class ToHttpResultT
+public class ToJsonHttpResultT
 {
     [Fact]
-    public void ResultT_Success_can_be_mapped_to_HttpResult()
+    public void ResultT_Success_can_be_mapped_to_JsonHttpResult()
     {
         var value = "foo";
         
         var result = Result.Success(value)
-            .ToHttpResult().Result as JsonHttpResult<string>;
+            .ToJsonHttpResult().Result as JsonHttpResult<string>;
         
         result!.StatusCode.Should().Be(200);
         result!.Value.Should().Be(value);
     }
     
     [Fact]
-    public async Task ResultT_Success_can_be_mapped_to_HttpResult_Async()
+    public async Task ResultT_Success_can_be_mapped_to_JsonHttpResult_Async()
     {
         var value = "foo";
         
         var result = (await Task.FromResult(Result.Success(value))
-            .ToHttpResult()).Result as JsonHttpResult<string>;
+            .ToJsonHttpResult()).Result as JsonHttpResult<string>;
         
         result!.StatusCode.Should().Be(200);
         result!.Value.Should().Be(value);
@@ -37,7 +37,7 @@ public class ToHttpResultT
         var value = "foo";
         
         var result = Result.Success(value)
-            .ToHttpResult(statusCode).Result as JsonHttpResult<string>;
+            .ToJsonHttpResult(statusCode).Result as JsonHttpResult<string>;
         
         result!.StatusCode.Should().Be(statusCode);
         result!.Value.Should().Be(value);
@@ -50,19 +50,19 @@ public class ToHttpResultT
         var value = "foo";
         
         var result = (await Task.FromResult(Result.Success(value))
-            .ToHttpResult(statusCode)).Result as JsonHttpResult<string>;
+            .ToJsonHttpResult(statusCode)).Result as JsonHttpResult<string>;
         
         result!.StatusCode.Should().Be(statusCode);
         result!.Value.Should().Be(value);
     }
     
     [Fact]
-    public void ResultT_Failure_can_be_mapped_to_HttpResult()
+    public void ResultT_Failure_can_be_mapped_to_JsonHttpResult()
     {
         var error = "Error";
         
         var result = Result.Failure<string>(error)
-            .ToHttpResult().Result as ProblemHttpResult;
+            .ToJsonHttpResult().Result as ProblemHttpResult;
         
         result!.StatusCode.Should().Be(400);
         result!.ProblemDetails.Status.Should().Be(400);
@@ -70,12 +70,12 @@ public class ToHttpResultT
     }
     
     [Fact]
-    public async Task ResultT_Failure_can_be_mapped_to_HttpResult_Async()
+    public async Task ResultT_Failure_can_be_mapped_to_JsonHttpResult_Async()
     {
         var error = "Error";
 
         var result = (await Task.FromResult(Result.Failure<string>(error))
-            .ToHttpResult()).Result as ProblemHttpResult;
+            .ToJsonHttpResult()).Result as ProblemHttpResult;
         
         result!.StatusCode.Should().Be(400);
         result!.ProblemDetails.Status.Should().Be(400);
@@ -89,7 +89,7 @@ public class ToHttpResultT
         var error = "Error";
         
         var result = Result.Failure<string>(error)
-            .ToHttpResult(failureStatusCode: statusCode).Result as ProblemHttpResult;
+            .ToJsonHttpResult(failureStatusCode: statusCode).Result as ProblemHttpResult;
         
         result!.StatusCode.Should().Be(statusCode);
         result!.ProblemDetails.Status.Should().Be(statusCode);
@@ -103,7 +103,7 @@ public class ToHttpResultT
         var error = "Error";
         
         var result = (await Task.FromResult(Result.Failure<string>(error))
-            .ToHttpResult(failureStatusCode: statusCode)).Result as ProblemHttpResult;
+            .ToJsonHttpResult(failureStatusCode: statusCode)).Result as ProblemHttpResult;
         
         result!.StatusCode.Should().Be(statusCode);
         result!.ProblemDetails.Status.Should().Be(statusCode);

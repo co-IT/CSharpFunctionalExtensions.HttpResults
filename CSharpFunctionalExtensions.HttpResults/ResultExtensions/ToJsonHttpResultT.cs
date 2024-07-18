@@ -12,7 +12,7 @@ public static partial class ResultExtensions
     /// <summary>
     /// Returns a <see cref="JsonHttpResult{TValue}"/> in case of success result. Returns <see cref="ProblemHttpResult"/> in case of failure. You can override the success and error status code.
     /// </summary>
-    public static Results<JsonHttpResult<T>, ProblemHttpResult> ToHttpResult<T>(this Result<T> result, int successStatusCode = 200, int failureStatusCode = 400)
+    public static Results<JsonHttpResult<T>, ProblemHttpResult> ToJsonHttpResult<T>(this Result<T> result, int successStatusCode = 200, int failureStatusCode = 400)
     {
         if (result.IsSuccess) return TypedResults.Json(result.Value, statusCode: successStatusCode);
         
@@ -31,8 +31,8 @@ public static partial class ResultExtensions
     /// <summary>
     /// Returns a <see cref="JsonHttpResult{TValue}"/> in case of success result. Returns <see cref="ProblemHttpResult"/> in case of failure. You can override the success and error status code.
     /// </summary>
-    public static async Task<Results<JsonHttpResult<T>, ProblemHttpResult>> ToHttpResult<T>(this Task<Result<T>> result, int successStatusCode = 200, int failureStatusCode = 400)
+    public static async Task<Results<JsonHttpResult<T>, ProblemHttpResult>> ToJsonHttpResult<T>(this Task<Result<T>> result, int successStatusCode = 200, int failureStatusCode = 400)
     {
-        return (await result).ToHttpResult(successStatusCode, failureStatusCode);
+        return (await result).ToJsonHttpResult(successStatusCode, failureStatusCode);
     }
 }
