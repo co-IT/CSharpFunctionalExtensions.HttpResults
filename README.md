@@ -6,7 +6,13 @@
 [![GitHub license](https://img.shields.io/github/license/co-IT/CSharpFunctionalExtensions.HttpResults)](https://github.com/co-IT/CSharpFunctionalExtensions.HttpResults/blob/main/LICENSE.md)
 
 Extensions for [CSharpFunctionalExtensions](https://github.com/vkhorikov/CSharpFunctionalExtensions) to map Results to
-HttpResults in your MinimalApi
+HttpResults in your WebApi
+
+## Overview
+
+This library streamlines returning HttpResults from endpoints that leverage [CSharpFunctionalExtensions](https://github.com/vkhorikov/CSharpFunctionalExtensions) by offering convenient extension methods to map you result to an HttpResult.
+With these, you can maintain a fluent, railway-oriented style by simply invoking the appropriate method at the end of your result chain.
+It also supports custom error types and ensures a clear separation between your domain logic and API by using specific mappers to translate domain details into API responses.
 
 ## Installation
 
@@ -113,3 +119,26 @@ Make sure that every custom error type has exactly one corresponding `IResultMap
 If extension methods for custom errors are missing, rebuild the project to trigger Source Generation.
 
 Optionally, there is a helper method `ProblemDetailsMap.Find()` to find a suitable title and type for a status code based on [RFC9110](https://tools.ietf.org/html/rfc9110).
+
+## Examples
+
+Examples are available in the [`CSharpFunctionalExtensions.HttpResults.Examples`](CSharpFunctionalExtensions.HttpResults.Examples) project.
+
+## Development
+
+You're welcome to contribute. Please keep these few rules in mind:
+
+- add documentation in the form of summary comments
+- add tests for your additions
+- add sync and async variants where possible
+- refer to existing code files and the folder structure when adding something
+
+### Add new extension methods
+
+To add new methods follow these steps:
+
+1. Add methods for `Result` and `Result<T>` to `CSharpFunctionalExtensions.HttpResults.ResultExtensions`
+2. Add methods for `Result<T,E>` to `CSharpFunctionalExtensions.HttpResults.Generators.ResultExtensions`
+3. Add methods for `UnitResult<E>` to `CSharpFunctionalExtensions.HttpResults.Generators.UnitResultExtensions`
+4. Add tests for **all** new methods to `CSharpFunctionalExtensions.HttpResults.Tests`
+5. Add methods to [README](README.md)
