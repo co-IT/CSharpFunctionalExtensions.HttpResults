@@ -4,7 +4,7 @@ using Microsoft.CodeAnalysis.CSharp.Syntax;
 namespace CSharpFunctionalExtensions.HttpResults.Generators.Builders;
 
 public class UnitResultExtensionsClassBuilder(
-  List<string> requiredNamespaces,
+  HashSet<string> requiredNamespaces,
   List<ClassDeclarationSyntax> mapperClasses
 ) : ClassBuilder(requiredNamespaces, mapperClasses)
 {

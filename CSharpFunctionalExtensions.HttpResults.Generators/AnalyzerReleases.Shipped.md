@@ -28,3 +28,11 @@
 | Rule ID    | Category | Severity | Notes                       |
 |------------|----------|----------|-----------------------------|
 | CFEMAPI002 | Mapping  | Error    | Duplicate ResultErrorMapper |
+
+## Release v0.5.0
+
+### New Rules
+
+| Rule ID     | Category | Severity | Notes                                 |
+|-------------|----------|----------|---------------------------------------|
+| CFEHTTPR003 | Mapping  | Error    | Empty Map getter in ResultErrorMapper |
