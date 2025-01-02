@@ -59,16 +59,16 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: package
-          path: dist/package/*${{ env.VERSION }}.nupkg
+          path: dist/package/*.${{ env.VERSION }}.nupkg
 
       - name: Attach package to GitHub release
         uses: svenstaro/upload-release-action@v2
         with:
           repo_token: ${{ secrets.GITHUB_TOKEN }}
-          file: dist/package/*${{ env.VERSION }}.nupkg
+          file: dist/package/*.${{ env.VERSION }}.nupkg
           tag: ${{ github.ref }}
           file_glob: true
           overwrite: true
 
       - name: Push to NuGet
-        run: dotnet nuget push "dist/package/*${{ env.VERSION }}.nupkg" --api-key ${{secrets.nuget_api_key}} --source https://api.nuget.org/v3/index.json
+        run: dotnet nuget push "dist/package/*.${{ env.VERSION }}.nupkg" --api-key ${{secrets.nuget_api_key}} --source https://api.nuget.org/v3/index.json
