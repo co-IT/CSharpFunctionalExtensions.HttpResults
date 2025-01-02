@@ -3,18 +3,20 @@ using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 namespace CSharpFunctionalExtensions.HttpResults.Generators.Builders;
 
-public class UnitResultExtensionsClassBuilder(List<string> requiredNamespaces, List<ClassDeclarationSyntax> mapperClasses) : ClassBuilder(requiredNamespaces, mapperClasses)
+public class UnitResultExtensionsClassBuilder(
+  List<string> requiredNamespaces,
+  List<ClassDeclarationSyntax> mapperClasses
+) : ClassBuilder(requiredNamespaces, mapperClasses)
 {
-    protected override string ClassName => "UnitResultExtensions";
-    
-    protected override string ClassSummary => """
-                                              /// <summary>
-                                              /// Extension methods <see cref="UnitResult{E}"/>
-                                              /// </summary>
-                                              """;
-    
-    internal override List<IGenerateMethods> MethodGenerators => [
-        new ToStatusCodeHttpResultE(),
-        new ToNoContentHttpResultE()
-    ];
+  protected override string ClassName => "UnitResultExtensions";
+
+  protected override string ClassSummary =>
+    """
+      /// <summary>
+      /// Extension methods <see cref="UnitResult{E}"/>
+      /// </summary>
+      """;
+
+  internal override List<IGenerateMethods> MethodGenerators =>
+    [new ToStatusCodeHttpResultE(), new ToNoContentHttpResultE()];
 }

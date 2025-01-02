@@ -13,6 +13,9 @@ public static class CheckAgeEndpoint
 
   private static Results<NoContent, ProblemHttpResult> Handle(int age)
   {
-    return Result.Of<int, AgeRestrictionError>(age).Ensure(age => age >= 18, new AgeRestrictionError("Minimal age is 18")).ToNoContentHttpResult();
+    return Result
+      .Of<int, AgeRestrictionError>(age)
+      .Ensure(age => age >= 18, new AgeRestrictionError("Minimal age is 18"))
+      .ToNoContentHttpResult();
   }
 }

@@ -15,6 +15,8 @@ public static class StreamEndpoint
 
   private static Results<FileStreamHttpResult, ProblemHttpResult> Handle()
   {
-    return Result.Of(File.OpenRead("./Features/FileStream/Foo.txt")).ToFileStreamHttpResult(MediaTypeNames.Text.Plain, "Foo.txt");
+    return Result
+      .Of(File.OpenRead("./Features/FileStream/Foo.txt"))
+      .ToFileStreamHttpResult(MediaTypeNames.Text.Plain, "Foo.txt");
   }
 }

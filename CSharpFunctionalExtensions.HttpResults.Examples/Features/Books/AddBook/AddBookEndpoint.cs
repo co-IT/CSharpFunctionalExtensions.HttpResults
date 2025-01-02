@@ -17,8 +17,10 @@ public static class AddBookEndpoint
   private static Results<CreatedAtRoute<Book>, ProblemHttpResult> Handle(
     BookService service,
     [FromBody] AddBookRequest request
-  ) =>
-    Book.Create(request.Title, request.Author, request.Cover)
+  )
+  {
+    return Book.Create(request.Title, request.Author, request.Cover)
       .Bind(book => service.Add(book))
       .ToCreatedAtRouteHttpResult(nameof(FindBookEndpoint), b => new { b.Id });
+  }
 }

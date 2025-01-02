@@ -17,11 +17,13 @@ public static class UpdateBookEndpoint
     BookService service,
     Guid id,
     [FromBody] UpdateBookRequest request
-  ) =>
-    Maybe
+  )
+  {
+    return Maybe
       .From(service.Find(id))
       .ToResult($"Couldn't find book with id {id}.")
       .Check(book => book.Update(request.Title, request.Author, request.Cover))
       .Bind(book => service.Update(book))
       .ToOkHttpResult();
+  }
 }

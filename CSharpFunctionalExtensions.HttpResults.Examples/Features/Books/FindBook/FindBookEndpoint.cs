@@ -12,6 +12,8 @@ public static class FindBookEndpoint
     return endpointRouteBuilder;
   }
 
-  private static Results<Ok<Book>, ProblemHttpResult> Handle(BookService service, Guid id) =>
-    Maybe.From(service.Find(id)).ToResult($"Couldn't find book with id {id}.").ToOkHttpResult();
+  private static Results<Ok<Book>, ProblemHttpResult> Handle(BookService service, Guid id)
+  {
+    return Maybe.From(service.Find(id)).ToResult($"Couldn't find book with id {id}.").ToOkHttpResult();
+  }
 }
