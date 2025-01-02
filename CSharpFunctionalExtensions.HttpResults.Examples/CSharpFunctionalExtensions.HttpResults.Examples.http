@@ -1,6 +1,0 @@
-@CSharpFunctionalExtensions.HttpResults.Examples_HostAddress = http://localhost:5199
-
-GET {{CSharpFunctionalExtensions.HttpResults.Examples_HostAddress}}/weatherforecast/
-Accept: application/json
-
-###
