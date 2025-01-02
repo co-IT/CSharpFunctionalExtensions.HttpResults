@@ -9,9 +9,13 @@
   <ItemGroup>
     <PackageReference Include="Bogus" Version="35.6.1"/>
     <PackageReference Include="CSharpFunctionalExtensions" Version="3.4.3"/>
-    <PackageReference Include="CSharpFunctionalExtensions.HttpResults" Version="0.2.0"/>
     <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="8.0.8"/>
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.4.0"/>
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\CSharpFunctionalExtensions.HttpResults\CSharpFunctionalExtensions.HttpResults.csproj"/>
+    <ProjectReference Include="..\CSharpFunctionalExtensions.HttpResults.Generators\CSharpFunctionalExtensions.HttpResults.Generators.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false"/>
   </ItemGroup>
 
   <ItemGroup>
