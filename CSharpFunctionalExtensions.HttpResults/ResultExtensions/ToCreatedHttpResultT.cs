@@ -21,7 +21,9 @@ public static partial class ResultExtensions
   )
   {
     if (result.IsSuccess)
-      return TypedResults.Created(uri?.Invoke(result.Value), result.Value);
+      return uri is null
+        ? TypedResults.Created(string.Empty, result.Value)
+        : TypedResults.Created(uri.Invoke(result.Value), result.Value);
 
     var problemDetailsInfo = ProblemDetailsMap.Find(failureStatusCode);
     var problemDetails = new ProblemDetails
