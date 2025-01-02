@@ -1,41 +1,50 @@
-name: "build"
+name: "check"
 
 on:
   workflow_dispatch:
+  pull_request:
   push:
     branches:
       - main
 
 jobs:
-  build:
-    name: CI Build
+  check:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Setup .NET SDK
-        uses: actions/setup-dotnet@v3
+        uses: actions/setup-dotnet@v4
 
-      - name: Install dependencies
+      - name: Install .NET tools
+        run: dotnet tool restore
+
+      - name: Install .NET dependencies
         run: dotnet restore
 
       - name: Build
         run: dotnet build -c Release --no-restore
 
+      - name: Pack
+        run: dotnet pack -c Release --version-suffix 0.0.0 --output dist/package
+
       - name: Test
         run: dotnet test -c Release --no-restore --no-build --verbosity normal --logger "trx;LogFileName=test-results.trx" --results-directory dist/tests --collect:"XPlat Code Coverage"
 
-      - name: Upload dotnet test results
-        uses: actions/upload-artifact@v3
+      - name: Upload .NET test results
+        uses: actions/upload-artifact@v4
         with:
           name: dotnet-test-results
           path: dist/tests/test-results.trx
         if: ${{ always() }}
 
-      - name: Upload dotnet test coverage
-        uses: actions/upload-artifact@v3
+      - name: Upload .NET test coverage
+        uses: actions/upload-artifact@v4
         with:
           name: dotnet-test-coverage
           path: dist/tests/**/coverage.cobertura.xml
         if: ${{ always() }}
+
+      - name: Lint
+        run: dotnet csharpier --check .
