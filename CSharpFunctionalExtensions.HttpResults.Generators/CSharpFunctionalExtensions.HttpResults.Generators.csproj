@@ -9,6 +9,7 @@
     <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
     <IsPackable>false</IsPackable>
     <IncludeBuildOutput>false</IncludeBuildOutput>
+    <NoWarn>RS2007</NoWarn>
   </PropertyGroup>
 
   <ItemGroup>
