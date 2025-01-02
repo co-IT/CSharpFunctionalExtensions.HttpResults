@@ -17,6 +17,7 @@
     <PackageTags>CSharpFunctionalExtensions, HTTP, ActionResult, C#, dotnet, nuget, csharp, package, library, api, minimal, MIT, free</PackageTags>
     <Company>co-IT.eu GmbH</Company>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <IncludeBuildOutput>false</IncludeBuildOutput>
   </PropertyGroup>
 
   <ItemGroup>
@@ -33,11 +34,11 @@
   
   <ItemGroup>
     <TfmSpecificPackageFile Include="$(OutputPath)\CSharpFunctionalExtensions.HttpResults.Generators.dll" Pack="true" PackagePath="analyzers/dotnet/cs" Visible="false"/>
+    <TfmSpecificPackageFile Include="$(OutputPath)\CSharpFunctionalExtensions.HttpResults.dll" Pack="true" PackagePath="lib/$(TargetFramework)" Visible="false"/>
   </ItemGroup>
   
   <ItemGroup>
-    <ProjectReference Include="..\CSharpFunctionalExtensions.HttpResults.Generators\CSharpFunctionalExtensions.HttpResults.Generators.csproj" PrivateAssets="All">
-    </ProjectReference>
+    <ProjectReference Include="..\CSharpFunctionalExtensions.HttpResults.Generators\CSharpFunctionalExtensions.HttpResults.Generators.csproj" PrivateAssets="All" />
   </ItemGroup>
   
   <Target DependsOnTargets="ResolveReferences" Name="CopyProjectReferencesToPackage">
