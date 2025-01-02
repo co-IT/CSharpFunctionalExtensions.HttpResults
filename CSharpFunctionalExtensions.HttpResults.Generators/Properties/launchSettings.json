@@ -1,13 +1,13 @@
 ﻿{
-  "$schema" : "https://json.schemastore.org/launchsettings.json",
-  "profiles" : {
-    "DebugSourceGeneratorForLib" : {
-      "commandName" : "DebugRoslynComponent",
-      "targetProject" : "../CSharpFunctionalExtensions.HttpResults/CSharpFunctionalExtensions.HttpResults.csproj"
+  "$schema": "https://json.schemastore.org/launchsettings.json",
+  "profiles": {
+    "DebugSourceGeneratorForLib": {
+      "commandName": "DebugRoslynComponent",
+      "targetProject": "../CSharpFunctionalExtensions.HttpResults/CSharpFunctionalExtensions.HttpResults.csproj"
     },
-    "DebugSourceGeneratorForTests" : {
-      "commandName" : "DebugRoslynComponent",
-      "targetProject" : "../CSharpFunctionalExtensions.HttpResults.Tests/CSharpFunctionalExtensions.HttpResults.Tests.csproj"
+    "DebugSourceGeneratorForTests": {
+      "commandName": "DebugRoslynComponent",
+      "targetProject": "../CSharpFunctionalExtensions.HttpResults.Tests/CSharpFunctionalExtensions.HttpResults.Tests.csproj"
     }
   }
 }

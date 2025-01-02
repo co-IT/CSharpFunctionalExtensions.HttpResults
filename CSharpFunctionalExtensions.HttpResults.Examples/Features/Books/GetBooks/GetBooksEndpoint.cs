@@ -12,6 +12,8 @@ public static class GetBooksEndpoint
     return endpointRouteBuilder;
   }
 
-  private static Results<Ok<List<Book>>, ProblemHttpResult> Handle(BookService service) =>
-    Result.Of(service.Get).ToOkHttpResult();
+  private static Results<Ok<List<Book>>, ProblemHttpResult> Handle(BookService service)
+  {
+    return Result.Of(service.Get).ToOkHttpResult();
+  }
 }

@@ -1,53 +1,53 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-    <PropertyGroup>
-        <TargetFramework>net8.0</TargetFramework>
-        <Nullable>enable</Nullable>
-        <ImplicitUsings>enable</ImplicitUsings>
-        <LangVersion>latest</LangVersion>
-        <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-        <TargetsForTfmSpecificBuildOutput>$(TargetsForTfmSpecificBuildOutput);CopyProjectReferencesToPackage</TargetsForTfmSpecificBuildOutput>
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <LangVersion>latest</LangVersion>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <TargetsForTfmSpecificBuildOutput>$(TargetsForTfmSpecificBuildOutput);CopyProjectReferencesToPackage</TargetsForTfmSpecificBuildOutput>
 
-        <Title>CSharpFunctionalExtensions.HttpResults</Title>
-        <Authors>co-IT,Stimmler</Authors>
-        <Description>Extensions for CSharpFunctionalExtensions to map Results to HttpResults in your MinimalApi</Description>
-        <Copyright>Copyright (c) co-IT.eu GmbH 2024</Copyright>
-        <PackageReadmeFile>README.md</PackageReadmeFile>
-        <PackageProjectUrl>https://github.com/co-IT/CSharpFunctionalExtensions.HttpResults</PackageProjectUrl>
-        <PackageLicenseExpression>MIT</PackageLicenseExpression>
-        <RepositoryUrl>https://github.com/co-IT/CSharpFunctionalExtensions.HttpResults</RepositoryUrl>
-        <PackageTags>CSharpFunctionalExtensions, HTTP, ActionResult, C#, dotnet, nuget, csharp, package, library, api, minimal, MIT, free</PackageTags>
-        <Company>co-IT.eu GmbH</Company>
-        <GenerateDocumentationFile>true</GenerateDocumentationFile>
-        <PackageVersion>0.2.0</PackageVersion>
-    </PropertyGroup>
+    <Title>CSharpFunctionalExtensions.HttpResults</Title>
+    <Authors>co-IT,Stimmler</Authors>
+    <Description>Extensions for CSharpFunctionalExtensions to map Results to HttpResults in your MinimalApi</Description>
+    <Copyright>Copyright (c) co-IT.eu GmbH 2024</Copyright>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+    <PackageProjectUrl>https://github.com/co-IT/CSharpFunctionalExtensions.HttpResults</PackageProjectUrl>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <RepositoryUrl>https://github.com/co-IT/CSharpFunctionalExtensions.HttpResults</RepositoryUrl>
+    <PackageTags>CSharpFunctionalExtensions, HTTP, ActionResult, C#, dotnet, nuget, csharp, package, library, api, minimal, MIT, free</PackageTags>
+    <Company>co-IT.eu GmbH</Company>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <PackageVersion>0.2.0</PackageVersion>
+  </PropertyGroup>
 
+  <ItemGroup>
+    <None Include="..\README.md" Pack="true" PackagePath="\"/>
+  </ItemGroup>
+
+  <ItemGroup>
+    <FrameworkReference Include="Microsoft.AspNetCore.App"/>
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="CSharpFunctionalExtensions" Version="2.42.0"/>
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="$(OutputPath)\CSharpFunctionalExtensions.HttpResults.Generators.dll" Pack="true" PackagePath="analyzers/dotnet/cs" Visible="false"/>
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\CSharpFunctionalExtensions.HttpResults.Generators\CSharpFunctionalExtensions.HttpResults.Generators.csproj" PrivateAssets="All">
+      <ReferenceOutputAssembly>true</ReferenceOutputAssembly>
+      <IncludeAssets>CSharpFunctionalExtensions.HttpResults.Generators.dll</IncludeAssets>
+    </ProjectReference>
+  </ItemGroup>
+
+  <Target DependsOnTargets="ResolveReferences" Name="CopyProjectReferencesToPackage">
     <ItemGroup>
-        <None Include="..\README.md" Pack="true" PackagePath="\"/>
+      <BuildOutputInPackage Include="@(ReferenceCopyLocalPaths->WithMetadataValue('ReferenceSourceTarget', 'ProjectReference'))"/>
     </ItemGroup>
-
-    <ItemGroup>
-        <FrameworkReference Include="Microsoft.AspNetCore.App"/>
-    </ItemGroup>
-
-    <ItemGroup>
-        <PackageReference Include="CSharpFunctionalExtensions" Version="2.42.0"/>
-    </ItemGroup>
-
-    <ItemGroup>
-        <None Include="$(OutputPath)\CSharpFunctionalExtensions.HttpResults.Generators.dll" Pack="true" PackagePath="analyzers/dotnet/cs" Visible="false"/>
-    </ItemGroup>
-
-    <ItemGroup>
-        <ProjectReference Include="..\CSharpFunctionalExtensions.HttpResults.Generators\CSharpFunctionalExtensions.HttpResults.Generators.csproj" PrivateAssets="All">
-            <ReferenceOutputAssembly>true</ReferenceOutputAssembly>
-            <IncludeAssets>CSharpFunctionalExtensions.HttpResults.Generators.dll</IncludeAssets>
-        </ProjectReference>
-    </ItemGroup>
-
-    <Target DependsOnTargets="ResolveReferences" Name="CopyProjectReferencesToPackage">
-        <ItemGroup>
-            <BuildOutputInPackage Include="@(ReferenceCopyLocalPaths->WithMetadataValue('ReferenceSourceTarget', 'ProjectReference'))"/>
-        </ItemGroup>
-    </Target>
+  </Target>
 </Project>

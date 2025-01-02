@@ -12,6 +12,8 @@ public static class DeleteBookEndpoint
     return endpointRouteBuilder;
   }
 
-  private static Results<NoContent, ProblemHttpResult> Handle(BookService service, Guid id) =>
-    service.Delete(id).ToNoContentHttpResult();
+  private static Results<NoContent, ProblemHttpResult> Handle(BookService service, Guid id)
+  {
+    return service.Delete(id).ToNoContentHttpResult();
+  }
 }

@@ -111,7 +111,7 @@ This library uses a Source Generator to generate extension methods for your own 
     });
     ```
 
-Make sure that every custom error type has exactly one corresponding `IResultMapper` implementation. Otherwise, the build might fail with diagnostic error [CFEHTTPR002](./CSharpFunctionalExtensions.HttpResults.Generators/AnalyzerReleases.Shipped.md). 
+Make sure that every custom error type has exactly one corresponding `IResultMapper` implementation. Otherwise, the build might fail with diagnostic error [CFEHTTPR002](./CSharpFunctionalExtensions.HttpResults.Generators/AnalyzerReleases.Shipped.md).
 
 If extension methods for custom errors are missing, rebuild the project to trigger Source Generation.
 
