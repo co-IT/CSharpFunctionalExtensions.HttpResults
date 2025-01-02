@@ -53,7 +53,7 @@ jobs:
           echo "VERSION=$VERSION" >> $GITHUB_ENV
 
       - name: Pack
-        run: dotnet pack -c Release --version-suffix $VERSION --output dist/package
+        run: dotnet pack -c Release -p:Version=$VERSION --output dist/package
 
       - name: Upload package artifact
         uses: actions/upload-artifact@v4

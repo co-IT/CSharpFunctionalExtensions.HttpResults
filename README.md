@@ -86,7 +86,7 @@ This library uses a Source Generator to generate extension methods for your own 
     ```csharp
     public record UserNotFoundError(string UserId);
     ```
-2. Create a mapper that implements `IResultErrorMapper` which maps this custom error type to a type that you want to return in your Web-API (the type doesn't has to be a HttpResult):
+2. Create a mapper that implements `IResultErrorMapper` which maps this custom error type to an HttpResult that you want to return in your Web-API:
     ```csharp
     public class UserNotFoundErrorMapper : IResultErrorMapper<UserNotFoundError, ProblemHttpResult>
     {
