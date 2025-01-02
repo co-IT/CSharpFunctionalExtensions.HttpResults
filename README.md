@@ -130,6 +130,8 @@ You're welcome to contribute. Please keep these few rules in mind:
 - add sync and async variants where possible
 - refer to existing code files and the folder structure when adding something
 
+This project uses [CSharpier](https://csharpier.com) for code formatting. You can format your code with `dotnet csharpier .`.
+
 ### Add new extension methods
 
 To add new methods follow these steps:
