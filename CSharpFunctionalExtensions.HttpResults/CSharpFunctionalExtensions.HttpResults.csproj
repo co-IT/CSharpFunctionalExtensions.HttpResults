@@ -6,7 +6,6 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <LangVersion>latest</LangVersion>
     <TargetsForTfmSpecificBuildOutput>$(TargetsForTfmSpecificBuildOutput);CopyProjectReferencesToPackage</TargetsForTfmSpecificBuildOutput>
-
     <Title>CSharpFunctionalExtensions.HttpResults</Title>
     <Authors>co-IT, Stimmler</Authors>
     <Description>Extensions for CSharpFunctionalExtensions to map Results to HttpResults in your Web-API</Description>
@@ -31,18 +30,16 @@
   <ItemGroup>
     <PackageReference Include="CSharpFunctionalExtensions" Version="2.42.0"/>
   </ItemGroup>
-
+  
   <ItemGroup>
-    <None Include="$(OutputPath)\**\CSharpFunctionalExtensions.HttpResults.Generators.dll" Pack="true" PackagePath="analyzers/dotnet/cs" Visible="false"/>
+    <TfmSpecificPackageFile Include="$(OutputPath)\CSharpFunctionalExtensions.HttpResults.Generators.dll" Pack="true" PackagePath="analyzers/dotnet/cs" Visible="false"/>
   </ItemGroup>
-
+  
   <ItemGroup>
     <ProjectReference Include="..\CSharpFunctionalExtensions.HttpResults.Generators\CSharpFunctionalExtensions.HttpResults.Generators.csproj" PrivateAssets="All">
-      <ReferenceOutputAssembly>true</ReferenceOutputAssembly>
-      <IncludeAssets>CSharpFunctionalExtensions.HttpResults.Generators.dll</IncludeAssets>
     </ProjectReference>
   </ItemGroup>
-
+  
   <Target DependsOnTargets="ResolveReferences" Name="CopyProjectReferencesToPackage">
     <ItemGroup>
       <BuildOutputInPackage Include="@(ReferenceCopyLocalPaths->WithMetadataValue('ReferenceSourceTarget', 'ProjectReference'))"/>
