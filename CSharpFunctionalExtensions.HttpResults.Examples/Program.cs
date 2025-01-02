@@ -26,5 +26,4 @@ app.MapBooksGroup();
 app.MapCheckAge();
 app.MapStream();
 
-
 app.Run();
