@@ -48,27 +48,27 @@ jobs:
 
       - name: Extract version from tag
         run: |
-          # Remove the "v" prefix
-          VERSION=${{ github.ref_name#v }}
+          # Extract the version from the tag (e.g., 'refs/tags/v1.2.3' -> '1.2.3')
+          VERSION=${GITHUB_REF#refs/tags/v}
           echo "VERSION=$VERSION" >> $GITHUB_ENV
 
       - name: Pack
-        run: dotnet pack -c Release -p:Version=$VERSION --output dist/package
+        run: dotnet pack -c Release -p:Version=${{ env.VERSION }} --output dist/package
 
       - name: Upload package artifact
         uses: actions/upload-artifact@v4
         with:
           name: package
-          path: dist/package/*$VERSION.nupkg
+          path: dist/package/*${{ env.VERSION }}.nupkg
 
       - name: Attach package to GitHub release
         uses: svenstaro/upload-release-action@v2
         with:
           repo_token: ${{ secrets.GITHUB_TOKEN }}
-          file: dist/package/*$VERSION.nupkg
+          file: dist/package/*${{ env.VERSION }}.nupkg
           tag: ${{ github.ref }}
           file_glob: true
           overwrite: true
 
       - name: Push to NuGet
-        run: dotnet nuget push "dist/package/*$VERSION.nupkg" --api-key ${{secrets.nuget_api_key}} --source https://api.nuget.org/v3/index.json
+        run: dotnet nuget push "dist/package/*${{ env.VERSION }}.nupkg" --api-key ${{secrets.nuget_api_key}} --source https://api.nuget.org/v3/index.json
