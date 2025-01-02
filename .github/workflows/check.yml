@@ -27,7 +27,7 @@ jobs:
         run: dotnet build -c Release --no-restore
 
       - name: Pack
-        run: dotnet pack -c Release -p:Version=0.0.0 --output dist/package
+        run: dotnet pack ./CSharpFunctionalExtensions.HttpResults/CSharpFunctionalExtensions.HttpResults.csproj -c Release -p:Version=0.0.0 --output dist/package
 
       - name: Test
         run: dotnet test -c Release --no-restore --no-build --verbosity normal --logger "trx;LogFileName=test-results.trx" --results-directory dist/tests --collect:"XPlat Code Coverage"
