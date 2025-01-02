@@ -11,7 +11,7 @@ internal class EmptyMapGetterRule : IRule
   public DiagnosticDescriptor RuleDescriptor { get; } =
     new(
       "CFEHTTPR003",
-      "Empty Map getter",
+      "Empty Map getter in IResultErrorMapper",
       "Class '{0}' must implement the 'Map' property getter",
       "Mapping",
       DiagnosticSeverity.Error,

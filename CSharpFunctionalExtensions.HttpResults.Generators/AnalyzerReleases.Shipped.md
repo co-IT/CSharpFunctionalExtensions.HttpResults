@@ -33,6 +33,6 @@
 
 ### New Rules
 
-| Rule ID     | Category | Severity | Notes                                 |
-|-------------|----------|----------|---------------------------------------|
-| CFEHTTPR003 | Mapping  | Error    | Empty Map getter in ResultErrorMapper |
+| Rule ID     | Category | Severity | Notes                                  |
+|-------------|----------|----------|----------------------------------------|
+| CFEHTTPR003 | Mapping  | Error    | Empty Map getter in IResultErrorMapper |
