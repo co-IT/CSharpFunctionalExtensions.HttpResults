@@ -5,6 +5,8 @@ namespace CSharpFunctionalExtensions.HttpResults.Generators;
 
 internal static class ResultExtensionsGeneratorValidator
 {
+  private const string ErrorResultMapFunc = "Map";
+
   private static readonly DiagnosticDescriptor DuplicateMapperRule = new(
     "CFEHTTPR002",
     "Duplicate ResultErrorMapper",
@@ -15,7 +17,7 @@ internal static class ResultExtensionsGeneratorValidator
     customTags: ["CompilationEnd"]
   );
 
-  public static bool CheckRules(List<ClassDeclarationSyntax> mapperClasses, GeneratorExecutionContext context)
+  public static bool CheckRules(List<ClassDeclarationSyntax> mapperClasses, SourceProductionContext context)
   {
     var diagnostics = CheckForDuplicateMappers(mapperClasses).ToList();
 
@@ -31,16 +33,18 @@ internal static class ResultExtensionsGeneratorValidator
       .Select(mapperClass =>
       {
         var mappingProperty =
-          mapperClass.Members.FirstOrDefault(member => (member as PropertyDeclarationSyntax)?.Identifier.Text == "Map")
-          as PropertyDeclarationSyntax;
+          mapperClass.Members.FirstOrDefault(member =>
+            (member as PropertyDeclarationSyntax)?.Identifier.Text == ErrorResultMapFunc
+          ) as PropertyDeclarationSyntax;
         var mappingTypes = (mappingProperty?.Type as GenericNameSyntax)?.TypeArgumentList.Arguments.ToArray();
 
-        return mappingTypes![0];
+        return mappingTypes?[0];
       })
+      .Where(type => type != null)
       .ToList();
 
     var duplicateMappedResultErrorClassNames = mappedResultErrorTypes
-      .GroupBy(type => type.ToString())
+      .GroupBy(type => type!.ToString())
       .Where(grouping => grouping.Count() > 1)
       .Select(grouping => grouping.Key)
       .ToList();
@@ -52,14 +56,14 @@ internal static class ResultExtensionsGeneratorValidator
         {
           var mappingProperty =
             mapperClass.Members.FirstOrDefault(member =>
-              (member as PropertyDeclarationSyntax)?.Identifier.Text == "Map"
+              (member as PropertyDeclarationSyntax)?.Identifier.Text == ErrorResultMapFunc
             ) as PropertyDeclarationSyntax;
           var mappingTypes = (mappingProperty?.Type as GenericNameSyntax)?.TypeArgumentList.Arguments.ToArray();
 
-          return mappingTypes![0];
+          return mappingTypes?[0];
         })
-        .Last(typeSyntax => typeSyntax.ToString() == duplicateMappedResultErrorClassName)
-        .GetLocation();
+        .Last(typeSyntax => typeSyntax!.ToString() == duplicateMappedResultErrorClassName)
+        ?.GetLocation();
 
       yield return Diagnostic.Create(DuplicateMapperRule, location, duplicateMappedResultErrorClassName);
     }
