@@ -22,4 +22,4 @@ An example for a custom error `AgeRestrictionError` that is used when the age va
 
 ## Run
 
-You can run this project and access the OpenApi documentation under `/swagger`.
+You can run this project and access the OpenApi documentation under `/scalar/v1`.
