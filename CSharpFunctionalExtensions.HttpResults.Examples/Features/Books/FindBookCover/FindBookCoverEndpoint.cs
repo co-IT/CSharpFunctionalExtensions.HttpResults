@@ -1,7 +1,7 @@
 ﻿using CSharpFunctionalExtensions.HttpResults.ResultExtensions;
 using Microsoft.AspNetCore.Http.HttpResults;
 
-namespace CSharpFunctionalExtensions.HttpResults.Examples.Features.Books;
+namespace CSharpFunctionalExtensions.HttpResults.Examples.Features.Books.FindBookCover;
 
 public static class FindBookCoverEndpoint
 {
@@ -14,6 +14,11 @@ public static class FindBookCoverEndpoint
 
   private static Results<FileContentHttpResult, ProblemHttpResult> Handle(BookService service, Guid id)
   {
-    return Maybe.From(service.Find(id)).ToResult($"Couldn't find book with id {id}.").Map(book => book.Cover).EnsureNotNull("No cover available.").ToFileHttpResult();
+    return Maybe
+      .From(service.Find(id))
+      .ToResult($"Couldn't find book with id {id}.")
+      .Map(book => book.Cover)
+      .EnsureNotNull("No cover available.")
+      .ToFileHttpResult();
   }
 }
