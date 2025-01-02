@@ -5,13 +5,12 @@
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
     <LangVersion>latest</LangVersion>
-    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <TargetsForTfmSpecificBuildOutput>$(TargetsForTfmSpecificBuildOutput);CopyProjectReferencesToPackage</TargetsForTfmSpecificBuildOutput>
 
     <Title>CSharpFunctionalExtensions.HttpResults</Title>
-    <Authors>co-IT,Stimmler</Authors>
-    <Description>Extensions for CSharpFunctionalExtensions to map Results to HttpResults in your MinimalApi</Description>
-    <Copyright>Copyright (c) co-IT.eu GmbH 2024</Copyright>
+    <Authors>co-IT, Stimmler</Authors>
+    <Description>Extensions for CSharpFunctionalExtensions to map Results to HttpResults in your Web-API</Description>
+    <Copyright>Copyright (c) co-IT.eu GmbH 2025</Copyright>
     <PackageReadmeFile>README.md</PackageReadmeFile>
     <PackageProjectUrl>https://github.com/co-IT/CSharpFunctionalExtensions.HttpResults</PackageProjectUrl>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
@@ -19,7 +18,6 @@
     <PackageTags>CSharpFunctionalExtensions, HTTP, ActionResult, C#, dotnet, nuget, csharp, package, library, api, minimal, MIT, free</PackageTags>
     <Company>co-IT.eu GmbH</Company>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
-    <PackageVersion>0.2.0</PackageVersion>
   </PropertyGroup>
 
   <ItemGroup>
