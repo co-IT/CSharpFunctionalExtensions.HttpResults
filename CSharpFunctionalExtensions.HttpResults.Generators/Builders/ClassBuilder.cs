@@ -6,9 +6,9 @@ namespace CSharpFunctionalExtensions.HttpResults.Generators.Builders;
 public abstract class ClassBuilder
 {
   private readonly List<ClassDeclarationSyntax> _mapperClasses;
-  private readonly List<string> _requiredNamespaces;
+  private readonly HashSet<string> _requiredNamespaces;
 
-  protected ClassBuilder(List<string> requiredNamespaces, List<ClassDeclarationSyntax> mapperClasses)
+  protected ClassBuilder(HashSet<string> requiredNamespaces, List<ClassDeclarationSyntax> mapperClasses)
   {
     _requiredNamespaces = requiredNamespaces;
     _mapperClasses = mapperClasses;
