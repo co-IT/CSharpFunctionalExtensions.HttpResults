@@ -6,7 +6,7 @@
 [![GitHub license](https://img.shields.io/github/license/co-IT/CSharpFunctionalExtensions.HttpResults)](https://github.com/co-IT/CSharpFunctionalExtensions.HttpResults/blob/main/LICENSE.md)
 
 Extensions for [CSharpFunctionalExtensions](https://github.com/vkhorikov/CSharpFunctionalExtensions) to map Results to
-HttpResults in your WebApi
+HttpResults in your Web-API
 
 ## Overview
 
@@ -30,7 +30,7 @@ PM> Install-Package CSharpFunctionalExtensions.HttpResults
 
 ## Usage
 
-This library provides you extension methods to map the following types to `HttpResults`:
+This library provides you extension methods to map the following `Result` types to `HttpResults`:
 
 - `Result`
 - `Result<T>`
@@ -66,7 +66,7 @@ These methods are available:
 | `.ToFileStreamHttpResult<Stream>()`   | Returns `FileStreamHttpResult` or `ProblemHttpResult`                        |
 | `.ToFileStreamHttpResult<Stream,E>()` | Returns `FileStreamHttpResult` or custom error                               |
 
-For almost every method you can override the default status codes for Success/Failure.
+For almost every method you can override the default status codes for Success/Failure case.
 
 All methods are available in sync and async variants.
 
@@ -84,12 +84,9 @@ This library uses a Source Generator to generate extension methods for your own 
 
 1. First create a custom error type
     ```csharp
-    public class UserNotFoundError
-    {
-        public required string UserId { get; init; }
-    }
+    public record UserNotFoundError(string UserId);
     ```
-2. Create a mapper that implements `IResultErrorMapper` which maps this custom error type to an `IResult` that you want to return in your WebAPI:
+2. Create a mapper that implements `IResultErrorMapper` which maps this custom error type to a type that you want to return in your Web-API (the type doesn't has to be a HttpResult):
     ```csharp
     public class UserNotFoundErrorMapper : IResultErrorMapper<UserNotFoundError, ProblemHttpResult>
     {
@@ -106,11 +103,11 @@ This library uses a Source Generator to generate extension methods for your own 
         };
     }
     ```
-3. Use the generated extension method:
+3. Use the auto generated extension method:
     ```csharp
     app.MapGet("/users/{id}", (string id) => {
-        return userRepository.Find(id) //Result<User,UserNotFoundError>
-            .ToOkHttpResult(); //returns 200 with User as payload or 404 with ProblemDetails object defined above
+        return userRepository.Find(id)  //Result<User,UserNotFoundError>
+            .ToOkHttpResult();          //Results<Ok<User>,ProblemHttpResult>
     });
     ```
 
@@ -122,7 +119,7 @@ Optionally, there is a helper method `ProblemDetailsMap.Find()` to find a suitab
 
 ## Examples
 
-Examples are available in the [`CSharpFunctionalExtensions.HttpResults.Examples`](CSharpFunctionalExtensions.HttpResults.Examples) project.
+Examples for CRUD, FileStreams, custom errors, etc. in context of a Web-API are available in the [`CSharpFunctionalExtensions.HttpResults.Examples`](CSharpFunctionalExtensions.HttpResults.Examples) project.
 
 ## Development
 
