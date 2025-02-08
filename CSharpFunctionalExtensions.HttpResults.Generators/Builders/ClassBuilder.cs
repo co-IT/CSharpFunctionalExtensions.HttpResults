@@ -22,6 +22,7 @@ public abstract class ClassBuilder
       using Microsoft.AspNetCore.Http;
       using Microsoft.AspNetCore.Mvc;
       using Microsoft.Net.Http.Headers;
+      using System.Text;
       """;
 
   public string SourceFileName => $"{ClassName}.g.cs";

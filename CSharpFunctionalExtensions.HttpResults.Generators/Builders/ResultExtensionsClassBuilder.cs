@@ -29,5 +29,6 @@ public class ResultExtensionsClassBuilder(
       new ToNoContentHttpResultTE(),
       new ToStatusCodeHttpResultTE(),
       new ToOkHttpResultTE(),
+      new ToContentHttpResultStringE(),
     ];
 }

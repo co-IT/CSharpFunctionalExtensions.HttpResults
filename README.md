@@ -65,6 +65,8 @@ These methods are available:
 | `.ToFileHttpResult<byte[],E>()`       | Returns `FileContentHttpResult` or custom error                              |
 | `.ToFileStreamHttpResult<Stream>()`   | Returns `FileStreamHttpResult` or `ProblemHttpResult`                        |
 | `.ToFileStreamHttpResult<Stream,E>()` | Returns `FileStreamHttpResult` or custom error                               |
+| `.ToContentHttpResult<string>()`      | Returns `ContentHttpResult` or `ProblemHttpResult`                           |
+| `.ToContentHttpResult<string,E>()`    | Returns `ContentHttpResult` or custom error                                  |
 
 For almost every method you can override the default status codes for Success/Failure case.
 
