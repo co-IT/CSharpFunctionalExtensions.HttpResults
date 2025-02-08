@@ -22,6 +22,7 @@
 
   <ItemGroup>
     <None Include="..\README.md" Pack="true" PackagePath="\"/>
+    <None Include="..\LICENSE.md" Pack="true" PackagePath="\"/>
   </ItemGroup>
 
   <ItemGroup>
@@ -31,16 +32,16 @@
   <ItemGroup>
     <PackageReference Include="CSharpFunctionalExtensions" Version="3.4.3" />
   </ItemGroup>
-  
+
   <ItemGroup>
     <TfmSpecificPackageFile Include="$(OutputPath)\CSharpFunctionalExtensions.HttpResults.Generators.dll" Pack="true" PackagePath="analyzers/dotnet/cs" Visible="false"/>
     <TfmSpecificPackageFile Include="$(OutputPath)\CSharpFunctionalExtensions.HttpResults.dll" Pack="true" PackagePath="lib/$(TargetFramework)" Visible="false"/>
   </ItemGroup>
-  
+
   <ItemGroup>
     <ProjectReference Include="..\CSharpFunctionalExtensions.HttpResults.Generators\CSharpFunctionalExtensions.HttpResults.Generators.csproj" PrivateAssets="All" />
   </ItemGroup>
-  
+
   <Target DependsOnTargets="ResolveReferences" Name="CopyProjectReferencesToPackage">
     <ItemGroup>
       <BuildOutputInPackage Include="@(ReferenceCopyLocalPaths->WithMetadataValue('ReferenceSourceTarget', 'ProjectReference'))"/>
