@@ -139,7 +139,7 @@ This project uses [CSharpier](https://csharpier.com) for code formatting. You ca
 To add new methods follow these steps:
 
 1. Add methods for `Result` and `Result<T>` to `CSharpFunctionalExtensions.HttpResults.ResultExtensions`
-2. Add methods for `Result<T,E>` to `CSharpFunctionalExtensions.HttpResults.Generators.ResultExtensions`
-3. Add methods for `UnitResult<E>` to `CSharpFunctionalExtensions.HttpResults.Generators.UnitResultExtensions`
+2. Add methods for `Result<T,E>` to `CSharpFunctionalExtensions.HttpResults.Generators.ResultExtensions` and add the class to `ResultExtensionsClassBuilder`
+3. Add methods for `UnitResult<E>` to `CSharpFunctionalExtensions.HttpResults.Generators.UnitResultExtensions` and add the class to `UnitResultExtensionsClassBuilder`
 4. Add tests for **all** new methods to `CSharpFunctionalExtensions.HttpResults.Tests`
 5. Add methods to [README](README.md)
