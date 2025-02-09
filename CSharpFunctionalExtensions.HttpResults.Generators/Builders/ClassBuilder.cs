@@ -73,7 +73,10 @@ public abstract class ClassBuilder
       var httpResultType = mappingTypes[1];
 
       foreach (var methodGenerator in MethodGenerators)
+      {
         sourceBuilder.AppendLine(methodGenerator.Generate(mapperClassName, resultErrorType, httpResultType));
+        sourceBuilder.AppendLine();
+      }
     }
 
     sourceBuilder.AppendLine();
