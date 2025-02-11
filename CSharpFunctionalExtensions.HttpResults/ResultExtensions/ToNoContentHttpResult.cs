@@ -21,7 +21,7 @@ public static partial class ResultExtensions
     if (result.IsSuccess)
       return TypedResults.NoContent();
 
-    var problemDetailsInfo = ProblemDetailsMap.Find(failureStatusCode);
+    var problemDetailsInfo = ProblemDetailsMappingProvider.FindMapping(failureStatusCode);
     var problemDetails = new ProblemDetails
     {
       Status = failureStatusCode,

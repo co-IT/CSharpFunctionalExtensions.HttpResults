@@ -35,7 +35,7 @@ public static partial class ResultExtensions
         enableRangeProcessing
       );
 
-    var problemDetailsInfo = ProblemDetailsMap.Find(failureStatusCode);
+    var problemDetailsInfo = ProblemDetailsMappingProvider.FindMapping(failureStatusCode);
     var problemDetails = new ProblemDetails
     {
       Status = failureStatusCode,

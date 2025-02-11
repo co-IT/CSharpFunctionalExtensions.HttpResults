@@ -23,7 +23,7 @@ public static partial class ResultExtensions
     if (result.IsSuccess)
       return TypedResults.Accepted(uri(result.Value), result.Value);
 
-    var problemDetailsInfo = ProblemDetailsMap.Find(failureStatusCode);
+    var problemDetailsInfo = ProblemDetailsMappingProvider.FindMapping(failureStatusCode);
     var problemDetails = new ProblemDetails
     {
       Status = failureStatusCode,

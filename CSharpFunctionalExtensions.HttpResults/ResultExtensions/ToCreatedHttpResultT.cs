@@ -25,7 +25,7 @@ public static partial class ResultExtensions
         ? TypedResults.Created(string.Empty, result.Value)
         : TypedResults.Created(uri.Invoke(result.Value), result.Value);
 
-    var problemDetailsInfo = ProblemDetailsMap.Find(failureStatusCode);
+    var problemDetailsInfo = ProblemDetailsMappingProvider.FindMapping(failureStatusCode);
     var problemDetails = new ProblemDetails
     {
       Status = failureStatusCode,
