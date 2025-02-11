@@ -17,7 +17,8 @@ public static partial class ResultExtensions
   public static Results<StatusCodeHttpResult, ProblemHttpResult> ToStatusCodeHttpResult<T>(
     this Result<T> result,
     int successStatusCode = 204,
-    int failureStatusCode = 400
+    int failureStatusCode = 400,
+    Action<ProblemDetails>? customizeProblemDetails = null
   )
   {
     if (result.IsSuccess)
@@ -32,6 +33,8 @@ public static partial class ResultExtensions
       Detail = result.Error,
     };
 
+    customizeProblemDetails?.Invoke(problemDetails);
+
     return TypedResults.Problem(problemDetails);
   }
 
@@ -43,9 +46,10 @@ public static partial class ResultExtensions
   public static async Task<Results<StatusCodeHttpResult, ProblemHttpResult>> ToStatusCodeHttpResult<T>(
     this Task<Result<T>> result,
     int successStatusCode = 204,
-    int failureStatusCode = 400
+    int failureStatusCode = 400,
+    Action<ProblemDetails>? customizeProblemDetails = null
   )
   {
-    return (await result).ToStatusCodeHttpResult(successStatusCode, failureStatusCode);
+    return (await result).ToStatusCodeHttpResult(successStatusCode, failureStatusCode, customizeProblemDetails);
   }
 }

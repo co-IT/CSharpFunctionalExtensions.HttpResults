@@ -112,4 +112,34 @@ public class ToFileHttpResultByteArray
     result!.ProblemDetails.Status.Should().Be(statusCode);
     result!.ProblemDetails.Detail.Should().Be(error);
   }
+
+  [Fact]
+  public void ResultByteArray_Failure_ProblemDetails_can_be_customized()
+  {
+    var error = "Error";
+    var customTitle = "Custom Title";
+
+    var result =
+      Result
+        .Failure<byte[]>(error)
+        .ToFileHttpResult(customizeProblemDetails: problemDetails => problemDetails.Title = customTitle)
+        .Result as ProblemHttpResult;
+
+    result!.ProblemDetails.Title.Should().Be(customTitle);
+  }
+
+  [Fact]
+  public async Task ResultByteArray_Failure_ProblemDetails_can_be_customized_Async()
+  {
+    var error = "Error";
+    var customTitle = "Custom Title";
+
+    var result =
+      (
+        await Task.FromResult(Result.Failure<byte[]>(error))
+          .ToFileHttpResult(customizeProblemDetails: problemDetails => problemDetails.Title = customTitle)
+      ).Result as ProblemHttpResult;
+
+    result!.ProblemDetails.Title.Should().Be(customTitle);
+  }
 }

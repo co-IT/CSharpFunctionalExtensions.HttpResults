@@ -1,4 +1,6 @@
-﻿using FluentAssertions;
+﻿using CSharpFunctionalExtensions.HttpResults.ResultExtensions;
+using FluentAssertions;
+using Microsoft.AspNetCore.Http.HttpResults;
 
 namespace CSharpFunctionalExtensions.HttpResults.Tests;
 
@@ -51,7 +53,7 @@ public class ProblemDetailsMappingProviderTests
   [Fact]
   public void Can_add_custom_mapping()
   {
-    var statusCode = 777;
+    var statusCode = 700;
     var title = "Foo";
     var type = "Bar";
 
@@ -77,5 +79,26 @@ public class ProblemDetailsMappingProviderTests
     mapping = ProblemDetailsMappingProvider.FindMapping(statusCode);
     mapping.Title.Should().Be(title);
     mapping.Type.Should().Be(type);
+  }
+
+  [Fact]
+  public void Affects_ProblemDetails_mapping()
+  {
+    var failureStatusCode = 701;
+    var error = "error";
+    var title = "Foo";
+    var type = "Bar";
+
+    var result =
+      Result.Failure(error).ToStatusCodeHttpResult(failureStatusCode: failureStatusCode).Result as ProblemHttpResult;
+    result!.ProblemDetails.Title.Should().BeNull();
+    result!.ProblemDetails.Type.Should().BeNull();
+
+    ProblemDetailsMappingProvider.AddOrUpdateMapping(failureStatusCode, title, type);
+
+    result =
+      Result.Failure(error).ToStatusCodeHttpResult(failureStatusCode: failureStatusCode).Result as ProblemHttpResult;
+    result!.ProblemDetails.Title.Should().Be(title);
+    result!.ProblemDetails.Type.Should().Be(type);
   }
 }

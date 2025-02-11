@@ -16,7 +16,8 @@ public static partial class ResultExtensions
   public static Results<JsonHttpResult<T>, ProblemHttpResult> ToJsonHttpResult<T>(
     this Result<T> result,
     int successStatusCode = 200,
-    int failureStatusCode = 400
+    int failureStatusCode = 400,
+    Action<ProblemDetails>? customizeProblemDetails = null
   )
   {
     if (result.IsSuccess)
@@ -31,6 +32,8 @@ public static partial class ResultExtensions
       Detail = result.Error,
     };
 
+    customizeProblemDetails?.Invoke(problemDetails);
+
     return TypedResults.Problem(problemDetails);
   }
 
@@ -41,9 +44,10 @@ public static partial class ResultExtensions
   public static async Task<Results<JsonHttpResult<T>, ProblemHttpResult>> ToJsonHttpResult<T>(
     this Task<Result<T>> result,
     int successStatusCode = 200,
-    int failureStatusCode = 400
+    int failureStatusCode = 400,
+    Action<ProblemDetails>? customizeProblemDetails = null
   )
   {
-    return (await result).ToJsonHttpResult(successStatusCode, failureStatusCode);
+    return (await result).ToJsonHttpResult(successStatusCode, failureStatusCode, customizeProblemDetails);
   }
 }

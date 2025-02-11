@@ -21,7 +21,8 @@ public static partial class ResultExtensions
     DateTimeOffset? lastModified = null,
     EntityTagHeaderValue? entityTag = null,
     bool enableRangeProcessing = false,
-    int failureStatusCode = 400
+    int failureStatusCode = 400,
+    Action<ProblemDetails>? customizeProblemDetails = null
   )
   {
     if (result.IsSuccess)
@@ -43,6 +44,8 @@ public static partial class ResultExtensions
       Detail = result.Error,
     };
 
+    customizeProblemDetails?.Invoke(problemDetails);
+
     return TypedResults.Problem(problemDetails);
   }
 
@@ -57,7 +60,8 @@ public static partial class ResultExtensions
     DateTimeOffset? lastModified = null,
     EntityTagHeaderValue? entityTag = null,
     bool enableRangeProcessing = false,
-    int failureStatusCode = 400
+    int failureStatusCode = 400,
+    Action<ProblemDetails>? customizeProblemDetails = null
   )
   {
     return (await result).ToFileHttpResult(
@@ -66,7 +70,8 @@ public static partial class ResultExtensions
       lastModified,
       entityTag,
       enableRangeProcessing,
-      failureStatusCode
+      failureStatusCode,
+      customizeProblemDetails
     );
   }
 }
