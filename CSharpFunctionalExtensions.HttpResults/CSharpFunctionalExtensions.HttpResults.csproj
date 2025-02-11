@@ -30,7 +30,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="CSharpFunctionalExtensions" Version="3.4.3" />
+    <PackageReference Include="CSharpFunctionalExtensions" Version="[2.29.0,4.0.0)" />
   </ItemGroup>
 
   <ItemGroup>
