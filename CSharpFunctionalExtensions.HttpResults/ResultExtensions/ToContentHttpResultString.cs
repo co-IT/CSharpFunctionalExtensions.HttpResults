@@ -19,7 +19,8 @@ public static partial class ResultExtensions
     string? contentType = null,
     Encoding? contentEncoding = null,
     int? statusCode = null,
-    int failureStatusCode = 400
+    int failureStatusCode = 400,
+    Action<ProblemDetails>? customizeProblemDetails = null
   )
   {
     if (result.IsSuccess)
@@ -34,6 +35,8 @@ public static partial class ResultExtensions
       Detail = result.Error,
     };
 
+    customizeProblemDetails?.Invoke(problemDetails);
+
     return TypedResults.Problem(problemDetails);
   }
 
@@ -46,9 +49,16 @@ public static partial class ResultExtensions
     string? contentType = null,
     Encoding? contentEncoding = null,
     int? statusCode = null,
-    int failureStatusCode = 400
+    int failureStatusCode = 400,
+    Action<ProblemDetails>? customizeProblemDetails = null
   )
   {
-    return (await result).ToContentHttpResult(contentType, contentEncoding, statusCode, failureStatusCode);
+    return (await result).ToContentHttpResult(
+      contentType,
+      contentEncoding,
+      statusCode,
+      failureStatusCode,
+      customizeProblemDetails
+    );
   }
 }

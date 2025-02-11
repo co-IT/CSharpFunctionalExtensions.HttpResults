@@ -18,7 +18,8 @@ public static partial class ResultExtensions
     this Result<T> result,
     string? routeName = null,
     Func<T, object>? routeValues = null,
-    int failureStatusCode = 400
+    int failureStatusCode = 400,
+    Action<ProblemDetails>? customizeProblemDetails = null
   )
   {
     if (result.IsSuccess)
@@ -33,6 +34,8 @@ public static partial class ResultExtensions
       Detail = result.Error,
     };
 
+    customizeProblemDetails?.Invoke(problemDetails);
+
     return TypedResults.Problem(problemDetails);
   }
 
@@ -45,9 +48,15 @@ public static partial class ResultExtensions
     this Task<Result<T>> result,
     string? routeName = null,
     Func<T, object>? routeValues = null,
-    int failureStatusCode = 400
+    int failureStatusCode = 400,
+    Action<ProblemDetails>? customizeProblemDetails = null
   )
   {
-    return (await result).ToCreatedAtRouteHttpResult(routeName, routeValues, failureStatusCode);
+    return (await result).ToCreatedAtRouteHttpResult(
+      routeName,
+      routeValues,
+      failureStatusCode,
+      customizeProblemDetails
+    );
   }
 }

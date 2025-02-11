@@ -123,4 +123,34 @@ public class ToFileStreamHttpResultStream
     result!.ProblemDetails.Status.Should().Be(statusCode);
     result!.ProblemDetails.Detail.Should().Be(error);
   }
+
+  [Fact]
+  public void ResultStream_Failure_ProblemDetails_can_be_customized()
+  {
+    var error = "Error";
+    var customTitle = "Custom Title";
+
+    var result =
+      Result
+        .Failure<Stream>(error)
+        .ToFileStreamHttpResult(customizeProblemDetails: problemDetails => problemDetails.Title = customTitle)
+        .Result as ProblemHttpResult;
+
+    result!.ProblemDetails.Title.Should().Be(customTitle);
+  }
+
+  [Fact]
+  public async Task ResultStream_Failure_ProblemDetails_can_be_customized_Async()
+  {
+    var error = "Error";
+    var customTitle = "Custom Title";
+
+    var result =
+      (
+        await Task.FromResult(Result.Failure<Stream>(error))
+          .ToFileStreamHttpResult(customizeProblemDetails: problemDetails => problemDetails.Title = customTitle)
+      ).Result as ProblemHttpResult;
+
+    result!.ProblemDetails.Title.Should().Be(customTitle);
+  }
 }
