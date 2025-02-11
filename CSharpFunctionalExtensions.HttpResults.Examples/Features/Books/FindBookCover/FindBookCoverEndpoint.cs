@@ -1,5 +1,8 @@
-﻿using CSharpFunctionalExtensions.HttpResults.ResultExtensions;
+﻿using System.Net;
+using System.Net.Mime;
+using CSharpFunctionalExtensions.HttpResults.ResultExtensions;
 using Microsoft.AspNetCore.Http.HttpResults;
+using Microsoft.AspNetCore.Mvc;
 
 namespace CSharpFunctionalExtensions.HttpResults.Examples.Features.Books.FindBookCover;
 
@@ -12,13 +15,16 @@ public static class FindBookCoverEndpoint
     return endpointRouteBuilder;
   }
 
-  private static Results<FileContentHttpResult, ProblemHttpResult> Handle(BookService service, Guid id)
+  private static Results<FileContentHttpResult, ProblemHttpResult> Handle(
+    [FromRoute] Guid id,
+    [FromServices] BookService service
+  )
   {
     return Maybe
       .From(service.Find(id))
       .ToResult($"Couldn't find book with id {id}.")
       .Map(book => book.Cover)
       .EnsureNotNull("No cover available.")
-      .ToFileHttpResult();
+      .ToFileHttpResult(MediaTypeNames.Image.Svg, failureStatusCode: (int)HttpStatusCode.NotFound);
   }
 }

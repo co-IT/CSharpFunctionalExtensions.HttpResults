@@ -33,14 +33,21 @@ ProblemDetailsMappingProvider.DefaultMappings = new Dictionary<int, (string? Tit
   { 504, ("Gateway-Zeitüberschreitung", "https://tools.ietf.org/html/rfc9110#section-15.6.5") },
 };
 
+builder.Services.AddSingleton<BookService>();
+
 builder.Services.AddOpenApi();
+builder.Services.AddProblemDetails();
 
 var app = builder.Build();
+
+app.UseExceptionHandler();
+app.UseStatusCodePages();
 
 if (app.Environment.IsDevelopment())
 {
   app.MapOpenApi();
   app.MapScalarApiReference();
+  app.UseDeveloperExceptionPage();
 }
 
 app.UseHttpsRedirection();

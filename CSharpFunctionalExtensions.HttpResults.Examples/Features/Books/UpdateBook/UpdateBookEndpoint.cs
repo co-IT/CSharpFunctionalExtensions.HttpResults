@@ -14,8 +14,8 @@ public static class UpdateBookEndpoint
   }
 
   private static Results<Ok<Book>, ProblemHttpResult> Handle(
-    BookService service,
-    Guid id,
+    [FromRoute] Guid id,
+    [FromServices] BookService service,
     [FromBody] UpdateBookRequest request
   )
   {

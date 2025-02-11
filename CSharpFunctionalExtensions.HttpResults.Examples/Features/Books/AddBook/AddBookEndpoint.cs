@@ -15,8 +15,8 @@ public static class AddBookEndpoint
   }
 
   private static Results<CreatedAtRoute<Book>, ProblemHttpResult> Handle(
-    BookService service,
-    [FromBody] AddBookRequest request
+    [FromBody] AddBookRequest request,
+    [FromServices] BookService service
   )
   {
     return Book.Create(request.Title, request.Author, request.Cover)
