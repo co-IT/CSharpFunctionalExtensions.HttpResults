@@ -68,23 +68,65 @@ These methods are available:
 | `.ToContentHttpResult<string>()`      | Returns `ContentHttpResult` or `ProblemHttpResult`                           |
 | `.ToContentHttpResult<string,E>()`    | Returns `ContentHttpResult` or custom error                                  |
 
-For almost every method you can override the default status codes for Success/Failure case.
-
 All methods are available in sync and async variants.
 
-By default, failures get mapped to a `ProblemHttpResult` based on [RFC9457](https://www.rfc-editor.org/rfc/rfc9457).
-The status property contains the status code.
-The type property contains a URI to the corresponding [RFC9110](https://tools.ietf.org/html/rfc9110) entry based on the status code.
-The title property contains a generic short messages based on the status code.
-The detail property contains the error property of the `Result`.
+### Default mapping
 
-If you want your own mapping logic read on.
+By default, `Result` and `Result<T>` failures get mapped to a `ProblemHttpResult` based on [RFC9457](https://www.rfc-editor.org/rfc/rfc9457).
 
-### Custom errors
+- The `status` property contains the status code of the HTTP response. Note: For almost every method you can override the default status codes for Success/Failure case.
+- The `type` property contains a URI to the corresponding [RFC9110](https://tools.ietf.org/html/rfc9110) entry based on the status code.
+- The `title` property contains a generic short messages based on the status code.
+- The `detail` property contains the error string of the `Result`.
 
-This library uses a Source Generator to generate extension methods for your own custom error types when using `Result<T,E>` or `UnitResult<E>`.
+This default mapping behaviour is configured inside the [`ProblemDetailsMappingProvider`](https://github.com/co-IT/CSharpFunctionalExtensions.HttpResults/blob/main/CSharpFunctionalExtensions.HttpResults/ProblemDetailsMappingProvider.cs).
 
-1. First create a custom error type
+#### Override default mapping
+
+You can override this behaviour by providing your own dictionary which maps status code to title and type of the resulting `ProblemDetails` object.
+
+<details>
+<summary>Example for changing the default mapping for german localization</summary>
+
+```csharp
+ProblemDetailsMappingProvider.DefaultMappings = new Dictionary<int, (string? Title, string? Type)>
+{
+  { 400, ("Ungültige Anfrage", "https://tools.ietf.org/html/rfc9110#section-15.5.1") },
+  { 401, ("Nicht autorisiert", "https://tools.ietf.org/html/rfc9110#section-15.5.2") },
+  { 403, ("Verboten", "https://tools.ietf.org/html/rfc9110#section-15.5.4") },
+  { 404, ("Nicht gefunden", "https://tools.ietf.org/html/rfc9110#section-15.5.5") },
+  { 405, ("Methode nicht erlaubt", "https://tools.ietf.org/html/rfc9110#section-15.5.6") },
+  { 406, ("Nicht akzeptabel", "https://tools.ietf.org/html/rfc9110#section-15.5.7") },
+  { 408, ("Zeitüberschreitung der Anfrage", "https://tools.ietf.org/html/rfc9110#section-15.5.9") },
+  { 409, ("Konflikt", "https://tools.ietf.org/html/rfc9110#section-15.5.10") },
+  { 412, ("Vorbedingung fehlgeschlagen", "https://tools.ietf.org/html/rfc9110#section-15.5.13") },
+  { 415, ("Nicht unterstützter Medientyp", "https://tools.ietf.org/html/rfc9110#section-15.5.16") },
+  { 422, ("Nicht verarbeitbare Entität", "https://tools.ietf.org/html/rfc4918#section-11.2") },
+  { 426, ("Upgrade erforderlich", "https://tools.ietf.org/html/rfc9110#section-15.5.22") },
+  { 500, ("Ein Fehler ist bei der Verarbeitung Ihrer Anfrage aufgetreten.", "https://tools.ietf.org/html/rfc9110#section-15.6.1") },
+  { 502, ("Schlechtes Gateway", "https://tools.ietf.org/html/rfc9110#section-15.6.3") },
+  { 503, ("Dienst nicht verfügbar", "https://tools.ietf.org/html/rfc9110#section-15.6.4") },
+  { 504, ("Gateway-Zeitüberschreitung", "https://tools.ietf.org/html/rfc9110#section-15.6.5") },
+};
+```
+
+> Example from [here](https://github.com/co-IT/CSharpFunctionalExtensions.HttpResults/blob/main/CSharpFunctionalExtensions.HttpResults.Examples/Program.cs#L9-L34)
+
+</details>
+
+You don't have to provide the whole dictionary but can also override or add only mappings for specific status codes like this:
+
+```csharp
+ProblemDetailsMappingProvider.AddOrUpdateMapping(420, "Enhance Your Calm", "https://http-status-code.de/420/");
+```
+
+It's recommended to override the mappings during startup e.g. in `Program.cs`.
+
+### Custom error mapping
+
+When using `Result<T,E>` or `UnitResult<E>`, this library uses a Source Generator to generate extension methods for your own custom error types.
+
+1. Create a custom error type
     ```csharp
     public record UserNotFoundError(string UserId);
     ```
@@ -113,11 +155,21 @@ This library uses a Source Generator to generate extension methods for your own 
     });
     ```
 
-Make sure that every custom error type has exactly one corresponding `IResultMapper` implementation. Otherwise, the build might fail with diagnostic error [CFEHTTPR002](./CSharpFunctionalExtensions.HttpResults.Generators/AnalyzerReleases.Shipped.md).
+> [!IMPORTANT]  
+> Make sure that every custom error type has exactly one corresponding `IResultMapper` implementation.
 
-If extension methods for custom errors are missing, rebuild the project to trigger Source Generation.
+You can use the `ProblemDetailsMappingProvider.FindMapping()` method to find a suitable title and type for a status code based on [RFC9110](https://tools.ietf.org/html/rfc9110).
 
-Optionally, there is a helper method `ProblemDetailsMap.Find()` to find a suitable title and type for a status code based on [RFC9110](https://tools.ietf.org/html/rfc9110).
+> [!TIP]
+> If extension methods for custom errors are missing, rebuild the project to trigger Source Generation.
+
+## Analyzers
+
+This library includes analyzers to help you use it correctly.
+
+For example, they can notify you if you have multiple mappers for the same custom error type or if you forgot to implement the `Map` function in your custom error mapper.
+
+You can find a complete list of all analyzers [here](https://github.com/co-IT/CSharpFunctionalExtensions.HttpResults/blob/main/CSharpFunctionalExtensions.HttpResults.Generators/AnalyzerReleases.Shipped.md).
 
 ## Examples
 

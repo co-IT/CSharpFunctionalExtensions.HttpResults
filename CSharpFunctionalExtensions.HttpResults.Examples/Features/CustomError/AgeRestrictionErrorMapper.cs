@@ -13,7 +13,7 @@ public class AgeRestrictionErrorMapper : IResultErrorMapper<AgeRestrictionError,
         Title = "Age restriction violation",
         Detail = error.Message,
         Status = StatusCodes.Status400BadRequest,
-        Type = ProblemDetailsMap.Find(StatusCodes.Status400BadRequest).Type,
+        Type = ProblemDetailsMappingProvider.FindMapping(StatusCodes.Status400BadRequest).Type,
       };
 
       return TypedResults.Problem(problemDetails);

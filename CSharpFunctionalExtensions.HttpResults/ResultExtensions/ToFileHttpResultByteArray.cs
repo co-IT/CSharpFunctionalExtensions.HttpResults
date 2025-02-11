@@ -34,7 +34,7 @@ public static partial class ResultExtensions
         entityTag
       );
 
-    var problemDetailsInfo = ProblemDetailsMap.Find(failureStatusCode);
+    var problemDetailsInfo = ProblemDetailsMappingProvider.FindMapping(failureStatusCode);
     var problemDetails = new ProblemDetails
     {
       Status = failureStatusCode,
