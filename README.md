@@ -127,12 +127,12 @@ It's recommended to override the mappings during startup e.g. in `Program.cs`.
 If you need to override the mapping for a specific use case in a single location, you can provide an `Action<ProblemDetails>` to fully customize the ProblemDetails. This is particularly useful when you want to add extensions or tailor the `ProblemDetails` specifically for that use case.
 
 ```csharp
-Result.Failure<string>(error)
-  .ToOkHttpResult(customizeProblemDetails: problemDetails =>
-  {
-    problemDetails.Title = "Custom Title";
-    problemDetails.Extensions.Add("custom", "value");
-  });
+...
+.ToOkHttpResult(customizeProblemDetails: problemDetails =>
+{
+  problemDetails.Title = "Custom Title";
+  problemDetails.Extensions.Add("custom", "value");
+});
 ```
 
 ### Custom error mapping
