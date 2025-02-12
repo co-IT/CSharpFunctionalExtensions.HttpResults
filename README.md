@@ -37,6 +37,14 @@ This library provides you extension methods to map the following `Result` types 
 - `Result<T,E>`
 - `UnitResult<E>`
 
+*Example:*
+```csharp
+app.MapGet("/books", (BookService service) =>
+    service.Get()       //Result<Book[]>
+      .ToOkHttpResult() //Results<Ok<Book[]>, ProblemHttpResult>
+);
+```
+
 These methods are available:
 
 | Method                                | Short Description                                                            |
