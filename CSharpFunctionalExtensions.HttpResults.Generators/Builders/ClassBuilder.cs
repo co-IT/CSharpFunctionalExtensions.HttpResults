@@ -5,6 +5,7 @@ namespace CSharpFunctionalExtensions.HttpResults.Generators.Builders;
 
 public abstract class ClassBuilder
 {
+  private const string MapMethodName = "Map";
   private readonly List<ClassDeclarationSyntax> _mapperClasses;
   private readonly HashSet<string> _requiredNamespaces;
 
@@ -57,20 +58,18 @@ public abstract class ClassBuilder
     foreach (var mapperClass in _mapperClasses)
     {
       var mapperClassName = mapperClass.Identifier.Text;
-      var mappingProperty =
-        mapperClass.Members.FirstOrDefault(member => (member as PropertyDeclarationSyntax)?.Identifier.Text == "Map")
-        as PropertyDeclarationSyntax;
-      var mappingTypes = (mappingProperty?.Type as GenericNameSyntax)
-        ?.TypeArgumentList.Arguments.Select(type => type.ToString())
-        .ToArray();
+      var mappingMethod = mapperClass
+        .Members.OfType<MethodDeclarationSyntax>()
+        .FirstOrDefault(method => method.Identifier.Text == MapMethodName);
 
-      if (mappingTypes is null || mappingTypes.Length != 2)
-        throw new ArgumentException(
-          $"Mapping property in class {mapperClassName} must have exactly two generic arguments."
-        );
+      if (mappingMethod == null)
+        throw new ArgumentException($"Mapping method in class {mapperClassName} not found.");
 
-      var resultErrorType = mappingTypes[0];
-      var httpResultType = mappingTypes[1];
+      if (mappingMethod.ParameterList.Parameters.Count != 1)
+        throw new ArgumentException($"Mapping method in class {mapperClassName} must have exactly one parameter.");
+
+      var resultErrorType = mappingMethod.ParameterList.Parameters[0].Type!.ToString();
+      var httpResultType = mappingMethod.ReturnType.ToString();
 
       foreach (var methodGenerator in MethodGenerators)
       {

@@ -36,3 +36,11 @@
 | Rule ID     | Category | Severity | Notes                                  |
 |-------------|----------|----------|----------------------------------------|
 | CFEHTTPR003 | Mapping  | Error    | Empty Map getter in IResultErrorMapper |
+
+## Release v0.9.0
+
+### Removed Rules
+
+| Rule ID     | Category | Severity | Notes                                  |
+|-------------|----------|----------|----------------------------------------|
+| CFEHTTPR003 | Mapping  | Error    | Empty Map getter in IResultErrorMapper |

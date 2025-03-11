@@ -151,11 +151,12 @@ When using `Result<T,E>` or `UnitResult<E>`, this library uses a Source Generato
     ```csharp
     public record UserNotFoundError(string UserId);
     ```
-2. Create a mapper that implements `IResultErrorMapper` which maps this custom error type to an HttpResult that you want to return in your Web-API:
+2. Create a mapper that implements `IResultErrorMapper` which maps this custom error type to an HttpResult / `IResult` that you want to return in your Web-API:
     ```csharp
     public class UserNotFoundErrorMapper : IResultErrorMapper<UserNotFoundError, ProblemHttpResult>
     {
-        public Func<UserNotFoundErrorMapper, ProblemHttpResult> Map => error => {
+        public ProblemHttpResult Map(UserNotFoundError error)
+        {
             var problemDetails = new ProblemDetails
             {
                 Status = 404,
@@ -188,7 +189,7 @@ You can use the `ProblemDetailsMappingProvider.FindMapping()` method to find a s
 
 This library includes analyzers to help you use it correctly.
 
-For example, they can notify you if you have multiple mappers for the same custom error type or if you forgot to implement the `Map` function in your custom error mapper.
+For example, they can notify you if you have multiple mappers for the same custom error type.
 
 You can find a complete list of all analyzers [here](https://github.com/co-IT/CSharpFunctionalExtensions.HttpResults/blob/main/CSharpFunctionalExtensions.HttpResults.Generators/AnalyzerReleases.Shipped.md).
 

@@ -5,5 +5,5 @@ namespace CSharpFunctionalExtensions.HttpResults.Tests.Shared;
 
 public class DocumentCreationErrorMapper : IResultErrorMapper<DocumentCreationError, Conflict<string>>
 {
-  public Func<DocumentCreationError, Conflict<string>> Map => error => TypedResults.Conflict(error.DocumentId);
+  public Conflict<string> Map(DocumentCreationError error) => TypedResults.Conflict(error.DocumentId);
 }

@@ -5,5 +5,5 @@ namespace CSharpFunctionalExtensions.HttpResults.Tests.Shared;
 
 public class DocumentMissingErrorMapper : IResultErrorMapper<DocumentMissingError, NotFound<string>>
 {
-  public Func<DocumentMissingError, NotFound<string>> Map => error => TypedResults.NotFound(error.DocumentId);
+  public NotFound<string> Map(DocumentMissingError error) => TypedResults.NotFound(error.DocumentId);
 }

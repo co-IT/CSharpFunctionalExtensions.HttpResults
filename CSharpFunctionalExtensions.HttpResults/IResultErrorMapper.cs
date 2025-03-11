@@ -9,5 +9,5 @@ public interface IResultErrorMapper<TError, THttpResult>
   /// <summary>
   ///   Map custom error to <see cref="Microsoft.AspNetCore.Http.IResult" />
   /// </summary>
-  public Func<TError, THttpResult> Map { get; }
+  public THttpResult Map(TError error);
 }
