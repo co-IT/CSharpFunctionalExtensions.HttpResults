@@ -4,7 +4,7 @@ using Bogus;
 
 namespace CSharpFunctionalExtensions.HttpResults.Examples.Features.Books;
 
-public class FakeBooks
+public static class FakeBooks
 {
   public static List<Book> Generate(int count)
   {
