@@ -3,7 +3,7 @@
 /// <summary>
 ///   Interface for mapping custom error to <see cref="Microsoft.AspNetCore.Http.IResult" />
 /// </summary>
-public interface IResultErrorMapper<TError, THttpResult>
+public interface IResultErrorMapper<in TError, out THttpResult>
   where THttpResult : Microsoft.AspNetCore.Http.IResult
 {
   /// <summary>
