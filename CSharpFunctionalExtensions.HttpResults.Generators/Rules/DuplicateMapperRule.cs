@@ -5,7 +5,7 @@ namespace CSharpFunctionalExtensions.HttpResults.Generators.Rules;
 
 internal class DuplicateMapperRule : IRule
 {
-  private const string ErrorResultMapFunc = "Map";
+  private const string MapMethodName = "Map";
 
   public DiagnosticDescriptor RuleDescriptor { get; } =
     new(
@@ -37,10 +37,11 @@ internal class DuplicateMapperRule : IRule
 
   private static TypeSyntax? GetMappedResultErrorType(ClassDeclarationSyntax mapperClass)
   {
-    var mappingProperty = mapperClass
-      .Members.OfType<PropertyDeclarationSyntax>()
-      .FirstOrDefault(member => member.Identifier.Text == ErrorResultMapFunc);
-    return (mappingProperty?.Type as GenericNameSyntax)?.TypeArgumentList.Arguments.FirstOrDefault();
+    var mappingMethod = mapperClass
+      .Members.OfType<MethodDeclarationSyntax>()
+      .FirstOrDefault(method => method.Identifier.Text == MapMethodName);
+
+    return mappingMethod?.ParameterList.Parameters[0].Type;
   }
 
   private static List<string> GetDuplicateMappedResultErrorClassNames(List<TypeSyntax> mappedResultErrorTypes)
