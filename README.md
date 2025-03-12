@@ -28,6 +28,10 @@ or
 PM> Install-Package CSharpFunctionalExtensions.HttpResults
 ```
 
+> [!TIP]
+> This library references a fairly old version of CSharpFunctionalExtensions for compatibility reasons.
+> It's recommended to also install the latest version of CSharpFunctionalExtensions in your project to get the latest features and fixes.
+
 ## Usage
 
 This library provides you extension methods to map the following `Result` types to `HttpResults`:
