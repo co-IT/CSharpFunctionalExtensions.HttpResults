@@ -30,7 +30,7 @@ jobs:
           dotnet-version: |
             7
             8
-            9.0.100
+            9.0.201
 
       - name: Install .NET tools
         run: dotnet tool restore

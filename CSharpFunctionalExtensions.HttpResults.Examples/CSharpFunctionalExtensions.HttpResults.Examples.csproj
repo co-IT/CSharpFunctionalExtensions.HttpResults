@@ -7,10 +7,10 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Bogus" Version="35.6.1"/>
-    <PackageReference Include="CSharpFunctionalExtensions" Version="3.4.3" />
-    <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="9.0.2" />
-    <PackageReference Include="Scalar.AspNetCore" Version="2.0.12" />
+    <PackageReference Include="Bogus" Version="35.6.2" />
+    <PackageReference Include="CSharpFunctionalExtensions" Version="3.5.1" />
+    <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="9.0.3" />
+    <PackageReference Include="Scalar.AspNetCore" Version="2.0.29" />
   </ItemGroup>
 
   <ItemGroup>
