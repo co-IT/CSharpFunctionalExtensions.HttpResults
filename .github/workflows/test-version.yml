@@ -1,0 +1,57 @@
+name: "test-version"
+
+on:
+  workflow_call:
+    inputs:
+      csharpFunctionalExtensionsVersion:
+        type: string
+        required: true
+
+jobs:
+  test-version:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup .NET SDK
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: |
+            7
+            8
+            9.0.100
+
+      - name: Override CSharpFunctionalExtensions Version
+        run: |
+          dotnet add CSharpFunctionalExtensions.HttpResults.Tests package CSharpFunctionalExtensions --version ${{ inputs.csharpFunctionalExtensionsVersion }}
+          dotnet add CSharpFunctionalExtensions.HttpResults.Generators.Tests package CSharpFunctionalExtensions --version ${{ inputs.csharpFunctionalExtensionsVersion }}
+
+      - name: Install .NET dependencies
+        run: dotnet restore
+
+      - name: Build
+        run: dotnet build -c Release --no-restore
+
+      - name: Test
+        run: dotnet test -c Release --no-restore --no-build --verbosity normal --logger "trx;LogFileName=test-results.trx" --results-directory dist/tests --collect:"XPlat Code Coverage"
+
+      - name: Sanitize version for artifact name
+        run: |
+          SANITIZED_LIBVERSION=${{ inputs.csharpFunctionalExtensionsVersion }}
+          SANITIZED_LIBVERSION=${SANITIZED_LIBVERSION//\*/+}
+          echo SANITIZED_LIBVERSION=${SANITIZED_LIBVERSION} >> $GITHUB_ENV
+
+      - name: Upload .NET test results
+        uses: actions/upload-artifact@v4
+        with:
+          name: dotnet-test-results-${{ env.SANITIZED_LIBVERSION }}
+          path: dist/tests/test-results.trx
+        if: ${{ always() }}
+
+      - name: Upload .NET test coverage
+        uses: actions/upload-artifact@v4
+        with:
+          name: dotnet-test-coverage-${{ env.SANITIZED_LIBVERSION }}
+          path: dist/tests/**/coverage.cobertura.xml
+        if: ${{ always() }}
