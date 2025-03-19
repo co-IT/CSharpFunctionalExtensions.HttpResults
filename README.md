@@ -10,9 +10,11 @@ HttpResults in your Web-API
 
 ## Overview
 
-This library streamlines returning HttpResults from endpoints that leverage [CSharpFunctionalExtensions](https://github.com/vkhorikov/CSharpFunctionalExtensions) by offering convenient extension methods to map you result to an HttpResult.
+This library streamlines returning HttpResults from endpoints that leverage [CSharpFunctionalExtensions](https://github.com/vkhorikov/CSharpFunctionalExtensions) by offering convenient extension methods to map your `Result`s to HttpResults.
 With these, you can maintain a fluent, railway-oriented style by simply invoking the appropriate method at the end of your result chain.
-It also supports custom error types and ensures a clear separation between your domain logic and API by using specific mappers to translate domain details into API responses.
+It also supports custom error types and ensures a clear separation between your domain logic and Web-API by allowing custom mappers to translate domain details into API responses.
+
+It's compatible with Minimal APIs and controllers.
 
 ## Installation
 
@@ -29,12 +31,12 @@ PM> Install-Package CSharpFunctionalExtensions.HttpResults
 ```
 
 > [!TIP]
-> This library references a fairly old version of CSharpFunctionalExtensions for compatibility reasons.
-> It's recommended to also install the latest version of CSharpFunctionalExtensions in your project to get the latest features and fixes.
+> This library references an older version of CSharpFunctionalExtensions for wider compatibility.
+> It's recommended to additionally install the latest version of CSharpFunctionalExtensions in your project to get the latest features and fixes.
 
 ## Usage
 
-This library provides you extension methods to map the following `Result` types to `HttpResults`:
+This library provides you extension methods to map the following `Result` types to `HttpResults` at the end of our result chain:
 
 - `Result`
 - `Result<T>`
@@ -84,7 +86,7 @@ All methods are available in sync and async variants.
 
 ### Default mapping
 
-By default, `Result` and `Result<T>` failures get mapped to a `ProblemHttpResult` based on [RFC9457](https://www.rfc-editor.org/rfc/rfc9457).
+By default, `Result` and `Result<T>` failures are mapped to a `ProblemHttpResult` based on [RFC9457](https://www.rfc-editor.org/rfc/rfc9457).
 
 - The `status` property contains the status code of the HTTP response. Note: For almost every method you can override the default status codes for Success/Failure case.
 - The `type` property contains a URI to the corresponding [RFC9110](https://tools.ietf.org/html/rfc9110) entry based on the status code.
@@ -95,7 +97,7 @@ This default mapping behaviour is configured inside the [`ProblemDetailsMappingP
 
 #### Override default mapping
 
-You can override this behaviour by providing your own dictionary which maps status code to title and type of the resulting `ProblemDetails` object.
+You can override this behavior by providing your own dictionary that maps status codes to their corresponding `title` and `type` of the resulting `ProblemDetails` object.
 
 <details>
 <summary>Example for changing the default mapping for german localization</summary>
@@ -126,7 +128,7 @@ ProblemDetailsMappingProvider.DefaultMappings = new Dictionary<int, (string? Tit
 
 </details>
 
-You don't have to provide the whole dictionary but can also override or add only mappings for specific status codes like this:
+You don't have to provide the whole dictionary; you can also override or add mappings for specific status codes like this:
 
 ```csharp
 ProblemDetailsMappingProvider.AddOrUpdateMapping(420, "Enhance Your Calm", "https://http-status-code.de/420/");
@@ -136,7 +138,7 @@ It's recommended to override the mappings during startup e.g. in `Program.cs`.
 
 #### Override mapping for single use case
 
-If you need to override the mapping for a specific use case in a single location, you can provide an `Action<ProblemDetails>` to fully customize the ProblemDetails. This is particularly useful when you want to add extensions or tailor the `ProblemDetails` specifically for that use case.
+If you need to override the mapping for a specific use case in a single location, you can provide an `Action<ProblemDetails>` to fully customize the `ProblemDetails`. This is particularly useful when you want to add extensions or tailor the `ProblemDetails` specifically for that use case.
 
 ```csharp
 ...
@@ -155,7 +157,7 @@ When using `Result<T,E>` or `UnitResult<E>`, this library uses a Source Generato
     ```csharp
     public record UserNotFoundError(string UserId);
     ```
-2. Create a mapper that implements `IResultErrorMapper` which maps this custom error type to an HttpResult / `IResult` that you want to return in your Web-API:
+2. Create a mapper that implements `IResultErrorMapper` which maps this custom error type to an HttpResult / `Microsoft.AspNetCore.Http.IResult` that you want to return in your Web-API:
     ```csharp
     public class UserNotFoundErrorMapper : IResultErrorMapper<UserNotFoundError, ProblemHttpResult>
     {
@@ -175,25 +177,25 @@ When using `Result<T,E>` or `UnitResult<E>`, this library uses a Source Generato
     ```
 3. Use the auto generated extension method:
     ```csharp
-    app.MapGet("/users/{id}", (string id) => {
-        return userRepository.Find(id)  //Result<User,UserNotFoundError>
-            .ToOkHttpResult();          //Results<Ok<User>,ProblemHttpResult>
-    });
+    app.MapGet("/users/{id}", (string id, UserRepository repo) =>
+        repo.Find(id)       //Result<User,UserNotFoundError>
+          .ToOkHttpResult() //Results<Ok<User>,ProblemHttpResult>
+    );
     ```
 
 > [!IMPORTANT]  
-> Make sure that every custom error type has exactly one corresponding `IResultMapper` implementation.
-
-You can use the `ProblemDetailsMappingProvider.FindMapping()` method to find a suitable title and type for a status code based on [RFC9110](https://tools.ietf.org/html/rfc9110).
+> Make sure that each custom error type has exactly one corresponding `IResultMapper` implementation.
 
 > [!TIP]
+> You can use the `ProblemDetailsMappingProvider.FindMapping()` method to find a suitable title and type for a status code based on [RFC9110](https://tools.ietf.org/html/rfc9110).
+>
 > If extension methods for custom errors are missing, rebuild the project to trigger Source Generation.
 
 ## Analyzers
 
 This library includes analyzers to help you use it correctly.
 
-For example, they can notify you if you have multiple mappers for the same custom error type.
+For example, they will notify you if you have multiple mappers for the same custom error type.
 
 You can find a complete list of all analyzers [here](https://github.com/co-IT/CSharpFunctionalExtensions.HttpResults/blob/main/CSharpFunctionalExtensions.HttpResults.Generators/AnalyzerReleases.Shipped.md).
 
@@ -203,7 +205,7 @@ Examples for CRUD, FileStreams, custom errors, etc. in context of a Web-API are 
 
 ## Development
 
-You're welcome to contribute. Please keep these few rules in mind:
+Contributions are welcome! Please keep the following rules in mind:
 
 - add documentation in the form of summary comments
 - add tests for your additions
