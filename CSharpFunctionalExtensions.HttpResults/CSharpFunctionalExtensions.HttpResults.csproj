@@ -15,7 +15,7 @@
   <PropertyGroup>
     <Title>CSharpFunctionalExtensions.HttpResults</Title>
     <Authors>co-IT, Stimmler</Authors>
-    <Description>Extensions for CSharpFunctionalExtensions to map Results to HttpResults in your Web-API</Description>
+    <Description>Seamlessly map Results from CSharpFunctionalExtensions to HttpResults for cleaner, more fluent Web APIs</Description>
     <Copyright>Copyright (c) co-IT.eu GmbH 2025</Copyright>
     <PackageReadmeFile>README.md</PackageReadmeFile>
     <PackageProjectUrl>https://github.com/co-IT/CSharpFunctionalExtensions.HttpResults</PackageProjectUrl>

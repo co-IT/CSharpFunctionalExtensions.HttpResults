@@ -1,4 +1,4 @@
-﻿namespace CSharpFunctionalExtensions.HttpResults.Examples.Features.Books;
+﻿namespace CSharpFunctionalExtensions.HttpResults.Examples.Features.CRUD;
 
 public class Book
 {

@@ -1,9 +1,9 @@
-﻿using CSharpFunctionalExtensions.HttpResults.Examples.Features.Books.FindBook;
+﻿using CSharpFunctionalExtensions.HttpResults.Examples.Features.CRUD.FindBook;
 using CSharpFunctionalExtensions.HttpResults.ResultExtensions;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 
-namespace CSharpFunctionalExtensions.HttpResults.Examples.Features.Books.AddBook;
+namespace CSharpFunctionalExtensions.HttpResults.Examples.Features.CRUD.AddBook;
 
 public static class AddBookEndpoint
 {
