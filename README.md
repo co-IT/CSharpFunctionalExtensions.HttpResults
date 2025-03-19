@@ -5,16 +5,38 @@
 [![nuget downloads](https://img.shields.io/nuget/dt/CSharpFunctionalExtensions.HttpResults)](https://www.nuget.org/packages/CSharpFunctionalExtensions.HttpResults/)
 [![GitHub license](https://img.shields.io/github/license/co-IT/CSharpFunctionalExtensions.HttpResults)](https://github.com/co-IT/CSharpFunctionalExtensions.HttpResults/blob/main/LICENSE.md)
 
-Extensions for [CSharpFunctionalExtensions](https://github.com/vkhorikov/CSharpFunctionalExtensions) to map Results to
-HttpResults in your Web-API
+Seamlessly map Results from [CSharpFunctionalExtensions](https://github.com/vkhorikov/CSharpFunctionalExtensions) to HttpResults for cleaner, more fluent Web APIs
+
+<details>
+<summary>Table of Contents</summary>
+
+1. [Overview](#overview)
+2. [Installation](#installation)
+3. [Usage](#usage)
+    1. [Default mapping](#default-mapping)
+    2. [Custom error mapping](#custom-error-mapping)
+4. [Analyzers](#analyzers)
+5. [Examples](#examples)
+6. [Development](#development)
+</details>
 
 ## Overview
 
-This library streamlines returning HttpResults from endpoints that leverage [CSharpFunctionalExtensions](https://github.com/vkhorikov/CSharpFunctionalExtensions) by offering convenient extension methods to map your `Result`s to HttpResults.
-With these, you can maintain a fluent, railway-oriented style by simply invoking the appropriate method at the end of your result chain.
-It also supports custom error types and ensures a clear separation between your domain logic and Web-API by allowing custom mappers to translate domain details into API responses.
+This library provides convenient extension methods to seamlessly map Results from [CSharpFunctionalExtensions](https://github.com/vkhorikov/CSharpFunctionalExtensions) to HttpResults. With this, it streamlines your Web API resulting in cleaner, more fluent code.
 
-It's compatible with Minimal APIs and controllers.
+### Key Benefits
+
+- ⚙️ **Zero Configuration:** Get started immediately — the mapping works out of the box without any configuration.
+- 🛠️ **Customizable Mappings:** Tailor default mappings or define custom mappings for specific use cases.
+- 🌐 **Localization Ready:** Supports custom error messages and status codes, easily adaptable to your localization needs.
+- 🔗 **Fluent API:** Maintain a smooth, railway-oriented flow by chaining HttpResult mappings at the end of your Result chain.
+- 🧱 **Separation of Domain and HTTP Errors:** Keeps domain errors distinct from HTTP errors, improving maintainability and clarity between business logic and web API concerns.
+- ⚡ **Minimal APIs & Controllers Support:** Works with both Minimal APIs and traditional controllers in ASP.NET.
+- 📦 **Full Support for ASP.NET Results:** Supports all built-in HTTP response types in ASP.NET, including `Ok`, `Created`, `NoContent`, `Accepted`, `FileStream`, and more.
+- 🦺 **Typed Results:** Utilizes typed results for consistent, type-safe API responses.
+- 📑 **OpenAPI Ready:** Ensures accurate OpenAPI generation for clear and reliable API documentation.
+- 🛡️ **RFC Compliance:** Default mappings adhere to the RFC 9457 standard (`ProblemDetails`), ensuring your API errors are standardized and interoperable.
+- 🧑‍💻 **Developer-Friendly:** Includes built-in analyzers and source generators to speed up development and reduce errors.
 
 ## Installation
 
@@ -30,7 +52,7 @@ or
 PM> Install-Package CSharpFunctionalExtensions.HttpResults
 ```
 
-> [!TIP]
+> [!NOTE]
 > This library references an older version of CSharpFunctionalExtensions for wider compatibility.
 > It's recommended to additionally install the latest version of CSharpFunctionalExtensions in your project to get the latest features and fixes.
 
@@ -51,7 +73,7 @@ app.MapGet("/books", (BookService service) =>
 );
 ```
 
-These methods are available:
+These methods are available in sync and async variants:
 
 | Method                                | Short Description                                                            |
 |---------------------------------------|------------------------------------------------------------------------------|
@@ -81,8 +103,6 @@ These methods are available:
 | `.ToFileStreamHttpResult<Stream,E>()` | Returns `FileStreamHttpResult` or custom error                               |
 | `.ToContentHttpResult<string>()`      | Returns `ContentHttpResult` or `ProblemHttpResult`                           |
 | `.ToContentHttpResult<string,E>()`    | Returns `ContentHttpResult` or custom error                                  |
-
-All methods are available in sync and async variants.
 
 ### Default mapping
 
@@ -157,7 +177,7 @@ When using `Result<T,E>` or `UnitResult<E>`, this library uses a Source Generato
     ```csharp
     public record UserNotFoundError(string UserId);
     ```
-2. Create a mapper that implements `IResultErrorMapper` which maps this custom error type to an HttpResult / `Microsoft.AspNetCore.Http.IResult` that you want to return in your Web-API:
+2. Create a mapper that implements `IResultErrorMapper` which maps this custom error type to an HttpResult / `Microsoft.AspNetCore.Http.IResult` that you want to return in your Web API:
     ```csharp
     public class UserNotFoundErrorMapper : IResultErrorMapper<UserNotFoundError, ProblemHttpResult>
     {
@@ -188,7 +208,8 @@ When using `Result<T,E>` or `UnitResult<E>`, this library uses a Source Generato
 
 > [!TIP]
 > You can use the `ProblemDetailsMappingProvider.FindMapping()` method to find a suitable title and type for a status code based on [RFC9110](https://tools.ietf.org/html/rfc9110).
->
+
+> [!NOTE]
 > If extension methods for custom errors are missing, rebuild the project to trigger Source Generation.
 
 ## Analyzers
@@ -201,7 +222,15 @@ You can find a complete list of all analyzers [here](https://github.com/co-IT/CS
 
 ## Examples
 
-Examples for CRUD, FileStreams, custom errors, etc. in context of a Web-API are available in the [`CSharpFunctionalExtensions.HttpResults.Examples`](CSharpFunctionalExtensions.HttpResults.Examples) project.
+The [`CSharpFunctionalExtensions.HttpResults.Examples`](CSharpFunctionalExtensions.HttpResults.Examples) project contains various examples demonstrating how to use this library in different scenarios, including:
+
+- **[Basic CRUD operations](CSharpFunctionalExtensions.HttpResults.Examples/Features/CRUD)** – Handling `GET`, `POST`, `PUT`, and `DELETE` requests
+- **[File handling](CSharpFunctionalExtensions.HttpResults.Examples/Features/FileStream)** – Returning files from your Web API
+- **[Custom error mapping](CSharpFunctionalExtensions.HttpResults.Examples/Features/CustomError)** – Defining and mapping custom error types to meaningful HTTP responses
+- **[Multiple errors in chain](CSharpFunctionalExtensions.HttpResults.Examples/Features/MultipleErrorChain)** – Using different kind of custom errors in the same result chain
+- **[Customizing default mapping](CSharpFunctionalExtensions.HttpResults.Examples/Program.cs)** – Overriding default mappings for localization or specific use cases
+
+Check out the example project for hands-on implementation details!
 
 ## Development
 
