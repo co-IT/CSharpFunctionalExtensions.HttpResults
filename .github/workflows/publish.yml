@@ -39,7 +39,7 @@ jobs:
         run: dotnet restore
 
       - name: Build
-        run: dotnet build -c Release --no-restore
+        run: dotnet build -c Release --no-restore -p:ContinuousIntegrationBuild=true
 
       - name: Lint
         run: dotnet csharpier --check .
@@ -59,11 +59,26 @@ jobs:
           name: package
           path: dist/package/*.${{ env.VERSION }}.nupkg
 
+      - name: Upload symbol package artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: package
+          path: dist/package/*.${{ env.VERSION }}.snupkg
+
       - name: Attach package to GitHub release
         uses: svenstaro/upload-release-action@v2
         with:
           repo_token: ${{ secrets.GITHUB_TOKEN }}
           file: dist/package/*.${{ env.VERSION }}.nupkg
+          tag: ${{ github.ref }}
+          file_glob: true
+          overwrite: true
+
+      - name: Attach symbol package to GitHub release
+        uses: svenstaro/upload-release-action@v2
+        with:
+          repo_token: ${{ secrets.GITHUB_TOKEN }}
+          file: dist/package/*.${{ env.VERSION }}.snupkg
           tag: ${{ github.ref }}
           file_glob: true
           overwrite: true
