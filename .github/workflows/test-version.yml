@@ -6,11 +6,19 @@ on:
       csharpFunctionalExtensionsVersion:
         type: string
         required: true
+permissions:
+  checks: write
 
 jobs:
   test-version:
     runs-on: ubuntu-latest
     steps:
+      - name: Sanitize version for artifact name
+        run: |
+          SANITIZED_LIBVERSION=${{ inputs.csharpFunctionalExtensionsVersion }}
+          SANITIZED_LIBVERSION=${SANITIZED_LIBVERSION//\*/+}
+          echo SANITIZED_LIBVERSION=${SANITIZED_LIBVERSION} >> $GITHUB_ENV
+
       - name: Checkout
         uses: actions/checkout@v4
 
@@ -34,24 +42,25 @@ jobs:
         run: dotnet build -c Release --no-restore -p:ContinuousIntegrationBuild=true
 
       - name: Test
-        run: dotnet test -c Release --no-restore --no-build --verbosity normal --logger "trx;LogFileName=test-results.trx" --results-directory dist/tests --collect:"XPlat Code Coverage"
-
-      - name: Sanitize version for artifact name
-        run: |
-          SANITIZED_LIBVERSION=${{ inputs.csharpFunctionalExtensionsVersion }}
-          SANITIZED_LIBVERSION=${SANITIZED_LIBVERSION//\*/+}
-          echo SANITIZED_LIBVERSION=${SANITIZED_LIBVERSION} >> $GITHUB_ENV
+        run: dotnet test -c Release --no-restore --no-build --verbosity normal --logger "trx;logfilename=test-results.trx" --results-directory dist/tests/${{ env.SANITIZED_LIBVERSION }} --collect:"XPlat Code Coverage"
 
       - name: Upload .NET test results
         uses: actions/upload-artifact@v4
         with:
           name: dotnet-test-results-${{ env.SANITIZED_LIBVERSION }}
-          path: dist/tests/test-results.trx
+          path: dist/tests/${{ env.SANITIZED_LIBVERSION }}/test-results.trx
         if: ${{ always() }}
 
       - name: Upload .NET test coverage
         uses: actions/upload-artifact@v4
         with:
           name: dotnet-test-coverage-${{ env.SANITIZED_LIBVERSION }}
-          path: dist/tests/**/coverage.cobertura.xml
+          path: dist/tests/${{ env.SANITIZED_LIBVERSION }}/**/coverage.cobertura.xml
         if: ${{ always() }}
+
+      - name: Create test report
+        uses: dorny/test-reporter@v2
+        with:
+          name: Test Results ${{ env.SANITIZED_LIBVERSION }}
+          path: dist/tests/${{ env.SANITIZED_LIBVERSION }}/test-results.trx
+          reporter: "dotnet-trx"
