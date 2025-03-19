@@ -6,6 +6,14 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <LangVersion>latest</LangVersion>
     <TargetsForTfmSpecificBuildOutput>$(TargetsForTfmSpecificBuildOutput);CopyProjectReferencesToPackage</TargetsForTfmSpecificBuildOutput>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <EmbedUntrackedSources>true</EmbedUntrackedSources>
+    <PublishRepositoryUrl>true</PublishRepositoryUrl>
+    <IncludeSymbols>true</IncludeSymbols>
+    <SymbolPackageFormat>snupkg</SymbolPackageFormat>
+  </PropertyGroup>
+
+  <PropertyGroup>
     <Title>CSharpFunctionalExtensions.HttpResults</Title>
     <Authors>co-IT, Stimmler</Authors>
     <Description>Extensions for CSharpFunctionalExtensions to map Results to HttpResults in your Web-API</Description>
@@ -16,15 +24,6 @@
     <RepositoryUrl>https://github.com/co-IT/CSharpFunctionalExtensions.HttpResults</RepositoryUrl>
     <PackageTags>CSharpFunctionalExtensions, HTTP, ActionResult, C#, dotnet, nuget, csharp, package, library, api, minimal, MIT, free</PackageTags>
     <Company>co-IT.eu GmbH</Company>
-    <GenerateDocumentationFile>true</GenerateDocumentationFile>
-    <IncludeBuildOutput>false</IncludeBuildOutput>
-  </PropertyGroup>
-
-  <PropertyGroup>
-    <EmbedUntrackedSources>true</EmbedUntrackedSources>
-    <PublishRepositoryUrl>true</PublishRepositoryUrl>
-    <IncludeSymbols>true</IncludeSymbols>
-    <SymbolPackageFormat>snupkg</SymbolPackageFormat>
   </PropertyGroup>
 
   <ItemGroup>
@@ -37,7 +36,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="CSharpFunctionalExtensions" Version="[2.29.0,4.0.0)" />
+    <PackageReference Include="CSharpFunctionalExtensions" Version="[2.29.0,4.0.0)"/>
   </ItemGroup>
 
   <ItemGroup>
@@ -46,7 +45,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\CSharpFunctionalExtensions.HttpResults.Generators\CSharpFunctionalExtensions.HttpResults.Generators.csproj" PrivateAssets="All" />
+    <ProjectReference Include="..\CSharpFunctionalExtensions.HttpResults.Generators\CSharpFunctionalExtensions.HttpResults.Generators.csproj" PrivateAssets="All"/>
   </ItemGroup>
 
   <Target DependsOnTargets="ResolveReferences" Name="CopyProjectReferencesToPackage">
