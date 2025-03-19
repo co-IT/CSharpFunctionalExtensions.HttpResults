@@ -1,0 +1,17 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<RunSettings>
+  <DataCollectionRunSettings>
+    <DataCollectors>
+      <DataCollector friendlyName="XPlat code coverage">
+        <Configuration>
+          <Format>cobertura</Format>
+          <Exclude>[CSharpFunctionalExtensions.HttpResults.Examples]*,[CSharpFunctionalExtensions.HttpResults.Generators]*ResultExtensions*,[CSharpFunctionalExtensions.HttpResults.Generators]*UnitResultExtensions*,</Exclude>
+          <ExcludeByFile>**/*.g.cs</ExcludeByFile>
+          <UseSourceLink>true</UseSourceLink>
+          <IncludeTestAssembly>true</IncludeTestAssembly>
+          <SkipAutoProps>true</SkipAutoProps>
+        </Configuration>
+      </DataCollector>
+    </DataCollectors>
+  </DataCollectionRunSettings>
+</RunSettings>

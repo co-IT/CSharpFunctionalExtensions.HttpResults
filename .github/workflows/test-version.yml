@@ -6,8 +6,6 @@ on:
       csharpFunctionalExtensionsVersion:
         type: string
         required: true
-permissions:
-  checks: write
 
 jobs:
   test-version:
@@ -42,7 +40,13 @@ jobs:
         run: dotnet build -c Release --no-restore -p:ContinuousIntegrationBuild=true
 
       - name: Test
-        run: dotnet test -c Release --no-restore --no-build --verbosity normal --logger "trx;logfilename=test-results.trx" --results-directory dist/tests/${{ env.SANITIZED_LIBVERSION }} --collect:"XPlat Code Coverage"
+        run: dotnet test -c Release --no-restore --no-build --verbosity normal --logger "trx;logfilename=test-results.trx" --results-directory dist/tests/${{ env.SANITIZED_LIBVERSION }} --collect:"XPlat Code Coverage" --settings coverlet.runsettings
+
+      - name: Install dotnet-coverage
+        run: dotnet tool install --global dotnet-coverage
+
+      - name: Merge coverage files
+        run: dotnet-coverage merge dist/tests/${{ env.SANITIZED_LIBVERSION }}/**/coverage.cobertura.xml -f cobertura -o dist/tests/${{ env.SANITIZED_LIBVERSION }}/coverage.xml
 
       - name: Upload .NET test results
         uses: actions/upload-artifact@v4
@@ -55,12 +59,27 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: dotnet-test-coverage-${{ env.SANITIZED_LIBVERSION }}
-          path: dist/tests/${{ env.SANITIZED_LIBVERSION }}/**/coverage.cobertura.xml
+          path: dist/tests/${{ env.SANITIZED_LIBVERSION }}/coverage.xml
         if: ${{ always() }}
 
-      - name: Create test report
+      - name: Create test result report
         uses: dorny/test-reporter@v2
         with:
           name: Test Results ${{ env.SANITIZED_LIBVERSION }}
           path: dist/tests/${{ env.SANITIZED_LIBVERSION }}/test-results.trx
-          reporter: "dotnet-trx"
+          badge-title: Test Results ${{ env.SANITIZED_LIBVERSION }}
+          reporter: dotnet-trx
+        if: ${{ always() }}
+
+      - name: Create test coverage report
+        uses: irongut/CodeCoverageSummary@v1.3.0
+        with:
+          filename: dist/tests/${{ env.SANITIZED_LIBVERSION }}/coverage.xml
+          badge: true
+          format: markdown
+          output: file
+        if: ${{ always() }}
+
+      - name: Attach test coverage report to action summary
+        run: cat code-coverage-results.md >> $GITHUB_STEP_SUMMARY
+        if: ${{ always() }}
