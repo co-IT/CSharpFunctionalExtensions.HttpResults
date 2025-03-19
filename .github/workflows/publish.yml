@@ -83,8 +83,5 @@ jobs:
           file_glob: true
           overwrite: true
 
-      - name: Push package to NuGet
-        run: dotnet nuget push "dist/package/*.${{ env.VERSION }}.nupkg" --api-key ${{secrets.nuget_api_key}} --source https://api.nuget.org/v3/index.json
-
-      - name: Push symbol package to NuGet
-        run: dotnet nuget push "dist/package/*.${{ env.VERSION }}.snupkg" --api-key ${{secrets.nuget_api_key}} --source https://api.nuget.org/v3/index.json
+      - name: Push packages to NuGet
+        run: dotnet nuget push "dist/package/*.${{ env.VERSION }}.nupkg" --api-key ${{secrets.nuget_api_key}} --source https://api.nuget.org/v3/index.json #also pushes symbol package by default
