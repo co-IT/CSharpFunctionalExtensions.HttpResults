@@ -42,7 +42,7 @@ jobs:
         run: dotnet build -c Release --no-restore
 
       - name: Pack
-        run: dotnet pack ./CSharpFunctionalExtensions.HttpResults/CSharpFunctionalExtensions.HttpResults.csproj -c Release -p:Version=0.0.0 --output dist/package
+        run: dotnet pack ./CSharpFunctionalExtensions.HttpResults/CSharpFunctionalExtensions.HttpResults.csproj -c Release -p:ContinuousIntegrationBuild=true -p:Version=0.0.0 --output dist/package
 
       - name: Lint
         run: dotnet csharpier --check .
