@@ -40,7 +40,7 @@ jobs:
         run: dotnet build -c Release --no-restore -p:ContinuousIntegrationBuild=true
 
       - name: Test
-        run: dotnet test -c Release --no-restore --no-build --verbosity normal --logger "trx;logfilename=test-results.trx" --results-directory dist/tests/${{ env.SANITIZED_LIBVERSION }} --collect:"XPlat Code Coverage" --settings coverlet.runsettings
+        run: dotnet test -c Release --no-restore --no-build --verbosity normal --logger "trx;logfileprefix=test-result" --results-directory dist/tests/${{ env.SANITIZED_LIBVERSION }} --collect:"XPlat Code Coverage" --settings coverlet.runsettings
 
       - name: Install dotnet-coverage
         run: dotnet tool install --global dotnet-coverage
@@ -52,7 +52,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: dotnet-test-results-${{ env.SANITIZED_LIBVERSION }}
-          path: dist/tests/${{ env.SANITIZED_LIBVERSION }}/test-results.trx
+          path: dist/tests/${{ env.SANITIZED_LIBVERSION }}/test-result*.trx
         if: ${{ always() }}
 
       - name: Upload .NET test coverage
@@ -66,7 +66,7 @@ jobs:
         uses: dorny/test-reporter@v2
         with:
           name: Test Results ${{ env.SANITIZED_LIBVERSION }}
-          path: dist/tests/${{ env.SANITIZED_LIBVERSION }}/test-results.trx
+          path: dist/tests/${{ env.SANITIZED_LIBVERSION }}/test-result*.trx
           badge-title: Test Results ${{ env.SANITIZED_LIBVERSION }}
           reporter: dotnet-trx
         if: ${{ always() }}
