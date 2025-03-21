@@ -1,5 +1,5 @@
 using CSharpFunctionalExtensions.HttpResults;
-using CSharpFunctionalExtensions.HttpResults.Examples.Features.Books;
+using CSharpFunctionalExtensions.HttpResults.Examples.Features.CRUD;
 using CSharpFunctionalExtensions.HttpResults.Examples.Features.CustomError;
 using CSharpFunctionalExtensions.HttpResults.Examples.Features.FileStream;
 using Scalar.AspNetCore;

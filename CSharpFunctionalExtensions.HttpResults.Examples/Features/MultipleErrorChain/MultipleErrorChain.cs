@@ -1,7 +1,13 @@
-﻿using CSharpFunctionalExtensions.HttpResults.Examples.Features.Books;
+﻿using CSharpFunctionalExtensions.HttpResults.Examples.Features.CRUD;
 using Microsoft.AspNetCore.Http.HttpResults;
 
 namespace CSharpFunctionalExtensions.HttpResults.Examples.Features.MultipleErrorChain;
+
+/// <summary>
+/// Because C# does not natively support union types there is no optimal solution to handle different
+/// types of errors in a chain of <see cref="Result{T,E}" />.
+/// This is the best workaround I could find for now.
+/// </summary>
 
 // 1. Create base type for all errors and define concrete errors as child type
 

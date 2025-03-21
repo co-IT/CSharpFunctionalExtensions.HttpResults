@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 
-namespace CSharpFunctionalExtensions.HttpResults.Examples.Features.Books.DeleteBook;
+namespace CSharpFunctionalExtensions.HttpResults.Examples.Features.CRUD.DeleteBook;
 
 public static class DeleteBookEndpoint
 {

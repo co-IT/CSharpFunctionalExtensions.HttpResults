@@ -2,7 +2,7 @@
 using System.Web;
 using Bogus;
 
-namespace CSharpFunctionalExtensions.HttpResults.Examples.Features.Books;
+namespace CSharpFunctionalExtensions.HttpResults.Examples.Features.CRUD;
 
 public static class FakeBooks
 {

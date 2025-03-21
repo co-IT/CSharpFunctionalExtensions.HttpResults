@@ -11,7 +11,7 @@ jobs:
   test-versions:
     strategy:
       matrix:
-        csharpFunctionalExtensionsVersion: [ '2.29.0', '2.*', '3.0.0', '3.*' ]
+        csharpFunctionalExtensionsVersion: ["2.29.0", "2.*", "3.0.0", "3.*"]
       fail-fast: false
     uses: ./.github/workflows/test-version.yml
     with:
@@ -46,3 +46,12 @@ jobs:
 
       - name: Lint
         run: dotnet csharpier --check .
+
+      - name: Link Checker
+        id: lychee
+        uses: lycheeverse/lychee-action@v2
+        with:
+          fail: true
+          args: --include-fragments .
+          jobSummary: true
+          format: markdown

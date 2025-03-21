@@ -4,7 +4,7 @@ using CSharpFunctionalExtensions.HttpResults.ResultExtensions;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 
-namespace CSharpFunctionalExtensions.HttpResults.Examples.Features.Books.FindBookCover;
+namespace CSharpFunctionalExtensions.HttpResults.Examples.Features.CRUD.FindBookCover;
 
 public static class FindBookCoverEndpoint
 {
