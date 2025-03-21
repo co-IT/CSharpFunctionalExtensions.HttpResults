@@ -6,11 +6,11 @@ This project contains a WebApi to showcase several features of `CSharpFunctional
 
 ### CRUD
 
-CRUD operations of an Book store are available under [`Features/Books`](./Features/Books).
+CRUD operations of an Book store are available under [`Features/CRUD`](./Features/CRUD).
 
 ### Files
 
-An example for a `FileContentResult` is available under [`Features/Books/FindBookCover/FindBookCoverEndpoint.cs`](./Features/Books/FindBookCover/FindBookCoverEndpoint.cs).
+An example for a `FileContentResult` is available under [`Features/CRUD/FindBookCover/FindBookCoverEndpoint.cs`](./Features/CRUD/FindBookCover/FindBookCoverEndpoint.cs).
 
 ### Streams
 
