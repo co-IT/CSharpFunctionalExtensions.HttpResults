@@ -52,6 +52,6 @@ jobs:
         uses: lycheeverse/lychee-action@v2
         with:
           fail: true
-          args: --remap '${{ github.event.repository.default_branch }} ${{ github.head_ref }}' --include-fragments .
+          args: --remap '${{ github.event.repository.default_branch }} ${{ github.head_ref || github.ref_name }}' --include-fragments .
           jobSummary: true
           format: markdown
