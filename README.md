@@ -75,7 +75,8 @@ app.MapGet("/books", (BookService service) =>
 
 ### Available methods
 
-These methods are available in sync and async variants:
+<details>
+  <summary><b>Click here</b> to view all available methods.</summary>
 
 | Method                                | Short Description                                                            |
 |---------------------------------------|------------------------------------------------------------------------------|
@@ -105,6 +106,9 @@ These methods are available in sync and async variants:
 | `.ToFileStreamHttpResult<Stream,E>()` | Returns `FileStreamHttpResult` or custom error                               |
 | `.ToContentHttpResult<string>()`      | Returns `ContentHttpResult` or `ProblemHttpResult`                           |
 | `.ToContentHttpResult<string,E>()`    | Returns `ContentHttpResult` or custom error                                  |
+</details>
+
+All methods are available in sync and async variants.
 
 ### Default mapping
 
@@ -122,7 +126,7 @@ This default mapping behaviour is configured inside the [`ProblemDetailsMappingP
 You can override this behavior by providing your own dictionary that maps status codes to their corresponding `title` and `type` of the resulting `ProblemDetails` object.
 
 <details>
-<summary>Example for changing the default mapping for german localization</summary>
+<summary><b>Click here</b> to see an example of changing the default mapping for German localization.</summary>
 
 ```csharp
 ProblemDetailsMappingProvider.DefaultMappings = new Dictionary<int, (string? Title, string? Type)>
