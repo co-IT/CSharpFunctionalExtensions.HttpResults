@@ -13,8 +13,9 @@ Seamlessly map Results from [CSharpFunctionalExtensions](https://github.com/vkho
 1. [Overview](#overview)
 2. [Installation](#installation)
 3. [Usage](#usage)
-    1. [Default mapping](#default-mapping)
-    2. [Custom error mapping](#custom-error-mapping)
+    1. [Available methods](#available-methods)
+    2. [Default mapping](#default-mapping)
+    3. [Custom error mapping](#custom-error-mapping)
 4. [Analyzers](#analyzers)
 5. [Examples](#examples)
 6. [Development](#development)
@@ -28,12 +29,11 @@ This library provides convenient extension methods to seamlessly map Results fro
 
 - ⚙️ **Zero Configuration:** Get started immediately — the mapping works out of the box without any configuration.
 - 🛠️ **Customizable Mappings:** Tailor default mappings or define custom mappings for specific use cases.
-- 🌐 **Localization Ready:** Supports custom error messages and status codes, easily adaptable to your localization needs.
 - 🔗 **Fluent API:** Maintain a smooth, railway-oriented flow by chaining HttpResult mappings at the end of your Result chain.
 - 🧱 **Separation of Domain and HTTP Errors:** Keeps domain errors distinct from HTTP errors, improving maintainability and clarity between business logic and web API concerns.
 - ⚡ **Minimal APIs & Controllers Support:** Works with both Minimal APIs and traditional controllers in ASP.NET.
 - 📦 **Full Support for ASP.NET Results:** Supports all built-in HTTP response types in ASP.NET, including `Ok`, `Created`, `NoContent`, `Accepted`, `FileStream`, and more.
-- 🦺 **Typed Results:** Utilizes typed results for consistent, type-safe API responses.
+- 🦺 **Typed Results:** Utilizes `TypedResults` for consistent, type-safe API responses.
 - 📑 **OpenAPI Ready:** Ensures accurate OpenAPI generation for clear and reliable API documentation.
 - 🛡️ **RFC Compliance:** Default mappings adhere to the RFC 9457 standard (`ProblemDetails`), ensuring your API errors are standardized and interoperable.
 - 🧑‍💻 **Developer-Friendly:** Includes built-in analyzers and source generators to speed up development and reduce errors.
@@ -72,6 +72,8 @@ app.MapGet("/books", (BookService service) =>
       .ToOkHttpResult() //Results<Ok<Book[]>, ProblemHttpResult>
 );
 ```
+
+### Available methods
 
 These methods are available in sync and async variants:
 
