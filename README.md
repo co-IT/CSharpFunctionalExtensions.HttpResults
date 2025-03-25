@@ -228,13 +228,13 @@ You can find a complete list of all analyzers [here](https://github.com/co-IT/CS
 
 ## Examples
 
-The [`CSharpFunctionalExtensions.HttpResults.Examples`](CSharpFunctionalExtensions.HttpResults.Examples) project contains various examples demonstrating how to use this library in different scenarios, including:
+The [`CSharpFunctionalExtensions.HttpResults.Examples`](https://github.com/co-IT/CSharpFunctionalExtensions.HttpResults/blob/main/CSharpFunctionalExtensions.HttpResults.Examples) project contains various examples demonstrating how to use this library in different scenarios, including:
 
-- **[Basic CRUD operations](CSharpFunctionalExtensions.HttpResults.Examples/Features/CRUD)** – Handling `GET`, `POST`, `PUT`, and `DELETE` requests
-- **[File handling](CSharpFunctionalExtensions.HttpResults.Examples/Features/FileStream)** – Returning files from your Web API
-- **[Custom error mapping](CSharpFunctionalExtensions.HttpResults.Examples/Features/CustomError)** – Defining and mapping custom error types to meaningful HTTP responses
-- **[Multiple errors in chain](CSharpFunctionalExtensions.HttpResults.Examples/Features/MultipleErrorChain)** – Using different kind of custom errors in the same result chain
-- **[Customizing default mapping](CSharpFunctionalExtensions.HttpResults.Examples/Program.cs)** – Overriding default mappings for localization or specific use cases
+- **[Basic CRUD operations](https://github.com/co-IT/CSharpFunctionalExtensions.HttpResults/blob/main/CSharpFunctionalExtensions.HttpResults.Examples/Features/CRUD)** – Handling `GET`, `POST`, `PUT`, and `DELETE` requests
+- **[File handling](https://github.com/co-IT/CSharpFunctionalExtensions.HttpResults/blob/main/CSharpFunctionalExtensions.HttpResults.Examples/Features/FileStream)** – Returning files from your Web API
+- **[Custom error mapping](https://github.com/co-IT/CSharpFunctionalExtensions.HttpResults/blob/main/CSharpFunctionalExtensions.HttpResults.Examples/Features/CustomError)** – Defining and mapping custom error types to meaningful HTTP responses
+- **[Multiple errors in chain](https://github.com/co-IT/CSharpFunctionalExtensions.HttpResults/blob/main/CSharpFunctionalExtensions.HttpResults.Examples/Features/MultipleErrorChain)** – Using different kind of custom errors in the same result chain
+- **[Customizing default mapping](https://github.com/co-IT/CSharpFunctionalExtensions.HttpResults/blob/main/CSharpFunctionalExtensions.HttpResults.Examples/Program.cs)** – Overriding default mappings for localization or specific use cases
 
 Check out the example project for hands-on implementation details!
 
@@ -257,4 +257,4 @@ To add new methods follow these steps:
 2. Add methods for `Result<T,E>` to `CSharpFunctionalExtensions.HttpResults.Generators.ResultExtensions` and add the class to `ResultExtensionsClassBuilder`
 3. Add methods for `UnitResult<E>` to `CSharpFunctionalExtensions.HttpResults.Generators.UnitResultExtensions` and add the class to `UnitResultExtensionsClassBuilder`
 4. Add tests for **all** new methods to `CSharpFunctionalExtensions.HttpResults.Tests`
-5. Add methods to [README](README.md)
+5. Add methods to [README](https://github.com/co-IT/CSharpFunctionalExtensions.HttpResults/blob/main/README.md)
