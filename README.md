@@ -8,7 +8,7 @@
 Seamlessly map Results from [CSharpFunctionalExtensions](https://github.com/vkhorikov/CSharpFunctionalExtensions) to HttpResults for cleaner, more fluent Web APIs
 
 <details>
-<summary>Table of Contents</summary>
+<summary><b>Table of Contents</b></summary>
 
 1. [Overview](#overview)
 2. [Installation](#installation)
