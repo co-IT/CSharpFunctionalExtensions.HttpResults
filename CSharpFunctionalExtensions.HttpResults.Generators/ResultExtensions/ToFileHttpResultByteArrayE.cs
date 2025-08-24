@@ -14,8 +14,8 @@ internal class ToFileHttpResultByteArrayE : IGenerateMethods
           bool enableRangeProcessing = false)
       {
           if (result.IsSuccess) return TypedResults.File(result.Value, contentType, fileDownloadName, enableRangeProcessing, lastModified, entityTag);
-          
-          return new {{mapperClassName}}().Map(result.Error);
+
+          return ErrorMapperInstances.{{mapperClassName}}.Map(result.Error);
       }
 
       /// <summary>
