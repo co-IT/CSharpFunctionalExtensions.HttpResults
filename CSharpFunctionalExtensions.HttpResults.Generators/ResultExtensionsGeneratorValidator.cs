@@ -9,7 +9,7 @@ namespace CSharpFunctionalExtensions.HttpResults.Generators;
 /// </summary>
 internal static class ResultExtensionsGeneratorValidator
 {
-  private static readonly List<IRule> Rules = [new DuplicateMapperRule()];
+  private static readonly List<IRule> Rules = [new DuplicateMapperRule(), new ParameterlessConstructorRule()];
 
   /// <summary>
   ///   Validates the rules for the generator.

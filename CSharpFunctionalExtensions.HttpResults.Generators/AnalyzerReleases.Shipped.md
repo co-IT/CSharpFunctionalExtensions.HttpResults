@@ -44,3 +44,11 @@
 | Rule ID     | Category | Severity | Notes                                  |
 |-------------|----------|----------|----------------------------------------|
 | CFEHTTPR003 | Mapping  | Error    | Empty Map getter in IResultErrorMapper |
+
+## Release v1.0.1
+
+### New Rules
+
+| Rule ID     | Category | Severity | Notes                                                   |
+|-------------|----------|----------|---------------------------------------------------------|
+| CFEHTTPR004 | Mapping  | Error    | Missing parameterless constructor in IResultErrorMapper |

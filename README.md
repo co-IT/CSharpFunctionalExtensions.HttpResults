@@ -201,7 +201,7 @@ When using `Result<T,E>` or `UnitResult<E>`, this library uses a Source Generato
         };
     }
     ```
-3. Use the auto generated extension method:
+3. Use the auto-generated extension method:
     ```csharp
     app.MapGet("/users/{id}", (string id, UserRepository repo) =>
         repo.Find(id)       //Result<User,UserNotFoundError>
@@ -222,7 +222,7 @@ When using `Result<T,E>` or `UnitResult<E>`, this library uses a Source Generato
 
 This library includes analyzers to help you use it correctly.
 
-For example, they will notify you if you have multiple mappers for the same custom error type.
+For example, they will notify you if you have multiple mappers for the same custom error type or if your mapper class doesn't have a parameterless constructor.
 
 You can find a complete list of all analyzers [here](https://github.com/co-IT/CSharpFunctionalExtensions.HttpResults/blob/main/CSharpFunctionalExtensions.HttpResults.Generators/AnalyzerReleases.Shipped.md).
 
