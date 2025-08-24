@@ -11,8 +11,8 @@ internal class ToOkHttpResultTE : IGenerateMethods
       public static Results<Ok<T>, {{httpResultType}}> ToOkHttpResult<T>(this Result<T,{{resultErrorType}}> result)
       {
           if (result.IsSuccess) return TypedResults.Ok(result.Value);
-          
-          return new {{mapperClassName}}().Map(result.Error);
+
+          return ErrorMapperInstances.{{mapperClassName}}.Map(result.Error);
       }
 
       /// <summary>

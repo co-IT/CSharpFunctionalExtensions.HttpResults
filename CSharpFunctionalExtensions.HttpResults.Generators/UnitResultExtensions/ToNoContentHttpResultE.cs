@@ -11,8 +11,8 @@ internal class ToNoContentHttpResultE : IGenerateMethods
       public static Results<NoContent, {{httpResultType}}> ToNoContentHttpResult(this UnitResult<{{resultErrorType}}> result)
       {
           if (result.IsSuccess) return TypedResults.NoContent();
-          
-          return new {{mapperClassName}}().Map(result.Error);
+
+          return ErrorMapperInstances.{{mapperClassName}}.Map(result.Error);
       }
 
       /// <summary>

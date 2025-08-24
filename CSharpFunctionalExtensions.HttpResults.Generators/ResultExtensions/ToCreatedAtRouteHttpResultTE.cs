@@ -11,8 +11,8 @@ internal class ToCreatedAtRouteHttpResultTE : IGenerateMethods
       public static Results<CreatedAtRoute<T>, {{httpResultType}}> ToCreatedAtRouteHttpResult<T>(this Result<T,{{resultErrorType}}> result, string? routeName = null, Func<T, object>? routeValues = null)
       {
           if (result.IsSuccess) return TypedResults.CreatedAtRoute(result.Value, routeName, routeValues?.Invoke(result.Value));
-          
-          return new {{mapperClassName}}().Map(result.Error);
+
+          return ErrorMapperInstances.{{mapperClassName}}.Map(result.Error);
       }
 
       /// <summary>

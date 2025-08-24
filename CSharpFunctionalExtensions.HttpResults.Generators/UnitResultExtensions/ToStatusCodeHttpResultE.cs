@@ -11,8 +11,8 @@ internal class ToStatusCodeHttpResultE : IGenerateMethods
       public static Results<StatusCodeHttpResult, {{httpResultType}}> ToStatusCodeHttpResult(this UnitResult<{{resultErrorType}}> result, int successStatusCode = 204)
       {
           if (result.IsSuccess) return TypedResults.StatusCode(successStatusCode);
-          
-          return new {{mapperClassName}}().Map(result.Error);
+
+          return ErrorMapperInstances.{{mapperClassName}}.Map(result.Error);
       }
 
       /// <summary>

@@ -12,7 +12,7 @@ internal class ToContentHttpResultStringE : IGenerateMethods
       {
           if (result.IsSuccess) return TypedResults.Content(result.Value, contentType, contentEncoding, statusCode);
 
-          return new {{mapperClassName}}().Map(result.Error);
+          return ErrorMapperInstances.{{mapperClassName}}.Map(result.Error);
       }
 
       /// <summary>

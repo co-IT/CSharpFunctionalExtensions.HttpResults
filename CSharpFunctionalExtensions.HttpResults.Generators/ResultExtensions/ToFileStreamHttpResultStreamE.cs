@@ -14,8 +14,8 @@ internal class ToFileStreamHttpResultStreamE : IGenerateMethods
           bool enableRangeProcessing = false) where T : Stream
       {
           if (result.IsSuccess) return TypedResults.Stream(result.Value, contentType, fileDownloadName, lastModified, entityTag, enableRangeProcessing);
-          
-          return new {{mapperClassName}}().Map(result.Error);
+
+          return ErrorMapperInstances.{{mapperClassName}}.Map(result.Error);
       }
 
       /// <summary>

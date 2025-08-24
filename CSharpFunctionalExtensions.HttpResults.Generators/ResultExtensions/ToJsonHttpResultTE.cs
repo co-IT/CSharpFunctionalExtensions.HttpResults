@@ -11,8 +11,8 @@ internal class ToJsonHttpResultTE : IGenerateMethods
       public static Results<JsonHttpResult<T>, {{httpResultType}}> ToJsonHttpResult<T>(this Result<T,{{resultErrorType}}> result, int successStatusCode = 200)
       {
           if (result.IsSuccess) return TypedResults.Json(result.Value, statusCode: successStatusCode);
-          
-          return new {{mapperClassName}}().Map(result.Error);
+
+          return ErrorMapperInstances.{{mapperClassName}}.Map(result.Error);
       }
 
       /// <summary>

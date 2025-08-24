@@ -15,7 +15,7 @@ internal class ToCreatedHttpResultTE : IGenerateMethods
               ? TypedResults.Created(string.Empty, result.Value)
               : TypedResults.Created(uri.Invoke(result.Value), result.Value);
 
-          return new {{mapperClassName}}().Map(result.Error);
+          return ErrorMapperInstances.{{mapperClassName}}.Map(result.Error);
       }
 
       /// <summary>

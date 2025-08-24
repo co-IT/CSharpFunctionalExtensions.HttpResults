@@ -11,8 +11,8 @@ internal class ToAcceptedHttpResultTE : IGenerateMethods
       public static Results<Accepted<T>, {{httpResultType}}> ToAcceptedHttpResult<T>(this Result<T,{{resultErrorType}}> result, Func<T, Uri> uri)
       {
           if (result.IsSuccess) return TypedResults.Accepted(uri(result.Value), result.Value);
-          
-          return new {{mapperClassName}}().Map(result.Error);
+
+          return ErrorMapperInstances.{{mapperClassName}}.Map(result.Error);
       }
 
       /// <summary>
