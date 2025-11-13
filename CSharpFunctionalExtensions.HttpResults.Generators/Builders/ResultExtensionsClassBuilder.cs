@@ -30,5 +30,6 @@ public class ResultExtensionsClassBuilder(
       new ToStatusCodeHttpResultTE(),
       new ToOkHttpResultTE(),
       new ToContentHttpResultStringE(),
+      new ToServerSentEventsHttpResultIAsyncEnumerableTE(),
     ];
 }
