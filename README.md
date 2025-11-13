@@ -13,12 +13,13 @@ Seamlessly map Results from [CSharpFunctionalExtensions](https://github.com/vkho
 1. [Overview](#overview)
 2. [Installation](#installation)
 3. [Usage](#usage)
-    1. [Available methods](#available-methods)
-    2. [Default mapping](#default-mapping)
-    3. [Custom error mapping](#custom-error-mapping)
+1. [Available methods](#available-methods)
+2. [Default mapping](#default-mapping)
+3. [Custom error mapping](#custom-error-mapping)
 4. [Analyzers](#analyzers)
 5. [Examples](#examples)
 6. [Development](#development)
+
 </details>
 
 ## Overview
@@ -66,6 +67,7 @@ This library provides you extension methods to map the following `Result` types 
 - `UnitResult<E>`
 
 *Example:*
+
 ```csharp
 app.MapGet("/books", (BookService service) =>
     service.Get()       //Result<Book[]>
@@ -78,34 +80,37 @@ app.MapGet("/books", (BookService service) =>
 <details>
   <summary><b>Click here</b> to view all available methods.</summary>
 
-| Method                                | Short Description                                                            |
-|---------------------------------------|------------------------------------------------------------------------------|
-| `.ToStatusCodeHttpResult()`           | Returns `StatusCodeHttpResult` or `ProblemHttpResult`                        |
-| `.ToStatusCodeHttpResult<T>()`        | Returns `StatusCodeHttpResult` or `ProblemHttpResult`                        |
-| `.ToStatusCodeHttpResult<T,E>()`      | Returns `StatusCodeHttpResult` or custom error                               |
-| `.ToStatusCodeHttpResult<E>()`        | Returns `StatusCodeHttpResult` or custom error                               |
-| `.ToJsonHttpResult<T>()`              | Returns `JsonHttpResult<T>` or `ProblemHttpResult`                           |
-| `.ToJsonHttpResult<T,E>()`            | Returns `JsonHttpResult<T>` or custom error                                  |
-| `.ToOkHttpResult<T>()`                | Returns `Ok<T>` or `ProblemHttpResult`                                       |
-| `.ToOkHttpResult<T,E>()`              | Returns `Ok<T>` or custom error                                              |
-| `.ToNoContentHttpResult()`            | Returns `NoContent` or `ProblemHttpResult`                                   |
-| `.ToNoContentHttpResult<T>()`         | Discards value of `Result<T>` and returns `NoContent` or `ProblemHttpResult` |
-| `.ToNoContentHttpResult<T,E>()`       | Discards value of `Result<T>` and returns `NoContent` or custom error        |
-| `.ToNoContentHttpResult<E>()`         | Returns `NoContent` or custom error                                          |
-| `.ToCreatedHttpResult<T>()`           | Returns `Created<T>` or `ProblemHttpResult`                                  |
-| `.ToCreatedHttpResult<T,E>()`         | Returns `Created<T>` or custom error                                         |
-| `.ToCreatedAtRouteHttpResult<T>()`    | Returns `CreatedAtRoute<T>` or `ProblemHttpResult`                           |
-| `.ToCreatedAtRouteHttpResult<T,E>()`  | Returns `CreatedAtRoute<T>` or custom error                                  |
-| `.ToAcceptedHttpResult<T>()`          | Returns `Accepted<T>` or `ProblemHttpResult`                                 |
-| `.ToAcceptedHttpResult<T,E>()`        | Returns `Accepted<T>` or custom error                                        |
-| `.ToAcceptedAtRouteHttpResult<T>()`   | Returns `AcceptedAtRoute<T>` or `ProblemHttpResult`                          |
-| `.ToAcceptedAtRouteHttpResult<T,E>()` | Returns `AcceptedAtRoute<T>` or custom error                                 |
-| `.ToFileHttpResult<byte[]>()`         | Returns `FileContentHttpResult` or `ProblemHttpResult`                       |
-| `.ToFileHttpResult<byte[],E>()`       | Returns `FileContentHttpResult` or custom error                              |
-| `.ToFileStreamHttpResult<Stream>()`   | Returns `FileStreamHttpResult` or `ProblemHttpResult`                        |
-| `.ToFileStreamHttpResult<Stream,E>()` | Returns `FileStreamHttpResult` or custom error                               |
-| `.ToContentHttpResult<string>()`      | Returns `ContentHttpResult` or `ProblemHttpResult`                           |
-| `.ToContentHttpResult<string,E>()`    | Returns `ContentHttpResult` or custom error                                  |
+| Method                                                   | Short Description                                                                |
+|----------------------------------------------------------|----------------------------------------------------------------------------------|
+| `.ToStatusCodeHttpResult()`                              | Returns `StatusCodeHttpResult` or `ProblemHttpResult`                            |
+| `.ToStatusCodeHttpResult<T>()`                           | Returns `StatusCodeHttpResult` or `ProblemHttpResult`                            |
+| `.ToStatusCodeHttpResult<T,E>()`                         | Returns `StatusCodeHttpResult` or custom error                                   |
+| `.ToStatusCodeHttpResult<E>()`                           | Returns `StatusCodeHttpResult` or custom error                                   |
+| `.ToJsonHttpResult<T>()`                                 | Returns `JsonHttpResult<T>` or `ProblemHttpResult`                               |
+| `.ToJsonHttpResult<T,E>()`                               | Returns `JsonHttpResult<T>` or custom error                                      |
+| `.ToOkHttpResult<T>()`                                   | Returns `Ok<T>` or `ProblemHttpResult`                                           |
+| `.ToOkHttpResult<T,E>()`                                 | Returns `Ok<T>` or custom error                                                  |
+| `.ToNoContentHttpResult()`                               | Returns `NoContent` or `ProblemHttpResult`                                       |
+| `.ToNoContentHttpResult<T>()`                            | Discards value of `Result<T>` and returns `NoContent` or `ProblemHttpResult`     |
+| `.ToNoContentHttpResult<T,E>()`                          | Discards value of `Result<T>` and returns `NoContent` or custom error            |
+| `.ToNoContentHttpResult<E>()`                            | Returns `NoContent` or custom error                                              |
+| `.ToCreatedHttpResult<T>()`                              | Returns `Created<T>` or `ProblemHttpResult`                                      |
+| `.ToCreatedHttpResult<T,E>()`                            | Returns `Created<T>` or custom error                                             |
+| `.ToCreatedAtRouteHttpResult<T>()`                       | Returns `CreatedAtRoute<T>` or `ProblemHttpResult`                               |
+| `.ToCreatedAtRouteHttpResult<T,E>()`                     | Returns `CreatedAtRoute<T>` or custom error                                      |
+| `.ToAcceptedHttpResult<T>()`                             | Returns `Accepted<T>` or `ProblemHttpResult`                                     |
+| `.ToAcceptedHttpResult<T,E>()`                           | Returns `Accepted<T>` or custom error                                            |
+| `.ToAcceptedAtRouteHttpResult<T>()`                      | Returns `AcceptedAtRoute<T>` or `ProblemHttpResult`                              |
+| `.ToAcceptedAtRouteHttpResult<T,E>()`                    | Returns `AcceptedAtRoute<T>` or custom error                                     |
+| `.ToFileHttpResult<byte[]>()`                            | Returns `FileContentHttpResult` or `ProblemHttpResult`                           |
+| `.ToFileHttpResult<byte[],E>()`                          | Returns `FileContentHttpResult` or custom error                                  |
+| `.ToFileStreamHttpResult<Stream>()`                      | Returns `FileStreamHttpResult` or `ProblemHttpResult`                            |
+| `.ToFileStreamHttpResult<Stream,E>()`                    | Returns `FileStreamHttpResult` or custom error                                   |
+| `.ToContentHttpResult<string>()`                         | Returns `ContentHttpResult` or `ProblemHttpResult`                               |
+| `.ToContentHttpResult<string,E>()`                       | Returns `ContentHttpResult` or custom error                                      |
+| `.ToServerSentEventsHttpResult<IAsyncEnumerable<T>>()`   | Returns `ServerSentEventsResult<T>` or `ProblemHttpResult` (requires >= .NET 10) |
+| `.ToServerSentEventsHttpResult<IAsyncEnumerable<T>,E>()` | Returns `ServerSentEventsResult<T>` or custom error        (requires >= .NET 10) |
+
 </details>
 
 All methods are available in sync and async variants.
