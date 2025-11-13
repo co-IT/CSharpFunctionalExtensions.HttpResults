@@ -13,7 +13,6 @@ public static class BooksGroup
   {
     endpointRouteBuilder
       .MapGroup("/books")
-      .WithOpenApi()
       .MapGetBooks()
       .MapFindBook()
       .MapFindBookCover()
