@@ -31,6 +31,7 @@ jobs:
             7
             8
             9.0.201
+            10.0.100
 
       - name: Install .NET tools
         run: dotnet tool restore
