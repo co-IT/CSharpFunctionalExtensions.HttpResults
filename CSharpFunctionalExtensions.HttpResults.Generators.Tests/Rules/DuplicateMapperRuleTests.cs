@@ -29,11 +29,13 @@ public class DuplicateMapperRuleTests
       }
       """;
 
-    var diagnostics = ResultExtensionsGeneratorTestHelper.RunGenerator(sourceCode).ToList();
+    var (diagnostics, _) = GeneratorTestHelper.RunGenerator(sourceCode);
 
-    diagnostics.Count.Should().Be(1);
+    var diagnosticsList = diagnostics.ToList();
 
-    var diagnostic = diagnostics[0];
+    diagnosticsList.Should().HaveCount(1);
+
+    var diagnostic = diagnosticsList[0];
 
     diagnostic.Id.Should().Be("CFEHTTPR002");
     diagnostic.Severity.Should().Be(DiagnosticSeverity.Error);
