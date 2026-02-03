@@ -1,5 +1,6 @@
 ﻿using System.Text;
 using CSharpFunctionalExtensions.HttpResults.Generators.Builders;
+using CSharpFunctionalExtensions.HttpResults.Generators.Utils;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Text;
@@ -43,19 +44,14 @@ internal class ResultExtensionsGenerator : IIncrementalGenerator
         var (compilation, classDeclarations) = source;
 
         var mapperClasses = new List<ClassDeclarationSyntax>();
-        var requiredNamespaces = new HashSet<string>();
 
         Parallel.ForEach(
           classDeclarations,
           classDeclaration =>
           {
-            var semanticModel = compilation.GetSemanticModel(classDeclaration.SyntaxTree);
-            var namespaceName = GetNamespace(classDeclaration, semanticModel);
-
             lock (mapperClasses)
             {
               mapperClasses.Add(classDeclaration);
-              requiredNamespaces.Add(namespaceName);
             }
           }
         );
@@ -63,13 +59,13 @@ internal class ResultExtensionsGenerator : IIncrementalGenerator
         if (!ResultExtensionsGeneratorValidator.CheckRules(mapperClasses, context))
           return;
 
-        var (fileName, sourceText) = CreateErrorMapperInstancesClass(mapperClasses, requiredNamespaces);
+        var (fileName, sourceText) = CreateErrorMapperInstancesClass(mapperClasses, compilation);
         context.AddSource(fileName, SourceText.From(sourceText, Encoding.UTF8));
 
         var classBuilders = new List<ClassBuilder>
         {
-          new ResultExtensionsClassBuilder(requiredNamespaces, mapperClasses, compilation),
-          new UnitResultExtensionsClassBuilder(requiredNamespaces, mapperClasses, compilation),
+          new ResultExtensionsClassBuilder(mapperClasses, compilation),
+          new UnitResultExtensionsClassBuilder(mapperClasses, compilation),
         };
 
         foreach (var classBuilder in classBuilders)
@@ -83,7 +79,7 @@ internal class ResultExtensionsGenerator : IIncrementalGenerator
   /// </summary>
   private static (string FileName, string SourceText) CreateErrorMapperInstancesClass(
     List<ClassDeclarationSyntax> mapperClasses,
-    HashSet<string> requiredNamespaces
+    Compilation compilation
   )
   {
     var sourceBuilder = new StringBuilder();
@@ -92,20 +88,20 @@ internal class ResultExtensionsGenerator : IIncrementalGenerator
     sourceBuilder.AppendLine();
     sourceBuilder.AppendLine("#nullable enable");
     sourceBuilder.AppendLine();
-    requiredNamespaces
-      .Where(@namespace => !@namespace.StartsWith("global"))
-      .Distinct()
-      .Select(@namespace => $"using {@namespace};")
-      .ToList()
-      .ForEach(@using => sourceBuilder.AppendLine(@using));
     sourceBuilder.AppendLine();
 
     sourceBuilder.AppendLine("public static class ErrorMapperInstances {");
 
-    foreach (var mapperName in mapperClasses)
-      sourceBuilder.AppendLine(
-        $"    public static {mapperName.Identifier.Text} {mapperName.Identifier.Text} {{ get; }} = new();"
-      );
+    foreach (var mapper in mapperClasses)
+    {
+      var semanticModel = compilation.GetSemanticModel(mapper.SyntaxTree);
+
+      if (semanticModel.GetDeclaredSymbol(mapper) is not ITypeSymbol mapperSymbol)
+        continue;
+
+      var mapperType = TypeNameResolver.GetFullyQualifiedTypeName(mapperSymbol);
+      sourceBuilder.AppendLine($"    public static {mapperType} {mapper.Identifier.Text} {{ get; }} = new();");
+    }
 
     sourceBuilder.AppendLine("}");
 
@@ -126,17 +122,5 @@ internal class ResultExtensionsGenerator : IIncrementalGenerator
     return classSymbol.AllInterfaces.Any(interfaceSymbol =>
       interfaceSymbol.Name.StartsWith(ResultErrorMapperInterface)
     );
-  }
-
-  /// <summary>
-  ///   Retrieves the namespace of a class declaration.
-  /// </summary>
-  /// <param name="classDeclaration">The class declaration syntax node.</param>
-  /// <param name="semanticModel">The semantic model for the syntax tree.</param>
-  /// <returns>The namespace of the class, or an empty string if the namespace cannot be determined.</returns>
-  private static string GetNamespace(ClassDeclarationSyntax classDeclaration, SemanticModel semanticModel)
-  {
-    var symbol = semanticModel.GetDeclaredSymbol(classDeclaration);
-    return symbol?.ContainingNamespace?.ToString() ?? string.Empty;
   }
 }

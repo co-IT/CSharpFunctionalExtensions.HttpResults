@@ -1,4 +1,5 @@
 ﻿using System.Text;
+using CSharpFunctionalExtensions.HttpResults.Generators.Utils;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 
@@ -6,24 +7,12 @@ namespace CSharpFunctionalExtensions.HttpResults.Generators.Builders;
 
 public abstract class ClassBuilder
 {
-  private static readonly SymbolDisplayFormat FullyQualifiedWithNullables =
-    SymbolDisplayFormat.FullyQualifiedFormat.WithMiscellaneousOptions(
-      SymbolDisplayFormat.FullyQualifiedFormat.MiscellaneousOptions
-        | SymbolDisplayMiscellaneousOptions.IncludeNullableReferenceTypeModifier
-    );
-
   private const string MapMethodName = "Map";
-  private readonly List<ClassDeclarationSyntax> _mapperClasses;
-  private readonly HashSet<string> _requiredNamespaces;
   private readonly Compilation? _compilation;
+  private readonly List<ClassDeclarationSyntax> _mapperClasses;
 
-  protected ClassBuilder(
-    HashSet<string> requiredNamespaces,
-    List<ClassDeclarationSyntax> mapperClasses,
-    Compilation? compilation = null
-  )
+  protected ClassBuilder(List<ClassDeclarationSyntax> mapperClasses, Compilation? compilation = null)
   {
-    _requiredNamespaces = requiredNamespaces;
     _mapperClasses = mapperClasses;
     _compilation = compilation;
   }
@@ -31,12 +20,12 @@ public abstract class ClassBuilder
   private static string DefaultUsings =>
     """
       using CSharpFunctionalExtensions;
-      using IResult = Microsoft.AspNetCore.Http.IResult;
       using Microsoft.AspNetCore.Http.HttpResults;
       using Microsoft.AspNetCore.Http;
       using Microsoft.AspNetCore.Mvc;
       using Microsoft.Net.Http.Headers;
       using System.Text;
+      using IResult = Microsoft.AspNetCore.Http.IResult;
       """;
 
   public string SourceFileName => $"{ClassName}.g.cs";
@@ -54,13 +43,6 @@ public abstract class ClassBuilder
     sourceBuilder.AppendLine("#nullable enable");
     sourceBuilder.AppendLine();
     sourceBuilder.AppendLine(DefaultUsings);
-
-    _requiredNamespaces
-      .Where(@namespace => !@namespace.StartsWith("global"))
-      .Distinct()
-      .Select(@namespace => $"using {@namespace};")
-      .ToList()
-      .ForEach(@using => sourceBuilder.AppendLine(@using));
 
     sourceBuilder.AppendLine();
     sourceBuilder.AppendLine(ClassSummary);
@@ -82,7 +64,7 @@ public abstract class ClassBuilder
         throw new ArgumentException($"Mapping method in class {mapperClassName} must have exactly one parameter.");
 
       var resultErrorType = GetFullyQualifiedTypeName(mapperClass, mappingMethod.ParameterList.Parameters[0].Type!);
-      var httpResultType = GetFullyQualifiedTypeName(mapperClass, mappingMethod.ReturnType!);
+      var httpResultType = mappingMethod.ReturnType!.ToString();
 
       foreach (var methodGenerator in MethodGenerators)
       {
@@ -108,6 +90,6 @@ public abstract class ClassBuilder
     if (typeInfo.Type == null)
       return typeSyntax.ToString();
 
-    return typeInfo.Type.ToDisplayString(FullyQualifiedWithNullables);
+    return TypeNameResolver.GetFullyQualifiedTypeName(typeInfo.Type);
   }
 }
