@@ -43,7 +43,7 @@ jobs:
         run: dotnet build -c Release --no-restore -p:ContinuousIntegrationBuild=true
 
       - name: Lint
-        run: dotnet csharpier --check .
+        run: dotnet csharpier check .
 
       - name: Extract version from tag
         run: |

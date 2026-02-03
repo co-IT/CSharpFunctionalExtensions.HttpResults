@@ -46,7 +46,7 @@ jobs:
         run: dotnet pack ./CSharpFunctionalExtensions.HttpResults/CSharpFunctionalExtensions.HttpResults.csproj -c Release -p:ContinuousIntegrationBuild=true -p:Version=0.0.0 --output dist/package
 
       - name: Lint
-        run: dotnet csharpier --check .
+        run: dotnet csharpier check .
 
       - name: Link Checker
         id: lychee
