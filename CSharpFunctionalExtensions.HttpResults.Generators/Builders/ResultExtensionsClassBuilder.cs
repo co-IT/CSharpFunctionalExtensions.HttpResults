@@ -1,12 +1,14 @@
 using CSharpFunctionalExtensions.HttpResults.Generators.ResultExtensions;
+using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 namespace CSharpFunctionalExtensions.HttpResults.Generators.Builders;
 
 public class ResultExtensionsClassBuilder(
   HashSet<string> requiredNamespaces,
-  List<ClassDeclarationSyntax> mapperClasses
-) : ClassBuilder(requiredNamespaces, mapperClasses)
+  List<ClassDeclarationSyntax> mapperClasses,
+  Compilation? compilation = null
+) : ClassBuilder(requiredNamespaces, mapperClasses, compilation)
 {
   protected override string ClassName => "ResultExtensions";
 
