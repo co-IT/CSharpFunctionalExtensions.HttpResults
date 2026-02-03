@@ -8,7 +8,6 @@ namespace CSharpFunctionalExtensions.HttpResults.Examples.Features.MultipleError
 /// types of errors in a chain of <see cref="Result{T,E}" />.
 /// This is the best workaround I could find for now.
 /// </summary>
-
 // 1. Create base type for all errors and define concrete errors as child type
 
 public record BookError;

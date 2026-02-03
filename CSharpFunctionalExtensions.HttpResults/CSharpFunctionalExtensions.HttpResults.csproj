@@ -1,5 +1,4 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-
   <PropertyGroup>
     <TargetFrameworks>net7.0;net8.0;net9.0;net10.0</TargetFrameworks>
     <Nullable>enable</Nullable>
@@ -26,20 +25,28 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <FrameworkReference Include="Microsoft.AspNetCore.App"/>
+    <FrameworkReference Include="Microsoft.AspNetCore.App" />
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="CSharpFunctionalExtensions" Version="[2.29.0,4.0.0)"/>
+    <PackageReference Include="CSharpFunctionalExtensions" Version="[2.29.0,4.0.0)" />
   </ItemGroup>
 
   <ItemGroup>
-    <None Include="..\README.md" Pack="true" PackagePath="\"/>
-    <None Include="..\LICENSE.md" Pack="true" PackagePath="\"/>
-    <None Include="$(OutputPath)\net9.0\CSharpFunctionalExtensions.HttpResults.Generators.dll" Pack="true" PackagePath="analyzers/dotnet/cs" Visible="false"/>
+    <None Include="..\README.md" Pack="true" PackagePath="\" />
+    <None Include="..\LICENSE.md" Pack="true" PackagePath="\" />
+    <None
+      Include="$(OutputPath)\net9.0\CSharpFunctionalExtensions.HttpResults.Generators.dll"
+      Pack="true"
+      PackagePath="analyzers/dotnet/cs"
+      Visible="false"
+    />
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\CSharpFunctionalExtensions.HttpResults.Generators\CSharpFunctionalExtensions.HttpResults.Generators.csproj" PrivateAssets="All"/>
+    <ProjectReference
+      Include="..\CSharpFunctionalExtensions.HttpResults.Generators\CSharpFunctionalExtensions.HttpResults.Generators.csproj"
+      PrivateAssets="All"
+    />
   </ItemGroup>
 </Project>
