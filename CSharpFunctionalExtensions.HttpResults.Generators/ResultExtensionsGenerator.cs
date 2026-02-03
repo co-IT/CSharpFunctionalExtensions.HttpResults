@@ -1,5 +1,4 @@
-﻿using System.Diagnostics;
-using System.Text;
+﻿using System.Text;
 using CSharpFunctionalExtensions.HttpResults.Generators.Builders;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
@@ -69,8 +68,8 @@ internal class ResultExtensionsGenerator : IIncrementalGenerator
 
         var classBuilders = new List<ClassBuilder>
         {
-          new ResultExtensionsClassBuilder(requiredNamespaces, mapperClasses),
-          new UnitResultExtensionsClassBuilder(requiredNamespaces, mapperClasses),
+          new ResultExtensionsClassBuilder(requiredNamespaces, mapperClasses, compilation),
+          new UnitResultExtensionsClassBuilder(requiredNamespaces, mapperClasses, compilation),
         };
 
         foreach (var classBuilder in classBuilders)

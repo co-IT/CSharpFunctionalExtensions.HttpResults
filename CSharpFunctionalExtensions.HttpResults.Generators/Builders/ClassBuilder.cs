@@ -1,18 +1,31 @@
 ﻿using System.Text;
+using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 namespace CSharpFunctionalExtensions.HttpResults.Generators.Builders;
 
 public abstract class ClassBuilder
 {
+  private static readonly SymbolDisplayFormat FullyQualifiedWithNullables =
+    SymbolDisplayFormat.FullyQualifiedFormat.WithMiscellaneousOptions(
+      SymbolDisplayFormat.FullyQualifiedFormat.MiscellaneousOptions
+        | SymbolDisplayMiscellaneousOptions.IncludeNullableReferenceTypeModifier
+    );
+
   private const string MapMethodName = "Map";
   private readonly List<ClassDeclarationSyntax> _mapperClasses;
   private readonly HashSet<string> _requiredNamespaces;
+  private readonly Compilation? _compilation;
 
-  protected ClassBuilder(HashSet<string> requiredNamespaces, List<ClassDeclarationSyntax> mapperClasses)
+  protected ClassBuilder(
+    HashSet<string> requiredNamespaces,
+    List<ClassDeclarationSyntax> mapperClasses,
+    Compilation? compilation = null
+  )
   {
     _requiredNamespaces = requiredNamespaces;
     _mapperClasses = mapperClasses;
+    _compilation = compilation;
   }
 
   private static string DefaultUsings =>
@@ -68,8 +81,8 @@ public abstract class ClassBuilder
       if (mappingMethod.ParameterList.Parameters.Count != 1)
         throw new ArgumentException($"Mapping method in class {mapperClassName} must have exactly one parameter.");
 
-      var resultErrorType = mappingMethod.ParameterList.Parameters[0].Type!.ToString();
-      var httpResultType = mappingMethod.ReturnType.ToString();
+      var resultErrorType = GetFullyQualifiedTypeName(mapperClass, mappingMethod.ParameterList.Parameters[0].Type!);
+      var httpResultType = GetFullyQualifiedTypeName(mapperClass, mappingMethod.ReturnType!);
 
       foreach (var methodGenerator in MethodGenerators)
       {
@@ -82,5 +95,19 @@ public abstract class ClassBuilder
     sourceBuilder.AppendLine("}");
 
     return sourceBuilder.ToString();
+  }
+
+  private string GetFullyQualifiedTypeName(ClassDeclarationSyntax mapperClass, TypeSyntax typeSyntax)
+  {
+    if (_compilation == null)
+      return typeSyntax.ToString();
+
+    var semanticModel = _compilation.GetSemanticModel(mapperClass.SyntaxTree);
+    var typeInfo = semanticModel.GetTypeInfo(typeSyntax);
+
+    if (typeInfo.Type == null)
+      return typeSyntax.ToString();
+
+    return typeInfo.Type.ToDisplayString(FullyQualifiedWithNullables);
   }
 }
