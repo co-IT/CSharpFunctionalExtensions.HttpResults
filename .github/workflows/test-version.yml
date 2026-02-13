@@ -7,6 +7,11 @@ on:
         type: string
         required: true
 
+permissions:
+  contents: read
+  actions: write
+  checks: write
+
 jobs:
   test-version:
     runs-on: ubuntu-latest

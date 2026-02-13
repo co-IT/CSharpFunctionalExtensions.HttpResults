@@ -7,6 +7,10 @@ on:
 
 jobs:
   test-versions:
+    permissions:
+      contents: read
+      actions: write
+      checks: write
     strategy:
       matrix:
         csharpFunctionalExtensionsVersion: [ '2.29.0', '2.*', '3.0.0', '3.*' ]
