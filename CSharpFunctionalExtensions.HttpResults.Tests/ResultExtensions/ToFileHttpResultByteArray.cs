@@ -16,7 +16,6 @@ public class ToFileHttpResultByteArray
     var fileDownloadName = "foo.txt";
     var lastModified = DateTimeOffset.Now;
     var entityTag = new EntityTagHeaderValue("\"fooETag\"");
-    ;
     var enableRangeProcessing = true;
 
     var result =
@@ -42,7 +41,6 @@ public class ToFileHttpResultByteArray
     var fileDownloadName = "foo.txt";
     var lastModified = DateTimeOffset.Now;
     var entityTag = new EntityTagHeaderValue("\"fooETag\"");
-    ;
     var enableRangeProcessing = true;
 
     var result =
