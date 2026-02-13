@@ -18,15 +18,11 @@ internal class ParameterlessConstructorRule : IRule
 
   public IEnumerable<Diagnostic> Check(List<ClassDeclarationSyntax> mapperClasses)
   {
-    foreach (var mapperClass in mapperClasses)
-    {
-      if (!HasParameterlessConstructor(mapperClass))
-        yield return Diagnostic.Create(
-          RuleDescriptor,
-          mapperClass.Identifier.GetLocation(),
-          mapperClass.Identifier.Text
-        );
-    }
+    return mapperClasses
+      .Where(mapperClass => !HasParameterlessConstructor(mapperClass))
+      .Select(mapperClass =>
+        Diagnostic.Create(RuleDescriptor, mapperClass.Identifier.GetLocation(), mapperClass.Identifier.Text)
+      );
   }
 
   private static bool HasParameterlessConstructor(ClassDeclarationSyntax classDeclaration)

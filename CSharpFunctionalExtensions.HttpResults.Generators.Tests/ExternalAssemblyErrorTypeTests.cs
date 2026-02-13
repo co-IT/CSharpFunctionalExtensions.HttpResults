@@ -34,7 +34,9 @@ public class ExternalAssemblyErrorTypeTests
     var emitResult = externalCompilation.Emit(ms);
     emitResult.Success.Should().BeTrue("External assembly should compile");
 
-    var externalAssemblyReference = MetadataReference.CreateFromStream(new MemoryStream(ms.ToArray()));
+    ms.Position = 0;
+
+    var externalAssemblyReference = MetadataReference.CreateFromStream(ms);
 
     // Create mapper in the main assembly that references the external error type
     var mapperCode = """
@@ -84,7 +86,9 @@ public class ExternalAssemblyErrorTypeTests
     var emitResult = externalCompilation.Emit(ms);
     emitResult.Success.Should().BeTrue();
 
-    var externalAssemblyReference = MetadataReference.CreateFromStream(new MemoryStream(ms.ToArray()));
+    ms.Position = 0;
+
+    var externalAssemblyReference = MetadataReference.CreateFromStream(ms);
 
     // Create multiple mappers
     var mappersCode = """
@@ -146,7 +150,9 @@ public class ExternalAssemblyErrorTypeTests
     var emitResult = externalCompilation.Emit(ms);
     emitResult.Success.Should().BeTrue();
 
-    var externalAssemblyReference = MetadataReference.CreateFromStream(new MemoryStream(ms.ToArray()));
+    ms.Position = 0;
+
+    var externalAssemblyReference = MetadataReference.CreateFromStream(ms);
 
     var mapperCode = """
       using Microsoft.AspNetCore.Http;
