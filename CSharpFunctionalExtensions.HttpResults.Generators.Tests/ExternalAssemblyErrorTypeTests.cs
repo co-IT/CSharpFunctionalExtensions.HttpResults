@@ -21,7 +21,10 @@ public class ExternalAssemblyErrorTypeTests
       public sealed record NotFoundError(string Message);
       """;
 
-    var externalAssemblySyntaxTree = CSharpSyntaxTree.ParseText(externalErrorTypeCode);
+    var externalAssemblySyntaxTree = CSharpSyntaxTree.ParseText(
+      externalErrorTypeCode,
+      cancellationToken: TestContext.Current.CancellationToken
+    );
     var externalCompilation = CSharpCompilation.Create(
       "ExternalAssembly",
       [externalAssemblySyntaxTree],
@@ -31,7 +34,7 @@ public class ExternalAssemblyErrorTypeTests
 
     // Emit the external assembly to get a reference
     using var ms = new MemoryStream();
-    var emitResult = externalCompilation.Emit(ms);
+    var emitResult = externalCompilation.Emit(ms, cancellationToken: TestContext.Current.CancellationToken);
     emitResult.Success.Should().BeTrue("External assembly should compile");
 
     ms.Position = 0;
@@ -74,7 +77,10 @@ public class ExternalAssemblyErrorTypeTests
       public sealed record ValidationError(string Message);
       """;
 
-    var externalAssemblySyntaxTree = CSharpSyntaxTree.ParseText(externalErrorTypesCode);
+    var externalAssemblySyntaxTree = CSharpSyntaxTree.ParseText(
+      externalErrorTypesCode,
+      cancellationToken: TestContext.Current.CancellationToken
+    );
     var externalCompilation = CSharpCompilation.Create(
       "ExternalAssembly",
       [externalAssemblySyntaxTree],
@@ -83,7 +89,7 @@ public class ExternalAssemblyErrorTypeTests
     );
 
     using var ms = new MemoryStream();
-    var emitResult = externalCompilation.Emit(ms);
+    var emitResult = externalCompilation.Emit(ms, cancellationToken: TestContext.Current.CancellationToken);
     emitResult.Success.Should().BeTrue();
 
     ms.Position = 0;
@@ -138,7 +144,10 @@ public class ExternalAssemblyErrorTypeTests
       public sealed record NotFoundError(string Message);
       """;
 
-    var externalAssemblySyntaxTree = CSharpSyntaxTree.ParseText(externalErrorTypeCode);
+    var externalAssemblySyntaxTree = CSharpSyntaxTree.ParseText(
+      externalErrorTypeCode,
+      cancellationToken: TestContext.Current.CancellationToken
+    );
     var externalCompilation = CSharpCompilation.Create(
       "ExternalAssembly",
       [externalAssemblySyntaxTree],
@@ -147,7 +156,7 @@ public class ExternalAssemblyErrorTypeTests
     );
 
     using var ms = new MemoryStream();
-    var emitResult = externalCompilation.Emit(ms);
+    var emitResult = externalCompilation.Emit(ms, cancellationToken: TestContext.Current.CancellationToken);
     emitResult.Success.Should().BeTrue();
 
     ms.Position = 0;

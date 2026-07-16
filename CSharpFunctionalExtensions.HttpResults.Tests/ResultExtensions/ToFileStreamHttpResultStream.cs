@@ -58,7 +58,7 @@ public class ToFileStreamHttpResultStream
 
     await using var resultStream = new MemoryStream();
     result!.FileStream.Position = 0;
-    await result!.FileStream.CopyToAsync(resultStream);
+    await result!.FileStream.CopyToAsync(resultStream, TestContext.Current.CancellationToken);
     resultStream.ToArray().Should().BeEquivalentTo(value);
     result!.LastModified.Should().Be(lastModified);
     result!.FileDownloadName.Should().Be(fileDownloadName);
