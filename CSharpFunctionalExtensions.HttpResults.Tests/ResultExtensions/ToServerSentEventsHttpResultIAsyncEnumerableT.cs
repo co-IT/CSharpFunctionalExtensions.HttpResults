@@ -3,7 +3,7 @@
 using System.Net.Mime;
 using CSharpFunctionalExtensions.HttpResults.ResultExtensions;
 using CSharpFunctionalExtensions.HttpResults.Tests.Utils;
-using FluentAssertions;
+using AwesomeAssertions;
 using Microsoft.AspNetCore.Http.HttpResults;
 
 namespace CSharpFunctionalExtensions.HttpResults.Tests.ResultExtensions;

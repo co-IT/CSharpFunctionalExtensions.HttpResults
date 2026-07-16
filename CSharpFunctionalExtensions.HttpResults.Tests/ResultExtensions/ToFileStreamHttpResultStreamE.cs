@@ -1,6 +1,6 @@
 using System.Net.Mime;
+using AwesomeAssertions;
 using CSharpFunctionalExtensions.HttpResults.Tests.Shared;
-using FluentAssertions;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.Net.Http.Headers;
 

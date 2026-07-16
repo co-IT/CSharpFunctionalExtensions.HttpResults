@@ -1,4 +1,4 @@
-﻿using FluentAssertions;
+﻿using AwesomeAssertions;
 using Microsoft.CodeAnalysis;
 
 namespace CSharpFunctionalExtensions.HttpResults.Generators.Tests.Rules;

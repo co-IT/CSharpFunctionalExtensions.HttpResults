@@ -1,5 +1,5 @@
-﻿using CSharpFunctionalExtensions.HttpResults.ResultExtensions;
-using FluentAssertions;
+﻿using AwesomeAssertions;
+using CSharpFunctionalExtensions.HttpResults.ResultExtensions;
 using Microsoft.AspNetCore.Http.HttpResults;
 
 namespace CSharpFunctionalExtensions.HttpResults.Tests;
