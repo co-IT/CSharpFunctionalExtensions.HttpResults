@@ -50,7 +50,7 @@ public static class ServerSentEventsExtensions
   public record EventMessage
   {
     public string? Event { get; init; }
-    public string Data { get; init; }
+    public required string Data { get; init; }
   }
 }
 
