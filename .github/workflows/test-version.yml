@@ -31,7 +31,7 @@ jobs:
           dotnet-version: |
             8
             9.0.201
-            10.0.100
+            10.0.302
 
       - name: Override CSharpFunctionalExtensions Version
         run: |
