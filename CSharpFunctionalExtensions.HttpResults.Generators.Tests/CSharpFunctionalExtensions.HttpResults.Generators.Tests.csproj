@@ -37,5 +37,6 @@
       ReferenceOutputAssembly="false"
     />
     <ProjectReference Include="..\CSharpFunctionalExtensions.HttpResults.Generators\CSharpFunctionalExtensions.HttpResults.Generators.csproj" />
+    <ProjectReference Include="..\CSharpFunctionalExtensions.HttpResults.CodeFixes\CSharpFunctionalExtensions.HttpResults.CodeFixes.csproj" />
   </ItemGroup>
 </Project>

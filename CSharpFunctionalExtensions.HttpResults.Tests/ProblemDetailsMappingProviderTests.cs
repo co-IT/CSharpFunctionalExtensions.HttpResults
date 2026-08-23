@@ -1,9 +1,11 @@
 ﻿using AwesomeAssertions;
 using CSharpFunctionalExtensions.HttpResults.ResultExtensions;
 using Microsoft.AspNetCore.Http.HttpResults;
+using Xunit;
 
 namespace CSharpFunctionalExtensions.HttpResults.Tests;
 
+[Collection(nameof(ProblemDetailsMappingProvider))]
 public class ProblemDetailsMappingProviderTests
 {
   public ProblemDetailsMappingProviderTests()

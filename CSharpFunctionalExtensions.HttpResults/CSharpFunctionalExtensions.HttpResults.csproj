@@ -41,11 +41,21 @@
       PackagePath="analyzers/dotnet/cs"
       Visible="false"
     />
+    <None
+      Include="$(OutputPath)\net9.0\CSharpFunctionalExtensions.HttpResults.CodeFixes.dll"
+      Pack="true"
+      PackagePath="analyzers/dotnet/cs"
+      Visible="false"
+    />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference
       Include="..\CSharpFunctionalExtensions.HttpResults.Generators\CSharpFunctionalExtensions.HttpResults.Generators.csproj"
+      PrivateAssets="All"
+    />
+    <ProjectReference
+      Include="..\CSharpFunctionalExtensions.HttpResults.CodeFixes\CSharpFunctionalExtensions.HttpResults.CodeFixes.csproj"
       PrivateAssets="All"
     />
   </ItemGroup>

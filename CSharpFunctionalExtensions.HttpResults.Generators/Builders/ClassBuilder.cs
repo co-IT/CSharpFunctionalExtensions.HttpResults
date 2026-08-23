@@ -1,22 +1,13 @@
-﻿using System.Text;
+using System.Text;
 using CSharpFunctionalExtensions.HttpResults.Generators.Utils;
-using Microsoft.CodeAnalysis;
-using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 namespace CSharpFunctionalExtensions.HttpResults.Generators.Builders;
 
-public abstract class ClassBuilder
+/// <summary>
+///   Base builder for the generated extension-method classes that are emitted per discovered error mapper.
+/// </summary>
+internal abstract class ClassBuilder(IReadOnlyList<MapperInfo> mapperInfos)
 {
-  private const string MapMethodName = "Map";
-  private readonly Compilation? _compilation;
-  private readonly List<ClassDeclarationSyntax> _mapperClasses;
-
-  protected ClassBuilder(List<ClassDeclarationSyntax> mapperClasses, Compilation? compilation = null)
-  {
-    _mapperClasses = mapperClasses;
-    _compilation = compilation;
-  }
-
   private static string DefaultUsings =>
     """
       using CSharpFunctionalExtensions;
@@ -24,7 +15,11 @@ public abstract class ClassBuilder
       using Microsoft.AspNetCore.Http;
       using Microsoft.AspNetCore.Mvc;
       using Microsoft.Net.Http.Headers;
+      using System;
+      using System.Collections.Generic;
+      using System.IO;
       using System.Text;
+      using System.Threading.Tasks;
       using IResult = Microsoft.AspNetCore.Http.IResult;
       """;
 
@@ -32,7 +27,7 @@ public abstract class ClassBuilder
 
   protected abstract string ClassName { get; }
   protected abstract string ClassSummary { get; }
-  internal abstract List<IGenerateMethods> MethodGenerators { get; }
+  internal abstract IReadOnlyList<HttpResultMethodDefinition> Methods { get; }
 
   public string Build()
   {
@@ -44,31 +39,22 @@ public abstract class ClassBuilder
     sourceBuilder.AppendLine();
     sourceBuilder.AppendLine(DefaultUsings);
 
+    if (mapperInfos.Any(info => info.IsServiceMapper))
+      sourceBuilder.AppendLine("using Microsoft.Extensions.DependencyInjection;");
     sourceBuilder.AppendLine();
+
     sourceBuilder.AppendLine(ClassSummary);
 
     sourceBuilder.AppendLine($"public static partial class {ClassName} {{");
     sourceBuilder.AppendLine();
 
-    foreach (var mapperClass in _mapperClasses)
+    foreach (var mapperInfo in mapperInfos)
     {
-      var mapperClassName = mapperClass.Identifier.Text;
-      var mappingMethod = mapperClass
-        .Members.OfType<MethodDeclarationSyntax>()
-        .FirstOrDefault(method => method.Identifier.Text == MapMethodName);
+      var context = mapperInfo.ToContext();
 
-      if (mappingMethod == null)
-        throw new ArgumentException($"Mapping method in class {mapperClassName} not found.");
-
-      if (mappingMethod.ParameterList.Parameters.Count != 1)
-        throw new ArgumentException($"Mapping method in class {mapperClassName} must have exactly one parameter.");
-
-      var resultErrorType = GetFullyQualifiedTypeName(mapperClass, mappingMethod.ParameterList.Parameters[0].Type!);
-      var httpResultType = mappingMethod.ReturnType!.ToString();
-
-      foreach (var methodGenerator in MethodGenerators)
+      foreach (var method in Methods)
       {
-        sourceBuilder.AppendLine(methodGenerator.Generate(mapperClassName, resultErrorType, httpResultType));
+        sourceBuilder.AppendLine(CustomErrorMethodRenderer.Generate(context, method));
         sourceBuilder.AppendLine();
       }
     }
@@ -77,19 +63,5 @@ public abstract class ClassBuilder
     sourceBuilder.AppendLine("}");
 
     return sourceBuilder.ToString();
-  }
-
-  private string GetFullyQualifiedTypeName(ClassDeclarationSyntax mapperClass, TypeSyntax typeSyntax)
-  {
-    if (_compilation == null)
-      return typeSyntax.ToString();
-
-    var semanticModel = _compilation.GetSemanticModel(mapperClass.SyntaxTree);
-    var typeInfo = semanticModel.GetTypeInfo(typeSyntax);
-
-    if (typeInfo.Type == null)
-      return typeSyntax.ToString();
-
-    return TypeNameResolver.GetFullyQualifiedTypeName(typeInfo.Type);
   }
 }

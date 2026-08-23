@@ -16,9 +16,10 @@ Seamlessly map Results from [CSharpFunctionalExtensions](https://github.com/vkho
 1. [Available methods](#available-methods)
 2. [Default mapping](#default-mapping)
 3. [Custom error mapping](#custom-error-mapping)
-4. [Analyzers](#analyzers)
-5. [Examples](#examples)
-6. [Development](#development)
+4. [Dependency injection](#dependency-injection)
+5. [Analyzers](#analyzers)
+6. [Examples](#examples)
+7. [Development](#development)
 
 </details>
 
@@ -113,7 +114,10 @@ app.MapGet("/books", (BookService service) =>
 
 </details>
 
-All methods are available in sync and async variants.
+All methods are available in sync and async variants. For custom error mappers using dependency injection - and for built-in mappings once a custom `IResultProblemDetailsProvider` exists (see [Dependency injection](#dependency-injection)) - additional overloads with a required `HttpContext` parameter are generated.
+
+> [!IMPORTANT]
+> All mapping methods - including the built-in ones for `Result`/`Result<T>` - are provided by the integrated source generator. When upgrading from a version where they shipped as compiled library code, **recompile your project**: assemblies built against an older package version will miss these methods at runtime.
 
 ### Default mapping
 
@@ -215,7 +219,7 @@ When using `Result<T,E>` or `UnitResult<E>`, this library uses a Source Generato
     ```
 
 > [!IMPORTANT]  
-> Make sure that each custom error type has exactly one corresponding `IResultMapper` implementation.
+> Make sure that each custom error type has exactly one corresponding `IResultErrorMapper<,>` or `IServiceResultErrorMapper<,>` implementation.
 
 > [!TIP]
 > You can use the `ProblemDetailsMappingProvider.FindMapping()` method to find a suitable title and type for a status code based on [RFC9110](https://tools.ietf.org/html/rfc9110).
@@ -223,13 +227,124 @@ When using `Result<T,E>` or `UnitResult<E>`, this library uses a Source Generato
 > [!NOTE]
 > If extension methods for custom errors are missing, rebuild the project to trigger Source Generation.
 
+
+## Dependency injection
+
+All mapping methods come from an integrated source generator, so they can adapt to your project:
+
+- Custom error mappers may opt into dependency injection by implementing `IServiceResultErrorMapper<,>` instead of `IResultErrorMapper<,>`. The generated overloads then require an `HttpContext` and resolve the mapper from `HttpContext.RequestServices` on failure — constructor injection works out of the box.
+- Built-in string-error mappings (`Result`, `Result<T>`) can be overridden by registering a custom `IResultProblemDetailsProvider`. As soon as such an implementation exists in your compilation, the generator additionally emits context overloads for every built-in method.
+
+### Setup
+
+Call the generated zero-config registration method during startup:
+
+```csharp
+builder.Services.AddCSharpFunctionalExtensionsHttpResults();
+```
+
+This registers every valid discovered `IServiceResultErrorMapper<,>` as scoped. If exactly one valid
+`IResultProblemDetailsProvider` implementation is visible, it is also registered as scoped. Without a provider,
+the context-free methods keep using `ProblemDetailsMappingProvider.FindMapping()` and no provider service is registered.
+
+### Custom error mappers with constructor injection
+
+```csharp
+public sealed class UserNotFoundErrorMapper(DocumentationLinkProvider links)
+  : IServiceResultErrorMapper<UserNotFoundError, ProblemHttpResult>
+{
+  public ProblemHttpResult Map(UserNotFoundError error) =>
+    TypedResults.Problem(
+      statusCode: StatusCodes.Status404NotFound,
+      type: links.For("user-not-found"),
+      detail: error.Message);
+}
+```
+
+Pass the `HttpContext` that Minimal APIs and controllers provide anyway:
+
+```csharp
+app.MapGet("/users/{id}", (string id, HttpContext httpContext, UserRepository repo) =>
+  repo.Find(id)                     //Result<User,UserNotFoundError>
+    .ToOkHttpResult(httpContext)    //Results<Ok<User>,ProblemHttpResult>
+);
+
+// Controller:
+public IActionResult Get(string id) =>
+  _repo.Find(id).ToOkHttpResult(HttpContext);
+```
+
+> [!IMPORTANT]
+> Mappers implementing `IServiceResultErrorMapper<,>` are registered automatically when they are concrete,
+> closed, accessible to generated code, and have a public constructor. Referenced mappers must be public.
+
+### Overriding the built-in failure mapping (e.g. ProblemDetailsFactory)
+
+Implement `IResultProblemDetailsProvider` to control how failures of `Result`/`Result<T>` are turned into
+`ProblemDetails`. The library intentionally provides only the contract; framework-specific policy remains in your
+application. For example, a provider can delegate to ASP.NET Core's `ProblemDetailsFactory`:
+
+```csharp
+public sealed class ProblemDetailsFactoryProvider(ProblemDetailsFactory factory)
+  : IResultProblemDetailsProvider
+{
+  public ProblemDetails CreateProblemDetails(
+    HttpContext httpContext,
+    string error,
+    int statusCode) =>
+    factory.CreateProblemDetails(httpContext, statusCode, detail: error);
+}
+
+// ProblemDetailsFactory is supplied by MVC.
+builder.Services.AddControllers();
+builder.Services.AddCSharpFunctionalExtensionsHttpResults();
+```
+
+`ProblemDetailsFactory.CreateProblemDetails` creates the instance synchronously, including a custom factory's
+defaults. `IProblemDetailsService` writes to the response rather than returning an instance, so it is not used by
+this mapping contract.
+
+Once exactly one valid implementation is visible in the current or a referenced assembly, every built-in method
+additionally offers an overload with a required `HttpContext`, and the generated startup helper registers that
+provider automatically. If the helper is not called, a context overload fails fast at runtime when its failure path
+tries to resolve the provider.
+
+```csharp
+app.MapGet("/books", (HttpContext httpContext, BookService svc) =>
+  svc.Get()
+    .ToOkHttpResult(
+      httpContext,
+      failureStatusCode: 404,
+      customizeProblemDetails: problemDetails =>
+      {
+        problemDetails.Title = "Custom Title";
+        problemDetails.Extensions.Add("custom", "value");
+      }));
+```
+
+The selected overload determines the base mapping: context-free overloads use the static RFC 9457 mapping, while
+context overloads use the registered provider. There is no runtime fallback between the two. In both cases,
+`customizeProblemDetails` runs last; this is also true for custom mappers returning `ProblemHttpResult`.
+
+Generated registrations use `TryAddScoped`. A matching registration made before
+`AddCSharpFunctionalExtensionsHttpResults()` is preserved; a matching registration made afterwards becomes the
+last registration and is returned by the default `GetRequiredService` resolution. This lets applications override
+provider and mapper lifetimes explicitly.
+
 ## Analyzers
 
-This library includes analyzers to help you use it correctly.
+This library includes analyzers to help you use it correctly:
 
-For example, they will notify you if you have multiple mappers for the same custom error type or if your mapper class doesn't have a parameterless constructor.
+- **CFEHTTPR002** - reported when multiple `IResultErrorMapper`/`IServiceResultErrorMapper` implementations exist for the same error type (across standard and service mappers).
+- **CFEHTTPR004** - reported when a standard mapper cannot be created through an accessible parameterless constructor, including unsatisfied required members. Its code fix migrates the mapper to `IServiceResultErrorMapper<,>`; generated calls then require `HttpContext`.
+- **CFEHTTPR005** - reported when more than one valid `IResultProblemDetailsProvider` is visible.
+- **CFEHTTPR006** - reported for unsupported mapper shapes, such as abstract, open-generic, inaccessible, or non-DI-constructible service mappers.
+- **CFEHTTPR007** - reported for unsupported provider shapes.
 
-You can find a complete list of all analyzers [here](https://github.com/co-IT/CSharpFunctionalExtensions.HttpResults/blob/main/CSharpFunctionalExtensions.HttpResults.Generators/AnalyzerReleases.Shipped.md).
+The complete analyzer history is documented in the
+[shipped](https://github.com/co-IT/CSharpFunctionalExtensions.HttpResults/blob/main/CSharpFunctionalExtensions.HttpResults.Generators/AnalyzerReleases.Shipped.md)
+and [unshipped](https://github.com/co-IT/CSharpFunctionalExtensions.HttpResults/blob/main/CSharpFunctionalExtensions.HttpResults.Generators/AnalyzerReleases.Unshipped.md)
+release files.
 
 ## Examples
 
@@ -240,6 +355,8 @@ The [`CSharpFunctionalExtensions.HttpResults.Examples`](https://github.com/co-IT
 - **[Custom error mapping](https://github.com/co-IT/CSharpFunctionalExtensions.HttpResults/blob/main/CSharpFunctionalExtensions.HttpResults.Examples/Features/CustomError)** – Defining and mapping custom error types to meaningful HTTP responses
 - **[Multiple errors in chain](https://github.com/co-IT/CSharpFunctionalExtensions.HttpResults/blob/main/CSharpFunctionalExtensions.HttpResults.Examples/Features/MultipleErrorChain)** – Using different kind of custom errors in the same result chain
 - **[Customizing default mapping](https://github.com/co-IT/CSharpFunctionalExtensions.HttpResults/blob/main/CSharpFunctionalExtensions.HttpResults.Examples/Program.cs)** – Overriding default mappings for localization or specific use cases
+- **[Dependency injection](https://github.com/co-IT/CSharpFunctionalExtensions.HttpResults/blob/main/CSharpFunctionalExtensions.HttpResults.Examples/Features/DependencyInjection)** – Service mappers with constructor injection
+- **[ProblemDetailsFactory provider](https://github.com/co-IT/CSharpFunctionalExtensions.HttpResults/blob/main/CSharpFunctionalExtensions.HttpResults.Examples/ProblemDetailsFactoryProvider.cs)** – Application-owned integration of `IResultProblemDetailsProvider` with ASP.NET Core MVC
 
 Check out the example project for hands-on implementation details!
 
@@ -254,12 +371,14 @@ Contributions are welcome! Please keep the following rules in mind:
 
 This project uses [CSharpier](https://csharpier.com) for code formatting. You can format your code with `dotnet csharpier format .`.
 
+Architecture, design decisions and change documentation live in the [docs](./docs/README.md) directory.
+
 ### Add new extension methods
 
 To add new methods follow these steps:
 
-1. Add methods for `Result` and `Result<T>` to `CSharpFunctionalExtensions.HttpResults.ResultExtensions`
-2. Add methods for `Result<T,E>` to `CSharpFunctionalExtensions.HttpResults.Generators.ResultExtensions` and add the class to `ResultExtensionsClassBuilder`
-3. Add methods for `UnitResult<E>` to `CSharpFunctionalExtensions.HttpResults.Generators.UnitResultExtensions` and add the class to `UnitResultExtensionsClassBuilder`
-4. Add tests for **all** new methods to `CSharpFunctionalExtensions.HttpResults.Tests`
-5. Add methods to [README](https://github.com/co-IT/CSharpFunctionalExtensions.HttpResults/blob/main/README.md)
+1. Add the method once to `Utils/HttpResultMethodCatalog.cs` using `HttpResultMethodKind` and `ResultReceiverKind`
+2. Add parameter metadata to `MethodParameterKind` / `GeneratedMethodParameter` only when the family needs a new parameter shape
+3. Add tests for the built-in, custom-error, sync, async, and DI variants to `CSharpFunctionalExtensions.HttpResults.Tests`
+4. Add generator tests that compile the emitted source
+5. Add the method to this README

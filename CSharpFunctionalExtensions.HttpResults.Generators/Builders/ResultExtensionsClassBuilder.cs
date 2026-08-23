@@ -1,11 +1,8 @@
-using CSharpFunctionalExtensions.HttpResults.Generators.ResultExtensions;
-using Microsoft.CodeAnalysis;
-using Microsoft.CodeAnalysis.CSharp.Syntax;
+using CSharpFunctionalExtensions.HttpResults.Generators.Utils;
 
 namespace CSharpFunctionalExtensions.HttpResults.Generators.Builders;
 
-public class ResultExtensionsClassBuilder(List<ClassDeclarationSyntax> mapperClasses, Compilation? compilation = null)
-  : ClassBuilder(mapperClasses, compilation)
+internal sealed class ResultExtensionsClassBuilder(IReadOnlyList<MapperInfo> mapperInfos) : ClassBuilder(mapperInfos)
 {
   protected override string ClassName => "ResultExtensions";
 
@@ -16,19 +13,6 @@ public class ResultExtensionsClassBuilder(List<ClassDeclarationSyntax> mapperCla
       /// </summary>
       """;
 
-  internal override List<IGenerateMethods> MethodGenerators =>
-    [
-      new ToAcceptedAtRouteHttpResultTE(),
-      new ToAcceptedHttpResultTE(),
-      new ToCreatedAtRouteHttpResultTE(),
-      new ToCreatedHttpResultTE(),
-      new ToFileHttpResultByteArrayE(),
-      new ToFileStreamHttpResultStreamE(),
-      new ToJsonHttpResultTE(),
-      new ToNoContentHttpResultTE(),
-      new ToStatusCodeHttpResultTE(),
-      new ToOkHttpResultTE(),
-      new ToContentHttpResultStringE(),
-      new ToServerSentEventsHttpResultIAsyncEnumerableTE(),
-    ];
+  internal override IReadOnlyList<HttpResultMethodDefinition> Methods =>
+    HttpResultMethodCatalog.ResultWithCustomErrorMethods;
 }

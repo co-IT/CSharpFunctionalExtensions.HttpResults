@@ -5,10 +5,10 @@
       <DataCollector friendlyName="XPlat code coverage">
         <Configuration>
           <Format>cobertura</Format>
-          <Exclude>[CSharpFunctionalExtensions.HttpResults.Examples]*,[CSharpFunctionalExtensions.HttpResults.Generators]*ResultExtensions*,[CSharpFunctionalExtensions.HttpResults.Generators]*UnitResultExtensions*,</Exclude>
+          <Exclude>[CSharpFunctionalExtensions.HttpResults.Examples]*</Exclude>
           <ExcludeByFile>**/*.g.cs</ExcludeByFile>
           <UseSourceLink>true</UseSourceLink>
-          <IncludeTestAssembly>true</IncludeTestAssembly>
+          <IncludeTestAssembly>false</IncludeTestAssembly>
           <SkipAutoProps>true</SkipAutoProps>
         </Configuration>
       </DataCollector>

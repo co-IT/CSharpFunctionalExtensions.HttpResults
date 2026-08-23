@@ -81,8 +81,10 @@ jobs:
         with:
           filename: dist/tests/${{ env.SANITIZED_LIBVERSION }}/coverage.xml
           badge: true
+          fail_below_min: true
           format: markdown
           output: file
+          thresholds: "95 100"
         if: ${{ always() }}
 
       - name: Attach test coverage report to action summary
