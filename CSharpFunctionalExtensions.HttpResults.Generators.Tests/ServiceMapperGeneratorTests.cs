@@ -30,7 +30,7 @@ public class ServiceMapperGeneratorTests
     diagnostics.Should().BeEmpty();
     var mapperMethods = files["ResultExtensions.g.cs"] + files["UnitResultExtensions.g.cs"];
 
-    mapperMethods.Should().NotContain("LegacyMapperCache.Mapper");
+    mapperMethods.Should().NotContain("ResultErrorMapperCache.Mapper");
     mapperMethods.Should().Contain("GetRequiredService<global::Sample.ServiceMapper>()");
     mapperMethods
       .Should()
@@ -155,7 +155,7 @@ public class ServiceMapperGeneratorTests
     var (diagnostics, files) = GeneratorTestHelper.RunGeneratorPerFile(source);
 
     diagnostics.Should().BeEmpty();
-    files["LegacyErrorMapperCache.g.cs"]
+    files["ResultErrorMapperCache.g.cs"]
       .Should()
       .Contain(
         "internal static global::CSharpFunctionalExtensions.HttpResults.IResultErrorMapper<global::StandardDomainError, global::Microsoft.AspNetCore.Http.HttpResults.ProblemHttpResult> Mapper0 { get; } = new global::StandardMapper();"
@@ -166,7 +166,7 @@ public class ServiceMapperGeneratorTests
     mapperMethods.Should().NotContain("HttpContext");
     mapperMethods
       .Should()
-      .Contain("var mapped = CSharpFunctionalExtensionsHttpResultsLegacyMapperCache.Mapper0.Map(result.Error);");
+      .Contain("var mapped = CSharpFunctionalExtensionsHttpResultsResultErrorMapperCache.Mapper0.Map(result.Error);");
 
     // Standard mappers returning ProblemHttpResult get the optional customize parameter.
     mapperMethods.Should().Contain("Action<ProblemDetails>? customizeProblemDetails = null");
@@ -194,7 +194,7 @@ public class ServiceMapperGeneratorTests
     files["UnitResultExtensions.g.cs"].Should().Contain("(this UnitResult<global::StandardDomainError> result)");
     files["UnitResultExtensions.g.cs"]
       .Should()
-      .Contain("return CSharpFunctionalExtensionsHttpResultsLegacyMapperCache.Mapper0.Map(result.Error);");
+      .Contain("return CSharpFunctionalExtensionsHttpResultsResultErrorMapperCache.Mapper0.Map(result.Error);");
   }
 
   [Fact]

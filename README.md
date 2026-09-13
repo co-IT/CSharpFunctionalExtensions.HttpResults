@@ -276,7 +276,9 @@ public IActionResult Get(string id) =>
 
 > [!IMPORTANT]
 > Mappers implementing `IServiceResultErrorMapper<,>` are registered automatically when they are concrete,
-> closed, accessible to generated code, and have a public constructor. Referenced mappers must be public.
+> closed, accessible to generated code, and have a public constructor. Mapper implementations declared in the
+> application may be internal. Mapper implementations discovered in referenced assemblies must be public so the
+> consuming application's generated registration code can reference them.
 
 ### Overriding the built-in failure mapping (e.g. ProblemDetailsFactory)
 
@@ -341,6 +343,9 @@ This library includes analyzers to help you use it correctly:
 - **CFEHTTPR006** - reported for unsupported mapper shapes, such as abstract, open-generic, inaccessible, or non-DI-constructible service mappers.
 - **CFEHTTPR007** - reported for unsupported provider shapes.
 
+The analyzer package also provides a code fix for `CFEHTTPR004` that converts an `IResultErrorMapper<,>` requiring
+constructor injection into an `IServiceResultErrorMapper<,>`.
+
 The complete analyzer history is documented in the
 [shipped](https://github.com/co-IT/CSharpFunctionalExtensions.HttpResults/blob/main/CSharpFunctionalExtensions.HttpResults.Generators/AnalyzerReleases.Shipped.md)
 and [unshipped](https://github.com/co-IT/CSharpFunctionalExtensions.HttpResults/blob/main/CSharpFunctionalExtensions.HttpResults.Generators/AnalyzerReleases.Unshipped.md)
@@ -356,7 +361,7 @@ The [`CSharpFunctionalExtensions.HttpResults.Examples`](https://github.com/co-IT
 - **[Multiple errors in chain](https://github.com/co-IT/CSharpFunctionalExtensions.HttpResults/blob/main/CSharpFunctionalExtensions.HttpResults.Examples/Features/MultipleErrorChain)** – Using different kind of custom errors in the same result chain
 - **[Customizing default mapping](https://github.com/co-IT/CSharpFunctionalExtensions.HttpResults/blob/main/CSharpFunctionalExtensions.HttpResults.Examples/Program.cs)** – Overriding default mappings for localization or specific use cases
 - **[Dependency injection](https://github.com/co-IT/CSharpFunctionalExtensions.HttpResults/blob/main/CSharpFunctionalExtensions.HttpResults.Examples/Features/DependencyInjection)** – Service mappers with constructor injection
-- **[ProblemDetailsFactory provider](https://github.com/co-IT/CSharpFunctionalExtensions.HttpResults/blob/main/CSharpFunctionalExtensions.HttpResults.Examples/ProblemDetailsFactoryProvider.cs)** – Application-owned integration of `IResultProblemDetailsProvider` with ASP.NET Core MVC
+- **[ProblemDetails provider](https://github.com/co-IT/CSharpFunctionalExtensions.HttpResults/blob/main/CSharpFunctionalExtensions.HttpResults.Examples/Features/ProblemDetailsProvider)** – Application-owned integration of `IResultProblemDetailsProvider` with ASP.NET Core MVC
 
 Check out the example project for hands-on implementation details!
 
@@ -371,14 +376,13 @@ Contributions are welcome! Please keep the following rules in mind:
 
 This project uses [CSharpier](https://csharpier.com) for code formatting. You can format your code with `dotnet csharpier format .`.
 
-Architecture, design decisions and change documentation live in the [docs](./docs/README.md) directory.
-
 ### Add new extension methods
 
 To add new methods follow these steps:
 
-1. Add the method once to `Utils/HttpResultMethodCatalog.cs` using `HttpResultMethodKind` and `ResultReceiverKind`
-2. Add parameter metadata to `MethodParameterKind` / `GeneratedMethodParameter` only when the family needs a new parameter shape
+1. Add the method once to `Models/HttpResultMethodCatalog.cs` using `HttpResultMethodKind` and `ResultReceiverKind`
+2. Add parameter metadata to `MethodParameterKind` / `HttpResultMethodParameter` only when the family needs a new parameter shape
 3. Add tests for the built-in, custom-error, sync, async, and DI variants to `CSharpFunctionalExtensions.HttpResults.Tests`
 4. Add generator tests that compile the emitted source
-5. Add the method to this README
+5. Add integration tests when behavior depends on generated registrations, dependency injection, or the ASP.NET Core request pipeline
+6. Add the method to this README

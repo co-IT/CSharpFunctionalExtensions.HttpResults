@@ -1,5 +1,6 @@
 using System.Text;
-using CSharpFunctionalExtensions.HttpResults.Generators.Utils;
+using CSharpFunctionalExtensions.HttpResults.Generators.Models;
+using CSharpFunctionalExtensions.HttpResults.Generators.Rendering;
 
 namespace CSharpFunctionalExtensions.HttpResults.Generators.Builders;
 
@@ -21,25 +22,7 @@ internal sealed class StringErrorResultExtensionsClassBuilder(bool includeContex
     sourceBuilder.AppendLine();
     sourceBuilder.AppendLine("#nullable enable");
     sourceBuilder.AppendLine();
-    sourceBuilder.AppendLine(
-      """
-      using CSharpFunctionalExtensions;
-      using Microsoft.AspNetCore.Http;
-      using Microsoft.AspNetCore.Http.HttpResults;
-      using Microsoft.AspNetCore.Mvc;
-      using Microsoft.Net.Http.Headers;
-      using System;
-      using System.Collections.Generic;
-      using System.IO;
-      using System.Text;
-      using System.Threading.Tasks;
-      """
-    );
-
-    if (includeContextOverloads)
-      sourceBuilder.AppendLine("using Microsoft.Extensions.DependencyInjection;");
-
-    sourceBuilder.AppendLine();
+    GeneratedSourceUsings.AppendTo(sourceBuilder, includeContextOverloads);
     sourceBuilder.AppendLine("namespace CSharpFunctionalExtensions.HttpResults.ResultExtensions;");
     sourceBuilder.AppendLine();
     sourceBuilder.AppendLine(

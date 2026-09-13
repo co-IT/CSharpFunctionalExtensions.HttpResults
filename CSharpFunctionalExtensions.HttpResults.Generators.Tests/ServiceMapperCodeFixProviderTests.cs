@@ -21,7 +21,7 @@ public class ServiceMapperCodeFixProviderTests
   }
 
   [Fact]
-  public async Task Fix_replaces_only_the_legacy_interface_and_preserves_mapper_source()
+  public async Task Fix_replaces_only_the_result_mapper_interface_and_preserves_mapper_source()
   {
     const string source = """
       using CSharpFunctionalExtensions.HttpResults;
@@ -42,11 +42,8 @@ public class ServiceMapperCodeFixProviderTests
 
     var fixedSource = await ApplyFixAsync(source);
 
-    fixedSource
-      .Should()
-      .Contain(
-        "global::CSharpFunctionalExtensions.HttpResults.IServiceResultErrorMapper<global::MyError, global::Microsoft.AspNetCore.Http.HttpResults.ProblemHttpResult>"
-      );
+    fixedSource.Should().Contain("IServiceResultErrorMapper<MyError, ProblemHttpResult>");
+    fixedSource.Should().NotContain("global::");
     fixedSource.Should().Contain("/* keep this comment */");
     fixedSource.Should().Contain("public ProblemHttpResult Map(MyError error) => TypedResults.Problem();");
   }
@@ -97,7 +94,7 @@ public class ServiceMapperCodeFixProviderTests
 
     diagnostics.Should().NotContain(diagnostic => diagnostic.Id == "CFEHTTPR004");
     files.Values.Should().Contain(source => source.Contains("GetRequiredService<global::Mapper>()"));
-    files["LegacyErrorMapperCache.g.cs"].Should().NotContain("new global::Mapper");
+    files["ResultErrorMapperCache.g.cs"].Should().NotContain("new global::Mapper");
   }
 
   [Fact]
@@ -118,9 +115,9 @@ public class ServiceMapperCodeFixProviderTests
 
     fixedSource
       .Should()
-      .Contain(
-        "global::CSharpFunctionalExtensions.HttpResults.IServiceResultErrorMapper<global::Error, global::Microsoft.AspNetCore.Http.HttpResults.ProblemHttpResult>"
-      );
+      .Contain("using CSharpFunctionalExtensions.HttpResults;")
+      .And.Contain("IServiceResultErrorMapper<Error, ProblemHttpResult>");
+    fixedSource.Should().NotContain("global::");
   }
 
   [Fact]
@@ -129,10 +126,10 @@ public class ServiceMapperCodeFixProviderTests
     const string source = """
       using CSharpFunctionalExtensions.HttpResults;
       using Microsoft.AspNetCore.Http.HttpResults;
-      using LegacyMapper = CSharpFunctionalExtensions.HttpResults.IResultErrorMapper<Error, Microsoft.AspNetCore.Http.HttpResults.ProblemHttpResult>;
+      using ResultMapper = CSharpFunctionalExtensions.HttpResults.IResultErrorMapper<Error, Microsoft.AspNetCore.Http.HttpResults.ProblemHttpResult>;
 
       public sealed class Error;
-      public sealed class Mapper : LegacyMapper
+      public sealed class Mapper : ResultMapper
       {
         public Mapper(string dependency) { }
         public ProblemHttpResult Map(Error error) => TypedResults.Problem();
@@ -141,12 +138,9 @@ public class ServiceMapperCodeFixProviderTests
 
     var fixedSource = await ApplyFixAsync(source);
 
-    fixedSource.Should().NotContain(": LegacyMapper");
-    fixedSource
-      .Should()
-      .Contain(
-        "global::CSharpFunctionalExtensions.HttpResults.IServiceResultErrorMapper<global::Error, global::Microsoft.AspNetCore.Http.HttpResults.ProblemHttpResult>"
-      );
+    fixedSource.Should().NotContain(": ResultMapper");
+    fixedSource.Should().Contain("IServiceResultErrorMapper<Error, ProblemHttpResult>");
+    fixedSource.Should().NotContain("global::");
   }
 
   private static async Task<string> ApplyFixAsync(string source)

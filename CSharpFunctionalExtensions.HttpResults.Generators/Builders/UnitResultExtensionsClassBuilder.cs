@@ -1,9 +1,9 @@
-using CSharpFunctionalExtensions.HttpResults.Generators.Utils;
+using CSharpFunctionalExtensions.HttpResults.Generators.Models;
 
 namespace CSharpFunctionalExtensions.HttpResults.Generators.Builders;
 
-internal sealed class UnitResultExtensionsClassBuilder(IReadOnlyList<MapperInfo> mapperInfos)
-  : ClassBuilder(mapperInfos)
+internal sealed class UnitResultExtensionsClassBuilder(IReadOnlyList<MapperDescriptor> mapperDescriptors)
+  : ExtensionClassBuilder(mapperDescriptors)
 {
   protected override string ClassName => "UnitResultExtensions";
 

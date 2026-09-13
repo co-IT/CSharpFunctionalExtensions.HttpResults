@@ -1,6 +1,6 @@
 using System.Text;
 using CSharpFunctionalExtensions.HttpResults.Generators.Analysis;
-using CSharpFunctionalExtensions.HttpResults.Generators.Utils;
+using CSharpFunctionalExtensions.HttpResults.Generators.Models;
 using Microsoft.CodeAnalysis;
 
 namespace CSharpFunctionalExtensions.HttpResults.Generators.Emitters;
@@ -14,7 +14,7 @@ internal static class ServiceCollectionExtensionsEmitter
     Compilation compilation,
     INamedTypeSymbol? provider,
     IReadOnlyList<INamedTypeSymbol> referencedServiceMappers,
-    IReadOnlyList<MapperInfo> sourceMappers
+    IReadOnlyList<MapperDescriptor> sourceMappers
   )
   {
     var mapperTypes = sourceMappers
@@ -24,7 +24,7 @@ internal static class ServiceCollectionExtensionsEmitter
       .Where(symbol => IsValidServiceMapper(symbol, compilation))
       .Distinct(SymbolEqualityComparer.Default)
       .OfType<INamedTypeSymbol>()
-      .OrderBy(TypeNameResolver.GetFullyQualifiedTypeName, StringComparer.Ordinal)
+      .OrderBy(SymbolTypeNameFormatter.GetFullyQualifiedTypeName, StringComparer.Ordinal)
       .ToArray();
 
     var source = new StringBuilder();
@@ -49,11 +49,13 @@ internal static class ServiceCollectionExtensionsEmitter
 
     if (provider is not null)
       source.AppendLine(
-        $"    services.TryAddScoped<global::CSharpFunctionalExtensions.HttpResults.IResultProblemDetailsProvider, {TypeNameResolver.GetFullyQualifiedTypeName(provider)}>();"
+        $"    services.TryAddScoped<global::CSharpFunctionalExtensions.HttpResults.IResultProblemDetailsProvider, {SymbolTypeNameFormatter.GetFullyQualifiedTypeName(provider)}>();"
       );
 
     foreach (var mapperType in mapperTypes)
-      source.AppendLine($"    services.TryAddScoped<{TypeNameResolver.GetFullyQualifiedTypeName(mapperType)}>();");
+      source.AppendLine(
+        $"    services.TryAddScoped<{SymbolTypeNameFormatter.GetFullyQualifiedTypeName(mapperType)}>();"
+      );
 
     source.AppendLine("    return services;");
     source.AppendLine("  }");

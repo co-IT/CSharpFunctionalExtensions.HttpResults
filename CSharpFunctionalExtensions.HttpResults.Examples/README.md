@@ -26,14 +26,13 @@ An example for a custom error `AgeRestrictionError` that is used when the age va
 `IServiceResultErrorMapper<,>` with constructor injection. Its endpoint passes the current `HttpContext` to the
 generated mapping overload so the mapper can be resolved from request services.
 
-### ProblemDetailsFactory
+### Problem-details provider
 
-[`ProblemDetailsFactoryProvider.cs`](./ProblemDetailsFactoryProvider.cs) shows how an application-owned
+[`Features/ProblemDetailsProvider`](./Features/ProblemDetailsProvider) shows how an application-owned
 `IResultProblemDetailsProvider` can delegate to ASP.NET Core MVC's `ProblemDetailsFactory`. The provider is
 discovered and registered as scoped by `AddCSharpFunctionalExtensionsHttpResults()`; `Program.cs` calls
-`AddControllers()` to register the MVC factory. The endpoint under
-[`Features/CustomProblemDetails`](./Features/CustomProblemDetails) also demonstrates the per-call callback, which
-runs after the provider.
+`AddControllers()` to register the MVC factory. The endpoint also demonstrates the per-call callback, which runs
+after the provider.
 
 ## Run
 

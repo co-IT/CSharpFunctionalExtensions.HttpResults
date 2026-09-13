@@ -1,4 +1,4 @@
-using CSharpFunctionalExtensions.HttpResults.Generators.Utils;
+using CSharpFunctionalExtensions.HttpResults.Generators.Models;
 using Microsoft.CodeAnalysis;
 
 namespace CSharpFunctionalExtensions.HttpResults.Generators.Analysis;
@@ -13,7 +13,9 @@ internal static class MapperAnalyzer
     var diagnostics = new List<Diagnostic>();
     var validCandidates = new List<(INamedTypeSymbol Symbol, INamedTypeSymbol MapperInterface)>();
 
-    foreach (var candidate in candidates.OrderBy(TypeNameResolver.GetFullyQualifiedTypeName, StringComparer.Ordinal))
+    foreach (
+      var candidate in candidates.OrderBy(SymbolTypeNameFormatter.GetFullyQualifiedTypeName, StringComparer.Ordinal)
+    )
     {
       var mapperInterfaces = MapperSymbolResolver.GetClosedErrorMapperInterfaces(candidate).ToArray();
       if (mapperInterfaces.Length != 1)
@@ -93,16 +95,16 @@ internal static class MapperAnalyzer
     }
 
     var problemHttpResult = compilation.GetTypeByMetadataName(ProblemHttpResultMetadataName);
-    var mapperInfos = validCandidates
+    var mapperDescriptors = validCandidates
       .Where(entry => !duplicateSymbols.Contains(entry.Symbol))
-      .Select(entry => new MapperInfo
+      .Select(entry => new MapperDescriptor
       {
         Symbol = entry.Symbol,
-        LegacyCacheMemberName = "",
-        FullyQualifiedName = TypeNameResolver.GetFullyQualifiedTypeName(entry.Symbol),
-        ErrorType = TypeNameResolver.GetFullyQualifiedTypeName(entry.MapperInterface.TypeArguments[0]),
-        HttpResultType = TypeNameResolver.GetFullyQualifiedTypeName(entry.MapperInterface.TypeArguments[1]),
-        MapperInterfaceType = TypeNameResolver.GetFullyQualifiedTypeName(entry.MapperInterface),
+        CacheMemberName = "",
+        FullyQualifiedName = SymbolTypeNameFormatter.GetFullyQualifiedTypeName(entry.Symbol),
+        ErrorType = SymbolTypeNameFormatter.GetFullyQualifiedTypeName(entry.MapperInterface.TypeArguments[0]),
+        HttpResultType = SymbolTypeNameFormatter.GetFullyQualifiedTypeName(entry.MapperInterface.TypeArguments[1]),
+        MapperInterfaceType = SymbolTypeNameFormatter.GetFullyQualifiedTypeName(entry.MapperInterface),
         IsServiceMapper = MapperSymbolResolver.IsServiceMapper(entry.Symbol),
         IsProblemHttpResult =
           problemHttpResult is not null
@@ -114,10 +116,10 @@ internal static class MapperAnalyzer
       .OrderBy(info => info.FullyQualifiedName, StringComparer.Ordinal)
       .Select(
         (info, index) =>
-          new MapperInfo
+          new MapperDescriptor
           {
             Symbol = info.Symbol,
-            LegacyCacheMemberName = $"Mapper{index}",
+            CacheMemberName = $"Mapper{index}",
             FullyQualifiedName = info.FullyQualifiedName,
             ErrorType = info.ErrorType,
             HttpResultType = info.HttpResultType,
@@ -128,7 +130,7 @@ internal static class MapperAnalyzer
       )
       .ToArray();
 
-    return new MapperAnalysis(mapperInfos, diagnostics);
+    return new MapperAnalysis(mapperDescriptors, diagnostics);
   }
 
   private static Diagnostic CreateUnsupported(INamedTypeSymbol symbol, string reason) =>

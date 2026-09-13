@@ -1,5 +1,5 @@
 using AwesomeAssertions;
-using CSharpFunctionalExtensions.HttpResults.Generators.Utils;
+using CSharpFunctionalExtensions.HttpResults.Generators.Models;
 using Microsoft.CodeAnalysis.CSharp;
 
 namespace CSharpFunctionalExtensions.HttpResults.Generators.Tests;

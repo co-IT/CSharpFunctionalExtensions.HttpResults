@@ -3,19 +3,22 @@ using System.Composition;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CodeActions;
 using Microsoft.CodeAnalysis.CodeFixes;
-using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
+using Microsoft.CodeAnalysis.Editing;
+using Microsoft.CodeAnalysis.Simplification;
 
 namespace CSharpFunctionalExtensions.HttpResults.Generators;
 
 /// <summary>
-///   Migrates a legacy mapper to request-service resolution by replacing its directly implemented
-///   IResultErrorMapper interface with the fully qualified IServiceResultErrorMapper interface.
+///   Migrates a result error mapper to request-service resolution by replacing its directly implemented
+///   IResultErrorMapper interface with IServiceResultErrorMapper and adding the required imports.
 /// </summary>
 [ExportCodeFixProvider(LanguageNames.CSharp, Name = nameof(ServiceMapperCodeFixProvider)), Shared]
 public sealed class ServiceMapperCodeFixProvider : CodeFixProvider
 {
   private const string ResultMapperMetadataName = "CSharpFunctionalExtensions.HttpResults.IResultErrorMapper`2";
+  private const string ServiceResultMapperMetadataName =
+    "CSharpFunctionalExtensions.HttpResults.IServiceResultErrorMapper`2";
 
   public override ImmutableArray<string> FixableDiagnosticIds => ["CFEHTTPR004"];
 
@@ -26,9 +29,16 @@ public sealed class ServiceMapperCodeFixProvider : CodeFixProvider
     var root = await context.Document.GetSyntaxRootAsync(context.CancellationToken).ConfigureAwait(false);
     var semanticModel = await context.Document.GetSemanticModelAsync(context.CancellationToken).ConfigureAwait(false);
     var mapperDefinition = semanticModel?.Compilation.GetTypeByMetadataName(ResultMapperMetadataName);
+    var serviceMapperDefinition = semanticModel?.Compilation.GetTypeByMetadataName(ServiceResultMapperMetadataName);
     var classDeclaration = root?.FindNode(context.Span).FirstAncestorOrSelf<ClassDeclarationSyntax>();
 
-    if (root is null || semanticModel is null || mapperDefinition is null || classDeclaration?.BaseList is null)
+    if (
+      root is null
+      || semanticModel is null
+      || mapperDefinition is null
+      || serviceMapperDefinition is null
+      || classDeclaration?.BaseList is null
+    )
       return;
 
     var mapperBase = classDeclaration.BaseList.Types.FirstOrDefault(baseType =>
@@ -43,7 +53,14 @@ public sealed class ServiceMapperCodeFixProvider : CodeFixProvider
       CodeAction.Create(
         "Use IServiceResultErrorMapper (generated mappings require httpContext on failure)",
         cancellationToken =>
-          ReplaceInterfaceAsync(context.Document, root, semanticModel, mapperBase, cancellationToken),
+          ReplaceInterfaceAsync(
+            context.Document,
+            root,
+            semanticModel,
+            serviceMapperDefinition,
+            mapperBase,
+            cancellationToken
+          ),
         nameof(ServiceMapperCodeFixProvider)
       ),
       context.Diagnostics
@@ -54,6 +71,7 @@ public sealed class ServiceMapperCodeFixProvider : CodeFixProvider
     Document document,
     SyntaxNode root,
     SemanticModel semanticModel,
+    INamedTypeSymbol serviceMapperDefinition,
     BaseTypeSyntax mapperBase,
     CancellationToken cancellationToken
   )
@@ -61,13 +79,9 @@ public sealed class ServiceMapperCodeFixProvider : CodeFixProvider
     // RegisterCodeFixesAsync only calls this method for a semantically resolved closed mapper interface.
     var mapperType = (INamedTypeSymbol)semanticModel.GetTypeInfo(mapperBase.Type, cancellationToken).Type!;
 
-    var typeArguments = mapperType.TypeArguments.Select(argument =>
-      argument.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat)
-    );
-    var replacement = SyntaxFactory
-      .ParseTypeName(
-        $"global::CSharpFunctionalExtensions.HttpResults.IServiceResultErrorMapper<{string.Join(", ", typeArguments)}>"
-      )
+    var serviceMapperType = serviceMapperDefinition.Construct(mapperType.TypeArguments.ToArray());
+    var replacement = ((TypeSyntax)SyntaxGenerator.GetGenerator(document).TypeExpression(serviceMapperType))
+      .WithAdditionalAnnotations(Simplifier.Annotation, Simplifier.AddImportsAnnotation)
       .WithTriviaFrom(mapperBase.Type);
 
     return Task.FromResult(document.WithSyntaxRoot(root.ReplaceNode(mapperBase.Type, replacement)));

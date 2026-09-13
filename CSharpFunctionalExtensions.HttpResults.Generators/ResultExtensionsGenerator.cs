@@ -30,8 +30,8 @@ internal sealed class ResultExtensionsGenerator : IIncrementalGenerator
 
         AddSource(
           productionContext,
-          LegacyMapperCacheEmitter.HintName,
-          LegacyMapperCacheEmitter.Emit(mapperAnalysis.Mappers)
+          ResultErrorMapperCacheEmitter.HintName,
+          ResultErrorMapperCacheEmitter.Emit(mapperAnalysis.Mappers)
         );
         AddSource(
           productionContext,

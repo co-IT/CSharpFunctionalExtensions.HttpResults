@@ -2,9 +2,9 @@ using CSharpFunctionalExtensions.HttpResults;
 using CSharpFunctionalExtensions.HttpResults.Examples;
 using CSharpFunctionalExtensions.HttpResults.Examples.Features.CRUD;
 using CSharpFunctionalExtensions.HttpResults.Examples.Features.CustomError;
-using CSharpFunctionalExtensions.HttpResults.Examples.Features.CustomProblemDetails;
 using CSharpFunctionalExtensions.HttpResults.Examples.Features.DependencyInjection;
 using CSharpFunctionalExtensions.HttpResults.Examples.Features.FileStream;
+using CSharpFunctionalExtensions.HttpResults.Examples.Features.ProblemDetailsProvider;
 using Scalar.AspNetCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -63,7 +63,7 @@ app.UseHttpsRedirection();
 app.MapBooksGroup();
 app.MapCheckAge();
 app.MapStream();
-app.MapCustomProblemDetails();
+app.MapProblemDetailsProvider();
 app.MapDocuments();
 
 app.Run();

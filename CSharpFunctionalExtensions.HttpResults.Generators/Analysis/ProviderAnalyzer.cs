@@ -1,4 +1,3 @@
-using CSharpFunctionalExtensions.HttpResults.Generators.Utils;
 using Microsoft.CodeAnalysis;
 
 namespace CSharpFunctionalExtensions.HttpResults.Generators.Analysis;
@@ -11,7 +10,9 @@ internal static class ProviderAnalyzer
     var diagnostics = new List<Diagnostic>();
     var valid = new List<INamedTypeSymbol>();
 
-    foreach (var candidate in candidates.OrderBy(TypeNameResolver.GetFullyQualifiedTypeName, StringComparer.Ordinal))
+    foreach (
+      var candidate in candidates.OrderBy(SymbolTypeNameFormatter.GetFullyQualifiedTypeName, StringComparer.Ordinal)
+    )
     {
       string? reason = null;
       if (candidate.TypeKind != TypeKind.Class || candidate.IsAbstract || candidate.IsStatic)
@@ -38,7 +39,7 @@ internal static class ProviderAnalyzer
         Diagnostic.Create(
           GeneratorDiagnostics.DuplicateProvider,
           GetLocation(valid[1]),
-          string.Join(", ", valid.Select(TypeNameResolver.GetFullyQualifiedTypeName))
+          string.Join(", ", valid.Select(SymbolTypeNameFormatter.GetFullyQualifiedTypeName))
         )
       );
       return new ProviderAnalysis(null, diagnostics);

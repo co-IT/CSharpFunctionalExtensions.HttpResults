@@ -52,3 +52,20 @@
 | Rule ID     | Category | Severity | Notes                                                   |
 |-------------|----------|----------|---------------------------------------------------------|
 | CFEHTTPR004 | Mapping  | Error    | Missing parameterless constructor in IResultErrorMapper |
+
+## Release v2.0.0
+
+### Changed Rules
+
+| Rule ID     | Category | Severity | Notes                                                                                 |
+|-------------|----------|----------|---------------------------------------------------------------------------------------|
+| CFEHTTPR002 | Mapping  | Error    | Semantic duplicate groups are excluded without suppressing unrelated generated output |
+| CFEHTTPR004 | Mapping  | Error    | Validates accessible construction and required members for result error mappers        |
+
+### New Rules
+
+| Rule ID     | Category | Severity | Notes                                                        |
+|-------------|----------|----------|--------------------------------------------------------------|
+| CFEHTTPR005 | Mapping  | Error    | Multiple valid IResultProblemDetailsProvider implementations |
+| CFEHTTPR006 | Mapping  | Error    | Unsupported mapper type shape                                |
+| CFEHTTPR007 | Mapping  | Error    | Unsupported provider type shape                              |

@@ -26,7 +26,7 @@ public class MapperShapeGenerationTests
     var (diagnostics, files) = GeneratorTestHelper.RunGeneratorPerFile(source);
 
     diagnostics.Should().BeEmpty();
-    (files["ResultExtensions.g.cs"] + files["LegacyErrorMapperCache.g.cs"])
+    (files["ResultExtensions.g.cs"] + files["ResultErrorMapperCache.g.cs"])
       .Should()
       .Contain(
         "global::CSharpFunctionalExtensions.HttpResults.IResultErrorMapper<global::Error, global::Microsoft.AspNetCore.Http.HttpResults.ProblemHttpResult>"
@@ -76,7 +76,7 @@ public class MapperShapeGenerationTests
     var (diagnostics, files) = GeneratorTestHelper.RunGeneratorPerFile(source);
 
     diagnostics.Should().BeEmpty();
-    files["LegacyErrorMapperCache.g.cs"].Split("new global::Mapper()").Should().HaveCount(2);
+    files["ResultErrorMapperCache.g.cs"].Split("new global::Mapper()").Should().HaveCount(2);
   }
 
   [Theory]
@@ -109,7 +109,7 @@ public class MapperShapeGenerationTests
     };
 
   [Fact]
-  public void Legacy_mapper_with_required_members_is_rejected()
+  public void Result_error_mapper_with_required_members_is_rejected()
   {
     const string source = """
       using CSharpFunctionalExtensions.HttpResults;
@@ -127,7 +127,7 @@ public class MapperShapeGenerationTests
     var (diagnostics, files) = GeneratorTestHelper.RunGeneratorPerFile(source);
 
     diagnostics.Should().ContainSingle(diagnostic => diagnostic.Id == "CFEHTTPR004");
-    files["LegacyErrorMapperCache.g.cs"].Should().NotContain("new global::Mapper");
+    files["ResultErrorMapperCache.g.cs"].Should().NotContain("new global::Mapper");
   }
 
   [Fact]
@@ -152,7 +152,7 @@ public class MapperShapeGenerationTests
     var (diagnostics, files) = GeneratorTestHelper.RunGeneratorPerFile(source);
 
     diagnostics.Should().BeEmpty();
-    files["LegacyErrorMapperCache.g.cs"].Should().Contain("new global::Mapper()");
+    files["ResultErrorMapperCache.g.cs"].Should().Contain("new global::Mapper()");
   }
 
   [Fact]
@@ -170,7 +170,7 @@ public class MapperShapeGenerationTests
     var (diagnostics, files) = GeneratorTestHelper.RunGeneratorPerFile(source);
 
     diagnostics.Should().BeEmpty();
-    var cache = files["LegacyErrorMapperCache.g.cs"];
+    var cache = files["ResultErrorMapperCache.g.cs"];
     cache.Should().Contain("Mapper0").And.Contain("Mapper1");
     cache.Should().Contain("new global::First.Mapper()").And.Contain("new global::Second.Mapper()");
   }
