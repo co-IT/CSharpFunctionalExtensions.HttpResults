@@ -1,7 +1,10 @@
 using CSharpFunctionalExtensions.HttpResults;
+using CSharpFunctionalExtensions.HttpResults.Examples;
 using CSharpFunctionalExtensions.HttpResults.Examples.Features.CRUD;
 using CSharpFunctionalExtensions.HttpResults.Examples.Features.CustomError;
+using CSharpFunctionalExtensions.HttpResults.Examples.Features.DependencyInjection;
 using CSharpFunctionalExtensions.HttpResults.Examples.Features.FileStream;
+using CSharpFunctionalExtensions.HttpResults.Examples.Features.ProblemDetailsProvider;
 using Scalar.AspNetCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -35,6 +38,11 @@ ProblemDetailsMappingProvider.DefaultMappings = new Dictionary<int, (string? Tit
 
 builder.Services.AddSingleton<BookService>();
 
+// Registers ASP.NET Core's ProblemDetailsFactory used by the example provider.
+builder.Services.AddControllers();
+builder.Services.AddCSharpFunctionalExtensionsHttpResults();
+builder.Services.AddSingleton<DocumentationLinkProvider>();
+
 builder.Services.AddOpenApi();
 builder.Services.AddProblemDetails();
 
@@ -55,5 +63,7 @@ app.UseHttpsRedirection();
 app.MapBooksGroup();
 app.MapCheckAge();
 app.MapStream();
+app.MapProblemDetailsProvider();
+app.MapDocuments();
 
 app.Run();

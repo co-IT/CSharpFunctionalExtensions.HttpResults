@@ -13,11 +13,11 @@ public class ToCreatedHttpResultT
     var document = new Document { DocumentId = Guid.NewGuid().ToString() };
     Func<Document, Uri> uri = x => new Uri($"http://localhost/documents/{x.DocumentId}");
 
-    var result = Result.Success(document).ToCreatedHttpResult(uri).Result as Created<Document>;
+    var result = Assert.IsType<Created<Document>>(Result.Success(document).ToCreatedHttpResult(uri).Result);
 
-    result!.StatusCode.Should().Be(201);
-    result!.Value.Should().Be(document);
-    result!.Location.Should().Be(uri(document).AbsoluteUri);
+    result.StatusCode.Should().Be(201);
+    result.Value.Should().Be(document);
+    result.Location.Should().Be(uri(document).AbsoluteUri);
   }
 
   [Fact]
@@ -26,11 +26,13 @@ public class ToCreatedHttpResultT
     var document = new Document { DocumentId = Guid.NewGuid().ToString() };
     Func<Document, Uri> uri = x => new Uri($"http://localhost/documents/{x.DocumentId}");
 
-    var result = (await Task.FromResult(Result.Success(document)).ToCreatedHttpResult(uri)).Result as Created<Document>;
+    var result = Assert.IsType<Created<Document>>(
+      (await Task.FromResult(Result.Success(document)).ToCreatedHttpResult(uri)).Result
+    );
 
-    result!.StatusCode.Should().Be(201);
-    result!.Value.Should().Be(document);
-    result!.Location.Should().Be(uri(document).AbsoluteUri);
+    result.StatusCode.Should().Be(201);
+    result.Value.Should().Be(document);
+    result.Location.Should().Be(uri(document).AbsoluteUri);
   }
 
   [Fact]
@@ -38,11 +40,11 @@ public class ToCreatedHttpResultT
   {
     var error = "Error";
 
-    var result = Result.Failure<Document>(error).ToCreatedHttpResult().Result as ProblemHttpResult;
+    var result = Assert.IsType<ProblemHttpResult>(Result.Failure<Document>(error).ToCreatedHttpResult().Result);
 
-    result!.StatusCode.Should().Be(400);
-    result!.ProblemDetails.Status.Should().Be(400);
-    result!.ProblemDetails.Detail.Should().Be(error);
+    result.StatusCode.Should().Be(400);
+    result.ProblemDetails.Status.Should().Be(400);
+    result.ProblemDetails.Detail.Should().Be(error);
   }
 
   [Fact]
@@ -50,12 +52,13 @@ public class ToCreatedHttpResultT
   {
     var error = "Error";
 
-    var result =
-      (await Task.FromResult(Result.Failure<Document>(error)).ToCreatedHttpResult()).Result as ProblemHttpResult;
+    var result = Assert.IsType<ProblemHttpResult>(
+      (await Task.FromResult(Result.Failure<Document>(error)).ToCreatedHttpResult()).Result
+    );
 
-    result!.StatusCode.Should().Be(400);
-    result!.ProblemDetails.Status.Should().Be(400);
-    result!.ProblemDetails.Detail.Should().Be(error);
+    result.StatusCode.Should().Be(400);
+    result.ProblemDetails.Status.Should().Be(400);
+    result.ProblemDetails.Detail.Should().Be(error);
   }
 
   [Fact]
@@ -64,12 +67,13 @@ public class ToCreatedHttpResultT
     var statusCode = 418;
     var error = "Error";
 
-    var result =
-      Result.Failure<Document>(error).ToCreatedHttpResult(failureStatusCode: statusCode).Result as ProblemHttpResult;
+    var result = Assert.IsType<ProblemHttpResult>(
+      Result.Failure<Document>(error).ToCreatedHttpResult(failureStatusCode: statusCode).Result
+    );
 
-    result!.StatusCode.Should().Be(statusCode);
-    result!.ProblemDetails.Status.Should().Be(statusCode);
-    result!.ProblemDetails.Detail.Should().Be(error);
+    result.StatusCode.Should().Be(statusCode);
+    result.ProblemDetails.Status.Should().Be(statusCode);
+    result.ProblemDetails.Detail.Should().Be(error);
   }
 
   [Fact]
@@ -78,13 +82,13 @@ public class ToCreatedHttpResultT
     var statusCode = 418;
     var error = "Error";
 
-    var result =
+    var result = Assert.IsType<ProblemHttpResult>(
       (await Task.FromResult(Result.Failure<Document>(error)).ToCreatedHttpResult(failureStatusCode: statusCode)).Result
-      as ProblemHttpResult;
+    );
 
-    result!.StatusCode.Should().Be(statusCode);
-    result!.ProblemDetails.Status.Should().Be(statusCode);
-    result!.ProblemDetails.Detail.Should().Be(error);
+    result.StatusCode.Should().Be(statusCode);
+    result.ProblemDetails.Status.Should().Be(statusCode);
+    result.ProblemDetails.Detail.Should().Be(error);
   }
 
   [Fact]
@@ -93,13 +97,14 @@ public class ToCreatedHttpResultT
     var error = "Error";
     var customTitle = "Custom Title";
 
-    var result =
+    var result = Assert.IsType<ProblemHttpResult>(
       Result
         .Failure<Document>(error)
         .ToCreatedHttpResult(customizeProblemDetails: problemDetails => problemDetails.Title = customTitle)
-        .Result as ProblemHttpResult;
+        .Result
+    );
 
-    result!.ProblemDetails.Title.Should().Be(customTitle);
+    result.ProblemDetails.Title.Should().Be(customTitle);
   }
 
   [Fact]
@@ -108,12 +113,13 @@ public class ToCreatedHttpResultT
     var error = "Error";
     var customTitle = "Custom Title";
 
-    var result =
+    var result = Assert.IsType<ProblemHttpResult>(
       (
         await Task.FromResult(Result.Failure<Document>(error))
           .ToCreatedHttpResult(customizeProblemDetails: problemDetails => problemDetails.Title = customTitle)
-      ).Result as ProblemHttpResult;
+      ).Result
+    );
 
-    result!.ProblemDetails.Title.Should().Be(customTitle);
+    result.ProblemDetails.Title.Should().Be(customTitle);
   }
 }

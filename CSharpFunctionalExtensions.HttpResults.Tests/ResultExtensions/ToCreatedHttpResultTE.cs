@@ -12,12 +12,13 @@ public class ToCreatedHttpResultTE
     var document = new Document { DocumentId = Guid.NewGuid().ToString() };
     Func<Document, Uri> uri = x => new Uri($"http://localhost/documents/{x.DocumentId}");
 
-    var result =
-      Result.Success<Document, DocumentCreationError>(document).ToCreatedHttpResult(uri).Result as Created<Document>;
+    var result = Assert.IsType<Created<Document>>(
+      Result.Success<Document, DocumentCreationError>(document).ToCreatedHttpResult(uri).Result
+    );
 
-    result!.StatusCode.Should().Be(201);
-    result!.Value.Should().Be(document);
-    result!.Location.Should().Be(uri(document).AbsoluteUri);
+    result.StatusCode.Should().Be(201);
+    result.Value.Should().Be(document);
+    result.Location.Should().Be(uri(document).AbsoluteUri);
   }
 
   [Fact]
@@ -26,13 +27,13 @@ public class ToCreatedHttpResultTE
     var document = new Document { DocumentId = Guid.NewGuid().ToString() };
     Func<Document, Uri> uri = x => new Uri($"http://localhost/documents/{x.DocumentId}");
 
-    var result =
+    var result = Assert.IsType<Created<Document>>(
       (await Task.FromResult(Result.Success<Document, DocumentCreationError>(document)).ToCreatedHttpResult(uri)).Result
-      as Created<Document>;
+    );
 
-    result!.StatusCode.Should().Be(201);
-    result!.Value.Should().Be(document);
-    result!.Location.Should().Be(uri(document).AbsoluteUri);
+    result.StatusCode.Should().Be(201);
+    result.Value.Should().Be(document);
+    result.Location.Should().Be(uri(document).AbsoluteUri);
   }
 
   [Fact]
@@ -40,11 +41,12 @@ public class ToCreatedHttpResultTE
   {
     var error = new DocumentCreationError { DocumentId = Guid.NewGuid().ToString() };
 
-    var result =
-      Result.Failure<Document, DocumentCreationError>(error).ToCreatedHttpResult().Result as Conflict<string>;
+    var result = Assert.IsType<Conflict<string>>(
+      Result.Failure<Document, DocumentCreationError>(error).ToCreatedHttpResult().Result
+    );
 
-    result!.StatusCode.Should().Be(409);
-    result!.Value.Should().Be(error.DocumentId);
+    result.StatusCode.Should().Be(409);
+    result.Value.Should().Be(error.DocumentId);
   }
 
   [Fact]
@@ -52,11 +54,11 @@ public class ToCreatedHttpResultTE
   {
     var error = new DocumentCreationError { DocumentId = Guid.NewGuid().ToString() };
 
-    var result =
+    var result = Assert.IsType<Conflict<string>>(
       (await Task.FromResult(Result.Failure<Document, DocumentCreationError>(error)).ToCreatedHttpResult()).Result
-      as Conflict<string>;
+    );
 
-    result!.StatusCode.Should().Be(409);
-    result!.Value.Should().Be(error.DocumentId);
+    result.StatusCode.Should().Be(409);
+    result.Value.Should().Be(error.DocumentId);
   }
 }

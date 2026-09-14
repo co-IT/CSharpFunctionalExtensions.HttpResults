@@ -13,9 +13,11 @@ public class ToContentHttpResultStringE
   {
     var value = "foo";
 
-    var result = Result.Success<string, DocumentMissingError>(value).ToContentHttpResult().Result as ContentHttpResult;
+    var result = Assert.IsType<ContentHttpResult>(
+      Result.Success<string, DocumentMissingError>(value).ToContentHttpResult().Result
+    );
 
-    result!.ResponseContent.Should().Be(value);
+    result.ResponseContent.Should().Be(value);
   }
 
   [Fact]
@@ -23,11 +25,11 @@ public class ToContentHttpResultStringE
   {
     var value = "foo";
 
-    var result =
+    var result = Assert.IsType<ContentHttpResult>(
       (await Task.FromResult(Result.Success<string, DocumentMissingError>(value)).ToContentHttpResult()).Result
-      as ContentHttpResult;
+    );
 
-    result!.ResponseContent.Should().Be(value);
+    result.ResponseContent.Should().Be(value);
   }
 
   [Fact]
@@ -35,10 +37,12 @@ public class ToContentHttpResultStringE
   {
     var error = new DocumentMissingError { DocumentId = Guid.NewGuid().ToString() };
 
-    var result = Result.Failure<string, DocumentMissingError>(error).ToContentHttpResult().Result as NotFound<string>;
+    var result = Assert.IsType<NotFound<string>>(
+      Result.Failure<string, DocumentMissingError>(error).ToContentHttpResult().Result
+    );
 
-    result!.StatusCode.Should().Be(404);
-    result!.Value.Should().Be(error.DocumentId);
+    result.StatusCode.Should().Be(404);
+    result.Value.Should().Be(error.DocumentId);
   }
 
   [Fact]
@@ -46,12 +50,12 @@ public class ToContentHttpResultStringE
   {
     var error = new DocumentMissingError { DocumentId = Guid.NewGuid().ToString() };
 
-    var result =
+    var result = Assert.IsType<NotFound<string>>(
       (await Task.FromResult(Result.Failure<string, DocumentMissingError>(error)).ToContentHttpResult()).Result
-      as NotFound<string>;
+    );
 
-    result!.StatusCode.Should().Be(404);
-    result!.Value.Should().Be(error.DocumentId);
+    result.StatusCode.Should().Be(404);
+    result.Value.Should().Be(error.DocumentId);
   }
 
   [Fact]
@@ -62,14 +66,14 @@ public class ToContentHttpResultStringE
     var encoding = Encoding.ASCII;
     var statusCode = 218;
 
-    var result =
+    var result = Assert.IsType<ContentHttpResult>(
       Result.Success<string, DocumentMissingError>(value).ToContentHttpResult(contentType, encoding, statusCode).Result
-      as ContentHttpResult;
+    );
 
-    result!.StatusCode.Should().Be(statusCode);
-    result!.ContentType!.Split("; ")[0].Should().Be(contentType);
-    result!.ContentType!.Split("; ")[1].Replace("charset=", string.Empty).Should().Be(encoding.HeaderName);
-    result!.ResponseContent.Should().Be(value);
+    result.StatusCode.Should().Be(statusCode);
+    result.ContentType!.Split("; ")[0].Should().Be(contentType);
+    result.ContentType!.Split("; ")[1].Replace("charset=", string.Empty).Should().Be(encoding.HeaderName);
+    result.ResponseContent.Should().Be(value);
   }
 
   [Fact]
@@ -80,15 +84,16 @@ public class ToContentHttpResultStringE
     var encoding = Encoding.ASCII;
     var statusCode = 218;
 
-    var result =
+    var result = Assert.IsType<ContentHttpResult>(
       (
         await Task.FromResult(Result.Success<string, DocumentMissingError>(value))
           .ToContentHttpResult(contentType, encoding, statusCode)
-      ).Result as ContentHttpResult;
+      ).Result
+    );
 
-    result!.StatusCode.Should().Be(statusCode);
-    result!.ContentType!.Split("; ")[0].Should().Be(contentType);
-    result!.ContentType!.Split("; ")[1].Replace("charset=", string.Empty).Should().Be(encoding.HeaderName);
-    result!.ResponseContent.Should().Be(value);
+    result.StatusCode.Should().Be(statusCode);
+    result.ContentType!.Split("; ")[0].Should().Be(contentType);
+    result.ContentType!.Split("; ")[1].Replace("charset=", string.Empty).Should().Be(encoding.HeaderName);
+    result.ResponseContent.Should().Be(value);
   }
 }

@@ -31,7 +31,7 @@ public class ParameterlessConstructorRuleTests
       {
         public DocumentCreationErrorMapper2() { }
 
-        public Conflict<string> Map(string error) => TypedResults.Conflict(error.DocumentId);
+        public Conflict<string> Map(string error) => TypedResults.Conflict(error);
       }
 
       // Explicit parameterless & with parameters --> No error
@@ -40,7 +40,7 @@ public class ParameterlessConstructorRuleTests
         public DocumentCreationErrorMapper3() { }
         public DocumentCreationErrorMapper3(string foo) { }
 
-        public Conflict<string> Map(int error) => TypedResults.Conflict(error.DocumentId);
+        public Conflict<string> Map(int error) => TypedResults.Conflict(error.ToString());
       }
       """;
 
@@ -57,6 +57,8 @@ public class ParameterlessConstructorRuleTests
     diagnostic
       .GetMessage()
       .Should()
-      .Be("Class 'DocumentCreationErrorMapper' does not have a parameterless constructor");
+      .Be(
+        "Class 'DocumentCreationErrorMapper' does not have an accessible parameterless constructor without unsatisfied required members. Implement IServiceResultErrorMapper<,> to use dependency injection instead."
+      );
   }
 }

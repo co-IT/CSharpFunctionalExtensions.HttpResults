@@ -39,6 +39,11 @@ public class DuplicateMapperRuleTests
 
     diagnostic.Id.Should().Be("CFEHTTPR002");
     diagnostic.Severity.Should().Be(DiagnosticSeverity.Error);
-    diagnostic.GetMessage().Should().Be("Class 'DocumentCreationError' does have multiple IResultErrorMapper");
+    diagnostic
+      .GetMessage()
+      .Should()
+      .Be(
+        "Error type 'DocumentCreationError' has multiple IResultErrorMapper or IServiceResultErrorMapper implementations"
+      );
   }
 }

@@ -18,19 +18,20 @@ public class ToFileHttpResultByteArray
     var entityTag = new EntityTagHeaderValue("\"fooETag\"");
     var enableRangeProcessing = true;
 
-    var result =
+    var result = Assert.IsType<FileContentHttpResult>(
       Result
         .Success(value)
         .ToFileHttpResult(contentType, fileDownloadName, lastModified, entityTag, enableRangeProcessing)
-        .Result as FileContentHttpResult;
+        .Result
+    );
 
-    result!.FileContents.ToArray().Should().BeEquivalentTo(value);
-    result!.LastModified.Should().Be(lastModified);
-    result!.FileDownloadName.Should().Be(fileDownloadName);
-    result!.FileLength.Should().Be(value.Length);
-    result!.ContentType.Should().Be(contentType);
-    result!.EnableRangeProcessing.Should().Be(enableRangeProcessing);
-    result!.EntityTag.Should().Be(entityTag);
+    result.FileContents.ToArray().Should().BeEquivalentTo(value);
+    result.LastModified.Should().Be(lastModified);
+    result.FileDownloadName.Should().Be(fileDownloadName);
+    result.FileLength.Should().Be(value.Length);
+    result.ContentType.Should().Be(contentType);
+    result.EnableRangeProcessing.Should().Be(enableRangeProcessing);
+    result.EntityTag.Should().Be(entityTag);
   }
 
   [Fact]
@@ -43,19 +44,20 @@ public class ToFileHttpResultByteArray
     var entityTag = new EntityTagHeaderValue("\"fooETag\"");
     var enableRangeProcessing = true;
 
-    var result =
+    var result = Assert.IsType<FileContentHttpResult>(
       (
         await Task.FromResult(Result.Success(value))
           .ToFileHttpResult(contentType, fileDownloadName, lastModified, entityTag, enableRangeProcessing)
-      ).Result as FileContentHttpResult;
+      ).Result
+    );
 
-    result!.FileContents.ToArray().Should().BeEquivalentTo(value);
-    result!.LastModified.Should().Be(lastModified);
-    result!.FileDownloadName.Should().Be(fileDownloadName);
-    result!.FileLength.Should().Be(value.Length);
-    result!.ContentType.Should().Be(contentType);
-    result!.EnableRangeProcessing.Should().Be(enableRangeProcessing);
-    result!.EntityTag.Should().Be(entityTag);
+    result.FileContents.ToArray().Should().BeEquivalentTo(value);
+    result.LastModified.Should().Be(lastModified);
+    result.FileDownloadName.Should().Be(fileDownloadName);
+    result.FileLength.Should().Be(value.Length);
+    result.ContentType.Should().Be(contentType);
+    result.EnableRangeProcessing.Should().Be(enableRangeProcessing);
+    result.EntityTag.Should().Be(entityTag);
   }
 
   [Fact]
@@ -63,11 +65,11 @@ public class ToFileHttpResultByteArray
   {
     var error = "Error";
 
-    var result = Result.Failure<byte[]>(error).ToFileHttpResult().Result as ProblemHttpResult;
+    var result = Assert.IsType<ProblemHttpResult>(Result.Failure<byte[]>(error).ToFileHttpResult().Result);
 
-    result!.StatusCode.Should().Be(400);
-    result!.ProblemDetails.Status.Should().Be(400);
-    result!.ProblemDetails.Detail.Should().Be(error);
+    result.StatusCode.Should().Be(400);
+    result.ProblemDetails.Status.Should().Be(400);
+    result.ProblemDetails.Detail.Should().Be(error);
   }
 
   [Fact]
@@ -75,11 +77,13 @@ public class ToFileHttpResultByteArray
   {
     var error = "Error";
 
-    var result = (await Task.FromResult(Result.Failure<byte[]>(error)).ToFileHttpResult()).Result as ProblemHttpResult;
+    var result = Assert.IsType<ProblemHttpResult>(
+      (await Task.FromResult(Result.Failure<byte[]>(error)).ToFileHttpResult()).Result
+    );
 
-    result!.StatusCode.Should().Be(400);
-    result!.ProblemDetails.Status.Should().Be(400);
-    result!.ProblemDetails.Detail.Should().Be(error);
+    result.StatusCode.Should().Be(400);
+    result.ProblemDetails.Status.Should().Be(400);
+    result.ProblemDetails.Detail.Should().Be(error);
   }
 
   [Fact]
@@ -88,12 +92,13 @@ public class ToFileHttpResultByteArray
     var statusCode = 418;
     var error = "Error";
 
-    var result =
-      Result.Failure<byte[]>(error).ToFileHttpResult(failureStatusCode: statusCode).Result as ProblemHttpResult;
+    var result = Assert.IsType<ProblemHttpResult>(
+      Result.Failure<byte[]>(error).ToFileHttpResult(failureStatusCode: statusCode).Result
+    );
 
-    result!.StatusCode.Should().Be(statusCode);
-    result!.ProblemDetails.Status.Should().Be(statusCode);
-    result!.ProblemDetails.Detail.Should().Be(error);
+    result.StatusCode.Should().Be(statusCode);
+    result.ProblemDetails.Status.Should().Be(statusCode);
+    result.ProblemDetails.Detail.Should().Be(error);
   }
 
   [Fact]
@@ -102,13 +107,13 @@ public class ToFileHttpResultByteArray
     var statusCode = 418;
     var error = "Error";
 
-    var result =
+    var result = Assert.IsType<ProblemHttpResult>(
       (await Task.FromResult(Result.Failure<byte[]>(error)).ToFileHttpResult(failureStatusCode: statusCode)).Result
-      as ProblemHttpResult;
+    );
 
-    result!.StatusCode.Should().Be(statusCode);
-    result!.ProblemDetails.Status.Should().Be(statusCode);
-    result!.ProblemDetails.Detail.Should().Be(error);
+    result.StatusCode.Should().Be(statusCode);
+    result.ProblemDetails.Status.Should().Be(statusCode);
+    result.ProblemDetails.Detail.Should().Be(error);
   }
 
   [Fact]
@@ -117,13 +122,14 @@ public class ToFileHttpResultByteArray
     var error = "Error";
     var customTitle = "Custom Title";
 
-    var result =
+    var result = Assert.IsType<ProblemHttpResult>(
       Result
         .Failure<byte[]>(error)
         .ToFileHttpResult(customizeProblemDetails: problemDetails => problemDetails.Title = customTitle)
-        .Result as ProblemHttpResult;
+        .Result
+    );
 
-    result!.ProblemDetails.Title.Should().Be(customTitle);
+    result.ProblemDetails.Title.Should().Be(customTitle);
   }
 
   [Fact]
@@ -132,12 +138,13 @@ public class ToFileHttpResultByteArray
     var error = "Error";
     var customTitle = "Custom Title";
 
-    var result =
+    var result = Assert.IsType<ProblemHttpResult>(
       (
         await Task.FromResult(Result.Failure<byte[]>(error))
           .ToFileHttpResult(customizeProblemDetails: problemDetails => problemDetails.Title = customTitle)
-      ).Result as ProblemHttpResult;
+      ).Result
+    );
 
-    result!.ProblemDetails.Title.Should().Be(customTitle);
+    result.ProblemDetails.Title.Should().Be(customTitle);
   }
 }

@@ -11,10 +11,11 @@ public class ToStatusCodeHttpResultTE
   {
     var value = "foo";
 
-    var result =
-      Result.Success<string, DocumentMissingError>(value).ToStatusCodeHttpResult().Result as StatusCodeHttpResult;
+    var result = Assert.IsType<StatusCodeHttpResult>(
+      Result.Success<string, DocumentMissingError>(value).ToStatusCodeHttpResult().Result
+    );
 
-    result!.StatusCode.Should().Be(204);
+    result.StatusCode.Should().Be(204);
   }
 
   [Fact]
@@ -22,11 +23,11 @@ public class ToStatusCodeHttpResultTE
   {
     var value = "foo";
 
-    var result =
+    var result = Assert.IsType<StatusCodeHttpResult>(
       (await Task.FromResult(Result.Success<string, DocumentMissingError>(value)).ToStatusCodeHttpResult()).Result
-      as StatusCodeHttpResult;
+    );
 
-    result!.StatusCode.Should().Be(204);
+    result.StatusCode.Should().Be(204);
   }
 
   [Fact]
@@ -35,11 +36,11 @@ public class ToStatusCodeHttpResultTE
     var statusCode = 210;
     var value = "foo";
 
-    var result =
+    var result = Assert.IsType<StatusCodeHttpResult>(
       Result.Success<string, DocumentMissingError>(value).ToStatusCodeHttpResult(statusCode).Result
-      as StatusCodeHttpResult;
+    );
 
-    result!.StatusCode.Should().Be(statusCode);
+    result.StatusCode.Should().Be(statusCode);
   }
 
   [Fact]
@@ -48,12 +49,13 @@ public class ToStatusCodeHttpResultTE
     var statusCode = 210;
     var value = "foo";
 
-    var result =
+    var result = Assert.IsType<StatusCodeHttpResult>(
       (
         await Task.FromResult(Result.Success<string, DocumentMissingError>(value)).ToStatusCodeHttpResult(statusCode)
-      ).Result as StatusCodeHttpResult;
+      ).Result
+    );
 
-    result!.StatusCode.Should().Be(statusCode);
+    result.StatusCode.Should().Be(statusCode);
   }
 
   [Fact]
@@ -61,11 +63,12 @@ public class ToStatusCodeHttpResultTE
   {
     var error = new DocumentMissingError { DocumentId = Guid.NewGuid().ToString() };
 
-    var result =
-      Result.Failure<string, DocumentMissingError>(error).ToStatusCodeHttpResult().Result as NotFound<string>;
+    var result = Assert.IsType<NotFound<string>>(
+      Result.Failure<string, DocumentMissingError>(error).ToStatusCodeHttpResult().Result
+    );
 
-    result!.StatusCode.Should().Be(404);
-    result!.Value.Should().Be(error.DocumentId);
+    result.StatusCode.Should().Be(404);
+    result.Value.Should().Be(error.DocumentId);
   }
 
   [Fact]
@@ -73,11 +76,11 @@ public class ToStatusCodeHttpResultTE
   {
     var error = new DocumentMissingError { DocumentId = Guid.NewGuid().ToString() };
 
-    var result =
+    var result = Assert.IsType<NotFound<string>>(
       (await Task.FromResult(Result.Failure<string, DocumentMissingError>(error)).ToStatusCodeHttpResult()).Result
-      as NotFound<string>;
+    );
 
-    result!.StatusCode.Should().Be(404);
-    result!.Value.Should().Be(error.DocumentId);
+    result.StatusCode.Should().Be(404);
+    result.Value.Should().Be(error.DocumentId);
   }
 }

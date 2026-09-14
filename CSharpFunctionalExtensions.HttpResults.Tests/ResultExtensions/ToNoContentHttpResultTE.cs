@@ -11,9 +11,11 @@ public class ToNoContentHttpResultTE
   {
     var value = "foo";
 
-    var result = Result.Success<string, DocumentMissingError>(value).ToNoContentHttpResult().Result as NoContent;
+    var result = Assert.IsType<NoContent>(
+      Result.Success<string, DocumentMissingError>(value).ToNoContentHttpResult().Result
+    );
 
-    result!.StatusCode.Should().Be(204);
+    result.StatusCode.Should().Be(204);
   }
 
   [Fact]
@@ -21,11 +23,11 @@ public class ToNoContentHttpResultTE
   {
     var value = "foo";
 
-    var result =
+    var result = Assert.IsType<NoContent>(
       (await Task.FromResult(Result.Success<string, DocumentMissingError>(value)).ToNoContentHttpResult()).Result
-      as NoContent;
+    );
 
-    result!.StatusCode.Should().Be(204);
+    result.StatusCode.Should().Be(204);
   }
 
   [Fact]
@@ -33,10 +35,12 @@ public class ToNoContentHttpResultTE
   {
     var error = new DocumentMissingError { DocumentId = Guid.NewGuid().ToString() };
 
-    var result = Result.Failure<string, DocumentMissingError>(error).ToNoContentHttpResult().Result as NotFound<string>;
+    var result = Assert.IsType<NotFound<string>>(
+      Result.Failure<string, DocumentMissingError>(error).ToNoContentHttpResult().Result
+    );
 
-    result!.StatusCode.Should().Be(404);
-    result!.Value.Should().Be(error.DocumentId);
+    result.StatusCode.Should().Be(404);
+    result.Value.Should().Be(error.DocumentId);
   }
 
   [Fact]
@@ -44,11 +48,11 @@ public class ToNoContentHttpResultTE
   {
     var error = new DocumentMissingError { DocumentId = Guid.NewGuid().ToString() };
 
-    var result =
+    var result = Assert.IsType<NotFound<string>>(
       (await Task.FromResult(Result.Failure<string, DocumentMissingError>(error)).ToNoContentHttpResult()).Result
-      as NotFound<string>;
+    );
 
-    result!.StatusCode.Should().Be(404);
-    result!.Value.Should().Be(error.DocumentId);
+    result.StatusCode.Should().Be(404);
+    result.Value.Should().Be(error.DocumentId);
   }
 }

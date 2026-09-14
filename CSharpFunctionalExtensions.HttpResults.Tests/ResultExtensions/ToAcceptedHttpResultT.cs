@@ -13,11 +13,11 @@ public class ToAcceptedHttpResultT
     var document = new Document { DocumentId = Guid.NewGuid().ToString() };
     Func<Document, Uri> uri = x => new Uri($"http://localhost/documents/{x.DocumentId}");
 
-    var result = Result.Success(document).ToAcceptedHttpResult(uri).Result as Accepted<Document>;
+    var result = Assert.IsType<Accepted<Document>>(Result.Success(document).ToAcceptedHttpResult(uri).Result);
 
-    result!.StatusCode.Should().Be(202);
-    result!.Value.Should().Be(document);
-    result!.Location.Should().Be(uri(document).AbsoluteUri);
+    result.StatusCode.Should().Be(202);
+    result.Value.Should().Be(document);
+    result.Location.Should().Be(uri(document).AbsoluteUri);
   }
 
   [Fact]
@@ -26,12 +26,13 @@ public class ToAcceptedHttpResultT
     var document = new Document { DocumentId = Guid.NewGuid().ToString() };
     Func<Document, Uri> uri = x => new Uri($"http://localhost/documents/{x.DocumentId}");
 
-    var result =
-      (await Task.FromResult(Result.Success(document)).ToAcceptedHttpResult(uri)).Result as Accepted<Document>;
+    var result = Assert.IsType<Accepted<Document>>(
+      (await Task.FromResult(Result.Success(document)).ToAcceptedHttpResult(uri)).Result
+    );
 
-    result!.StatusCode.Should().Be(202);
-    result!.Value.Should().Be(document);
-    result!.Location.Should().Be(uri(document).AbsoluteUri);
+    result.StatusCode.Should().Be(202);
+    result.Value.Should().Be(document);
+    result.Location.Should().Be(uri(document).AbsoluteUri);
   }
 
   [Fact]
@@ -41,11 +42,11 @@ public class ToAcceptedHttpResultT
 
     Func<Document, Uri> uri = x => new Uri($"http://localhost/documents/{x.DocumentId}");
 
-    var result = Result.Failure<Document>(error).ToAcceptedHttpResult(uri).Result as ProblemHttpResult;
+    var result = Assert.IsType<ProblemHttpResult>(Result.Failure<Document>(error).ToAcceptedHttpResult(uri).Result);
 
-    result!.StatusCode.Should().Be(400);
-    result!.ProblemDetails.Status.Should().Be(400);
-    result!.ProblemDetails.Detail.Should().Be(error);
+    result.StatusCode.Should().Be(400);
+    result.ProblemDetails.Status.Should().Be(400);
+    result.ProblemDetails.Detail.Should().Be(error);
   }
 
   [Fact]
@@ -55,12 +56,13 @@ public class ToAcceptedHttpResultT
 
     Func<Document, Uri> uri = x => new Uri($"http://localhost/documents/{x.DocumentId}");
 
-    var result =
-      (await Task.FromResult(Result.Failure<Document>(error)).ToAcceptedHttpResult(uri)).Result as ProblemHttpResult;
+    var result = Assert.IsType<ProblemHttpResult>(
+      (await Task.FromResult(Result.Failure<Document>(error)).ToAcceptedHttpResult(uri)).Result
+    );
 
-    result!.StatusCode.Should().Be(400);
-    result!.ProblemDetails.Status.Should().Be(400);
-    result!.ProblemDetails.Detail.Should().Be(error);
+    result.StatusCode.Should().Be(400);
+    result.ProblemDetails.Status.Should().Be(400);
+    result.ProblemDetails.Detail.Should().Be(error);
   }
 
   [Fact]
@@ -71,11 +73,13 @@ public class ToAcceptedHttpResultT
 
     Func<Document, Uri> uri = x => new Uri($"http://localhost/documents/{x.DocumentId}");
 
-    var result = Result.Failure<Document>(error).ToAcceptedHttpResult(uri, statusCode).Result as ProblemHttpResult;
+    var result = Assert.IsType<ProblemHttpResult>(
+      Result.Failure<Document>(error).ToAcceptedHttpResult(uri, statusCode).Result
+    );
 
-    result!.StatusCode.Should().Be(statusCode);
-    result!.ProblemDetails.Status.Should().Be(statusCode);
-    result!.ProblemDetails.Detail.Should().Be(error);
+    result.StatusCode.Should().Be(statusCode);
+    result.ProblemDetails.Status.Should().Be(statusCode);
+    result.ProblemDetails.Detail.Should().Be(error);
   }
 
   [Fact]
@@ -86,13 +90,13 @@ public class ToAcceptedHttpResultT
 
     Func<Document, Uri> uri = x => new Uri($"http://localhost/documents/{x.DocumentId}");
 
-    var result =
+    var result = Assert.IsType<ProblemHttpResult>(
       (await Task.FromResult(Result.Failure<Document>(error)).ToAcceptedHttpResult(uri, statusCode)).Result
-      as ProblemHttpResult;
+    );
 
-    result!.StatusCode.Should().Be(statusCode);
-    result!.ProblemDetails.Status.Should().Be(statusCode);
-    result!.ProblemDetails.Detail.Should().Be(error);
+    result.StatusCode.Should().Be(statusCode);
+    result.ProblemDetails.Status.Should().Be(statusCode);
+    result.ProblemDetails.Detail.Should().Be(error);
   }
 
   [Fact]
@@ -103,13 +107,14 @@ public class ToAcceptedHttpResultT
 
     Func<Document, Uri> uri = x => new Uri($"http://localhost/documents/{x.DocumentId}");
 
-    var result =
+    var result = Assert.IsType<ProblemHttpResult>(
       Result
         .Failure<Document>(error)
         .ToAcceptedHttpResult(uri, customizeProblemDetails: problemDetails => problemDetails.Title = customTitle)
-        .Result as ProblemHttpResult;
+        .Result
+    );
 
-    result!.ProblemDetails.Title.Should().Be(customTitle);
+    result.ProblemDetails.Title.Should().Be(customTitle);
   }
 
   [Fact]
@@ -120,12 +125,13 @@ public class ToAcceptedHttpResultT
 
     Func<Document, Uri> uri = x => new Uri($"http://localhost/documents/{x.DocumentId}");
 
-    var result =
+    var result = Assert.IsType<ProblemHttpResult>(
       (
         await Task.FromResult(Result.Failure<Document>(error))
           .ToAcceptedHttpResult(uri, customizeProblemDetails: problemDetails => problemDetails.Title = customTitle)
-      ).Result as ProblemHttpResult;
+      ).Result
+    );
 
-    result!.ProblemDetails.Title.Should().Be(customTitle);
+    result.ProblemDetails.Title.Should().Be(customTitle);
   }
 }

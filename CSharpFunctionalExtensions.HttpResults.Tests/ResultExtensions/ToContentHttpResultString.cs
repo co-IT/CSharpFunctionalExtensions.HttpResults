@@ -12,9 +12,9 @@ public class ToContentHttpResultString
   {
     var value = "foo";
 
-    var result = Result.Success(value).ToContentHttpResult().Result as ContentHttpResult;
+    var result = Assert.IsType<ContentHttpResult>(Result.Success(value).ToContentHttpResult().Result);
 
-    result!.ResponseContent.Should().Be(value);
+    result.ResponseContent.Should().Be(value);
   }
 
   [Fact]
@@ -22,9 +22,11 @@ public class ToContentHttpResultString
   {
     var value = "foo";
 
-    var result = (await Task.FromResult(Result.Success(value)).ToContentHttpResult()).Result as ContentHttpResult;
+    var result = Assert.IsType<ContentHttpResult>(
+      (await Task.FromResult(Result.Success(value)).ToContentHttpResult()).Result
+    );
 
-    result!.ResponseContent.Should().Be(value);
+    result.ResponseContent.Should().Be(value);
   }
 
   [Fact]
@@ -32,11 +34,11 @@ public class ToContentHttpResultString
   {
     var error = "Error";
 
-    var result = Result.Failure<string>(error).ToContentHttpResult().Result as ProblemHttpResult;
+    var result = Assert.IsType<ProblemHttpResult>(Result.Failure<string>(error).ToContentHttpResult().Result);
 
-    result!.StatusCode.Should().Be(400);
-    result!.ProblemDetails.Status.Should().Be(400);
-    result!.ProblemDetails.Detail.Should().Be(error);
+    result.StatusCode.Should().Be(400);
+    result.ProblemDetails.Status.Should().Be(400);
+    result.ProblemDetails.Detail.Should().Be(error);
   }
 
   [Fact]
@@ -44,12 +46,13 @@ public class ToContentHttpResultString
   {
     var error = "Error";
 
-    var result =
-      (await Task.FromResult(Result.Failure<string>(error)).ToContentHttpResult()).Result as ProblemHttpResult;
+    var result = Assert.IsType<ProblemHttpResult>(
+      (await Task.FromResult(Result.Failure<string>(error)).ToContentHttpResult()).Result
+    );
 
-    result!.StatusCode.Should().Be(400);
-    result!.ProblemDetails.Status.Should().Be(400);
-    result!.ProblemDetails.Detail.Should().Be(error);
+    result.StatusCode.Should().Be(400);
+    result.ProblemDetails.Status.Should().Be(400);
+    result.ProblemDetails.Detail.Should().Be(error);
   }
 
   [Fact]
@@ -58,12 +61,13 @@ public class ToContentHttpResultString
     var statusCode = 418;
     var error = "Error";
 
-    var result =
-      Result.Failure<string>(error).ToContentHttpResult(null, null, null, statusCode).Result as ProblemHttpResult;
+    var result = Assert.IsType<ProblemHttpResult>(
+      Result.Failure<string>(error).ToContentHttpResult(null, null, null, statusCode).Result
+    );
 
-    result!.StatusCode.Should().Be(statusCode);
-    result!.ProblemDetails.Status.Should().Be(statusCode);
-    result!.ProblemDetails.Detail.Should().Be(error);
+    result.StatusCode.Should().Be(statusCode);
+    result.ProblemDetails.Status.Should().Be(statusCode);
+    result.ProblemDetails.Detail.Should().Be(error);
   }
 
   [Fact]
@@ -72,13 +76,13 @@ public class ToContentHttpResultString
     var statusCode = 418;
     var error = "Error";
 
-    var result =
+    var result = Assert.IsType<ProblemHttpResult>(
       (await Task.FromResult(Result.Failure<string>(error)).ToContentHttpResult(null, null, null, statusCode)).Result
-      as ProblemHttpResult;
+    );
 
-    result!.StatusCode.Should().Be(statusCode);
-    result!.ProblemDetails.Status.Should().Be(statusCode);
-    result!.ProblemDetails.Detail.Should().Be(error);
+    result.StatusCode.Should().Be(statusCode);
+    result.ProblemDetails.Status.Should().Be(statusCode);
+    result.ProblemDetails.Detail.Should().Be(error);
   }
 
   [Fact]
@@ -89,13 +93,14 @@ public class ToContentHttpResultString
     var encoding = Encoding.ASCII;
     var statusCode = 218;
 
-    var result =
-      Result.Success(value).ToContentHttpResult(contentType, encoding, statusCode).Result as ContentHttpResult;
+    var result = Assert.IsType<ContentHttpResult>(
+      Result.Success(value).ToContentHttpResult(contentType, encoding, statusCode).Result
+    );
 
-    result!.StatusCode.Should().Be(statusCode);
-    result!.ContentType!.Split("; ")[0].Should().Be(contentType);
-    result!.ContentType!.Split("; ")[1].Replace("charset=", string.Empty).Should().Be(encoding.HeaderName);
-    result!.ResponseContent.Should().Be(value);
+    result.StatusCode.Should().Be(statusCode);
+    result.ContentType!.Split("; ")[0].Should().Be(contentType);
+    result.ContentType!.Split("; ")[1].Replace("charset=", string.Empty).Should().Be(encoding.HeaderName);
+    result.ResponseContent.Should().Be(value);
   }
 
   [Fact]
@@ -106,14 +111,14 @@ public class ToContentHttpResultString
     var encoding = Encoding.ASCII;
     var statusCode = 218;
 
-    var result =
+    var result = Assert.IsType<ContentHttpResult>(
       (await Task.FromResult(Result.Success(value)).ToContentHttpResult(contentType, encoding, statusCode)).Result
-      as ContentHttpResult;
+    );
 
-    result!.StatusCode.Should().Be(statusCode);
-    result!.ContentType!.Split("; ")[0].Should().Be(contentType);
-    result!.ContentType!.Split("; ")[1].Replace("charset=", string.Empty).Should().Be(encoding.HeaderName);
-    result!.ResponseContent.Should().Be(value);
+    result.StatusCode.Should().Be(statusCode);
+    result.ContentType!.Split("; ")[0].Should().Be(contentType);
+    result.ContentType!.Split("; ")[1].Replace("charset=", string.Empty).Should().Be(encoding.HeaderName);
+    result.ResponseContent.Should().Be(value);
   }
 
   [Fact]
@@ -122,13 +127,14 @@ public class ToContentHttpResultString
     var error = "Error";
     var customTitle = "Custom Title";
 
-    var result =
+    var result = Assert.IsType<ProblemHttpResult>(
       Result
         .Failure<string>(error)
         .ToContentHttpResult(customizeProblemDetails: problemDetails => problemDetails.Title = customTitle)
-        .Result as ProblemHttpResult;
+        .Result
+    );
 
-    result!.ProblemDetails.Title.Should().Be(customTitle);
+    result.ProblemDetails.Title.Should().Be(customTitle);
   }
 
   [Fact]
@@ -137,12 +143,13 @@ public class ToContentHttpResultString
     var error = "Error";
     var customTitle = "Custom Title";
 
-    var result =
+    var result = Assert.IsType<ProblemHttpResult>(
       (
         await Task.FromResult(Result.Failure<string>(error))
           .ToContentHttpResult(customizeProblemDetails: problemDetails => problemDetails.Title = customTitle)
-      ).Result as ProblemHttpResult;
+      ).Result
+    );
 
-    result!.ProblemDetails.Title.Should().Be(customTitle);
+    result.ProblemDetails.Title.Should().Be(customTitle);
   }
 }

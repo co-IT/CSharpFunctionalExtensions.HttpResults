@@ -1,13 +1,9 @@
-using CSharpFunctionalExtensions.HttpResults.Generators.UnitResultExtensions;
-using Microsoft.CodeAnalysis;
-using Microsoft.CodeAnalysis.CSharp.Syntax;
+using CSharpFunctionalExtensions.HttpResults.Generators.Models;
 
 namespace CSharpFunctionalExtensions.HttpResults.Generators.Builders;
 
-public class UnitResultExtensionsClassBuilder(
-  List<ClassDeclarationSyntax> mapperClasses,
-  Compilation? compilation = null
-) : ClassBuilder(mapperClasses, compilation)
+internal sealed class UnitResultExtensionsClassBuilder(IReadOnlyList<MapperDescriptor> mapperDescriptors)
+  : ExtensionClassBuilder(mapperDescriptors)
 {
   protected override string ClassName => "UnitResultExtensions";
 
@@ -18,6 +14,6 @@ public class UnitResultExtensionsClassBuilder(
       /// </summary>
       """;
 
-  internal override List<IGenerateMethods> MethodGenerators =>
-    [new ToStatusCodeHttpResultE(), new ToNoContentHttpResultE()];
+  internal override IReadOnlyList<HttpResultMethodDefinition> Methods =>
+    HttpResultMethodCatalog.UnitResultWithCustomErrorMethods;
 }

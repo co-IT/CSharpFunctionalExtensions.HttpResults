@@ -13,16 +13,17 @@ public class ToAcceptedAtRouteHttpResultTE
     var routeName = "documents";
     var routeValueKey = "id";
 
-    var result =
+    var result = Assert.IsType<AcceptedAtRoute<Document>>(
       Result
         .Success<Document, DocumentCreationError>(document)
         .ToAcceptedAtRouteHttpResult(routeName, x => new Dictionary<string, string> { { routeValueKey, x.DocumentId } })
-        .Result as AcceptedAtRoute<Document>;
+        .Result
+    );
 
-    result!.StatusCode.Should().Be(202);
-    result!.Value.Should().Be(document);
-    result!.RouteName.Should().Be(routeName);
-    result!.RouteValues[routeValueKey].Should().Be(document.DocumentId);
+    result.StatusCode.Should().Be(202);
+    result.Value.Should().Be(document);
+    result.RouteName.Should().Be(routeName);
+    result.RouteValues[routeValueKey].Should().Be(document.DocumentId);
   }
 
   [Fact]
@@ -32,19 +33,20 @@ public class ToAcceptedAtRouteHttpResultTE
     var routeName = "documents";
     var routeValueKey = "id";
 
-    var result =
+    var result = Assert.IsType<AcceptedAtRoute<Document>>(
       (
         await Task.FromResult(Result.Success<Document, DocumentCreationError>(document))
           .ToAcceptedAtRouteHttpResult(
             routeName,
             x => new Dictionary<string, string> { { routeValueKey, x.DocumentId } }
           )
-      ).Result as AcceptedAtRoute<Document>;
+      ).Result
+    );
 
-    result!.StatusCode.Should().Be(202);
-    result!.Value.Should().Be(document);
-    result!.RouteName.Should().Be(routeName);
-    result!.RouteValues[routeValueKey].Should().Be(document.DocumentId);
+    result.StatusCode.Should().Be(202);
+    result.Value.Should().Be(document);
+    result.RouteName.Should().Be(routeName);
+    result.RouteValues[routeValueKey].Should().Be(document.DocumentId);
   }
 
   [Fact]
@@ -52,11 +54,12 @@ public class ToAcceptedAtRouteHttpResultTE
   {
     var error = new DocumentCreationError { DocumentId = Guid.NewGuid().ToString() };
 
-    var result =
-      Result.Failure<Document, DocumentCreationError>(error).ToAcceptedAtRouteHttpResult().Result as Conflict<string>;
+    var result = Assert.IsType<Conflict<string>>(
+      Result.Failure<Document, DocumentCreationError>(error).ToAcceptedAtRouteHttpResult().Result
+    );
 
-    result!.StatusCode.Should().Be(409);
-    result!.Value.Should().Be(error.DocumentId);
+    result.StatusCode.Should().Be(409);
+    result.Value.Should().Be(error.DocumentId);
   }
 
   [Fact]
@@ -64,12 +67,13 @@ public class ToAcceptedAtRouteHttpResultTE
   {
     var error = new DocumentCreationError { DocumentId = Guid.NewGuid().ToString() };
 
-    var result =
+    var result = Assert.IsType<Conflict<string>>(
       (
         await Task.FromResult(Result.Failure<Document, DocumentCreationError>(error)).ToAcceptedAtRouteHttpResult()
-      ).Result as Conflict<string>;
+      ).Result
+    );
 
-    result!.StatusCode.Should().Be(409);
-    result!.Value.Should().Be(error.DocumentId);
+    result.StatusCode.Should().Be(409);
+    result.Value.Should().Be(error.DocumentId);
   }
 }

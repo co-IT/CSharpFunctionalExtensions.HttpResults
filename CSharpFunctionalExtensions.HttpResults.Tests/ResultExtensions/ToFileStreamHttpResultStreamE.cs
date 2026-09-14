@@ -20,22 +20,23 @@ public class ToFileStreamHttpResultStreamE
     var entityTag = new EntityTagHeaderValue("\"fooETag\"");
     var enableRangeProcessing = true;
 
-    var result =
+    var result = Assert.IsType<FileStreamHttpResult>(
       Result
         .Success<Stream, DocumentMissingError>(sourceStream)
         .ToFileStreamHttpResult(contentType, fileDownloadName, lastModified, entityTag, enableRangeProcessing)
-        .Result as FileStreamHttpResult;
+        .Result
+    );
 
     using var resultStream = new MemoryStream();
-    result!.FileStream.Position = 0;
-    result!.FileStream.CopyTo(resultStream);
+    result.FileStream.Position = 0;
+    result.FileStream.CopyTo(resultStream);
     resultStream.ToArray().Should().BeEquivalentTo(value);
-    result!.LastModified.Should().Be(lastModified);
-    result!.FileDownloadName.Should().Be(fileDownloadName);
-    result!.FileLength.Should().Be(value.Length);
-    result!.ContentType.Should().Be(contentType);
-    result!.EnableRangeProcessing.Should().Be(enableRangeProcessing);
-    result!.EntityTag.Should().Be(entityTag);
+    result.LastModified.Should().Be(lastModified);
+    result.FileDownloadName.Should().Be(fileDownloadName);
+    result.FileLength.Should().Be(value.Length);
+    result.ContentType.Should().Be(contentType);
+    result.EnableRangeProcessing.Should().Be(enableRangeProcessing);
+    result.EntityTag.Should().Be(entityTag);
   }
 
   [Fact]
@@ -50,22 +51,23 @@ public class ToFileStreamHttpResultStreamE
     var entityTag = new EntityTagHeaderValue("\"fooETag\"");
     var enableRangeProcessing = true;
 
-    var result =
+    var result = Assert.IsType<FileStreamHttpResult>(
       (
         await Task.FromResult(Result.Success<Stream, DocumentMissingError>(sourceStream))
           .ToFileStreamHttpResult(contentType, fileDownloadName, lastModified, entityTag, enableRangeProcessing)
-      ).Result as FileStreamHttpResult;
+      ).Result
+    );
 
     await using var resultStream = new MemoryStream();
-    result!.FileStream.Position = 0;
-    await result!.FileStream.CopyToAsync(resultStream, TestContext.Current.CancellationToken);
+    result.FileStream.Position = 0;
+    await result.FileStream.CopyToAsync(resultStream, TestContext.Current.CancellationToken);
     resultStream.ToArray().Should().BeEquivalentTo(value);
-    result!.LastModified.Should().Be(lastModified);
-    result!.FileDownloadName.Should().Be(fileDownloadName);
-    result!.FileLength.Should().Be(value.Length);
-    result!.ContentType.Should().Be(contentType);
-    result!.EnableRangeProcessing.Should().Be(enableRangeProcessing);
-    result!.EntityTag.Should().Be(entityTag);
+    result.LastModified.Should().Be(lastModified);
+    result.FileDownloadName.Should().Be(fileDownloadName);
+    result.FileLength.Should().Be(value.Length);
+    result.ContentType.Should().Be(contentType);
+    result.EnableRangeProcessing.Should().Be(enableRangeProcessing);
+    result.EntityTag.Should().Be(entityTag);
   }
 
   [Fact]
@@ -73,11 +75,12 @@ public class ToFileStreamHttpResultStreamE
   {
     var error = new DocumentMissingError { DocumentId = Guid.NewGuid().ToString() };
 
-    var result =
-      Result.Failure<Stream, DocumentMissingError>(error).ToFileStreamHttpResult().Result as NotFound<string>;
+    var result = Assert.IsType<NotFound<string>>(
+      Result.Failure<Stream, DocumentMissingError>(error).ToFileStreamHttpResult().Result
+    );
 
-    result!.StatusCode.Should().Be(404);
-    result!.Value.Should().Be(error.DocumentId);
+    result.StatusCode.Should().Be(404);
+    result.Value.Should().Be(error.DocumentId);
   }
 
   [Fact]
@@ -85,11 +88,11 @@ public class ToFileStreamHttpResultStreamE
   {
     var error = new DocumentMissingError { DocumentId = Guid.NewGuid().ToString() };
 
-    var result =
+    var result = Assert.IsType<NotFound<string>>(
       (await Task.FromResult(Result.Failure<Stream, DocumentMissingError>(error)).ToFileStreamHttpResult()).Result
-      as NotFound<string>;
+    );
 
-    result!.StatusCode.Should().Be(404);
-    result!.Value.Should().Be(error.DocumentId);
+    result.StatusCode.Should().Be(404);
+    result.Value.Should().Be(error.DocumentId);
   }
 }

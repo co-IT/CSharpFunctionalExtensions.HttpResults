@@ -9,17 +9,17 @@ public class ToNoContentHttpResult
   [Fact]
   public void Result_Success_can_be_mapped_to_NoContentHttpResult()
   {
-    var result = Result.Success().ToNoContentHttpResult().Result as NoContent;
+    var result = Assert.IsType<NoContent>(Result.Success().ToNoContentHttpResult().Result);
 
-    result!.StatusCode.Should().Be(204);
+    result.StatusCode.Should().Be(204);
   }
 
   [Fact]
   public async Task Result_Success_can_be_mapped_to_NoContentHttpResult_Async()
   {
-    var result = (await Task.FromResult(Result.Success()).ToNoContentHttpResult()).Result as NoContent;
+    var result = Assert.IsType<NoContent>((await Task.FromResult(Result.Success()).ToNoContentHttpResult()).Result);
 
-    result!.StatusCode.Should().Be(204);
+    result.StatusCode.Should().Be(204);
   }
 
   [Fact]
@@ -27,11 +27,11 @@ public class ToNoContentHttpResult
   {
     var error = "Error";
 
-    var result = Result.Failure(error).ToNoContentHttpResult().Result as ProblemHttpResult;
+    var result = Assert.IsType<ProblemHttpResult>(Result.Failure(error).ToNoContentHttpResult().Result);
 
-    result!.StatusCode.Should().Be(400);
-    result!.ProblemDetails.Status.Should().Be(400);
-    result!.ProblemDetails.Detail.Should().Be(error);
+    result.StatusCode.Should().Be(400);
+    result.ProblemDetails.Status.Should().Be(400);
+    result.ProblemDetails.Detail.Should().Be(error);
   }
 
   [Fact]
@@ -39,11 +39,13 @@ public class ToNoContentHttpResult
   {
     var error = "Error";
 
-    var result = (await Task.FromResult(Result.Failure(error)).ToNoContentHttpResult()).Result as ProblemHttpResult;
+    var result = Assert.IsType<ProblemHttpResult>(
+      (await Task.FromResult(Result.Failure(error)).ToNoContentHttpResult()).Result
+    );
 
-    result!.StatusCode.Should().Be(400);
-    result!.ProblemDetails.Status.Should().Be(400);
-    result!.ProblemDetails.Detail.Should().Be(error);
+    result.StatusCode.Should().Be(400);
+    result.ProblemDetails.Status.Should().Be(400);
+    result.ProblemDetails.Detail.Should().Be(error);
   }
 
   [Fact]
@@ -52,11 +54,11 @@ public class ToNoContentHttpResult
     var statusCode = 418;
     var error = "Error";
 
-    var result = Result.Failure(error).ToNoContentHttpResult(statusCode).Result as ProblemHttpResult;
+    var result = Assert.IsType<ProblemHttpResult>(Result.Failure(error).ToNoContentHttpResult(statusCode).Result);
 
-    result!.StatusCode.Should().Be(statusCode);
-    result!.ProblemDetails.Status.Should().Be(statusCode);
-    result!.ProblemDetails.Detail.Should().Be(error);
+    result.StatusCode.Should().Be(statusCode);
+    result.ProblemDetails.Status.Should().Be(statusCode);
+    result.ProblemDetails.Detail.Should().Be(error);
   }
 
   [Fact]
@@ -65,12 +67,13 @@ public class ToNoContentHttpResult
     var statusCode = 418;
     var error = "Error";
 
-    var result =
-      (await Task.FromResult(Result.Failure(error)).ToNoContentHttpResult(statusCode)).Result as ProblemHttpResult;
+    var result = Assert.IsType<ProblemHttpResult>(
+      (await Task.FromResult(Result.Failure(error)).ToNoContentHttpResult(statusCode)).Result
+    );
 
-    result!.StatusCode.Should().Be(statusCode);
-    result!.ProblemDetails.Status.Should().Be(statusCode);
-    result!.ProblemDetails.Detail.Should().Be(error);
+    result.StatusCode.Should().Be(statusCode);
+    result.ProblemDetails.Status.Should().Be(statusCode);
+    result.ProblemDetails.Detail.Should().Be(error);
   }
 
   [Fact]
@@ -79,13 +82,14 @@ public class ToNoContentHttpResult
     var error = "Error";
     var customTitle = "Custom Title";
 
-    var result =
+    var result = Assert.IsType<ProblemHttpResult>(
       Result
         .Failure(error)
         .ToNoContentHttpResult(customizeProblemDetails: problemDetails => problemDetails.Title = customTitle)
-        .Result as ProblemHttpResult;
+        .Result
+    );
 
-    result!.ProblemDetails.Title.Should().Be(customTitle);
+    result.ProblemDetails.Title.Should().Be(customTitle);
   }
 
   [Fact]
@@ -94,12 +98,13 @@ public class ToNoContentHttpResult
     var error = "Error";
     var customTitle = "Custom Title";
 
-    var result =
+    var result = Assert.IsType<ProblemHttpResult>(
       (
         await Task.FromResult(Result.Failure(error))
           .ToNoContentHttpResult(customizeProblemDetails: problemDetails => problemDetails.Title = customTitle)
-      ).Result as ProblemHttpResult;
+      ).Result
+    );
 
-    result!.ProblemDetails.Title.Should().Be(customTitle);
+    result.ProblemDetails.Title.Should().Be(customTitle);
   }
 }

@@ -11,10 +11,10 @@ public class ToOkHttpResultT
   {
     var value = "foo";
 
-    var result = Result.Success(value).ToOkHttpResult().Result as Ok<string>;
+    var result = Assert.IsType<Ok<string>>(Result.Success(value).ToOkHttpResult().Result);
 
-    result!.StatusCode.Should().Be(200);
-    result!.Value.Should().Be(value);
+    result.StatusCode.Should().Be(200);
+    result.Value.Should().Be(value);
   }
 
   [Fact]
@@ -22,10 +22,10 @@ public class ToOkHttpResultT
   {
     var value = "foo";
 
-    var result = (await Task.FromResult(Result.Success(value)).ToOkHttpResult()).Result as Ok<string>;
+    var result = Assert.IsType<Ok<string>>((await Task.FromResult(Result.Success(value)).ToOkHttpResult()).Result);
 
-    result!.StatusCode.Should().Be(200);
-    result!.Value.Should().Be(value);
+    result.StatusCode.Should().Be(200);
+    result.Value.Should().Be(value);
   }
 
   [Fact]
@@ -33,11 +33,11 @@ public class ToOkHttpResultT
   {
     var error = "Error";
 
-    var result = Result.Failure<string>(error).ToOkHttpResult().Result as ProblemHttpResult;
+    var result = Assert.IsType<ProblemHttpResult>(Result.Failure<string>(error).ToOkHttpResult().Result);
 
-    result!.StatusCode.Should().Be(400);
-    result!.ProblemDetails.Status.Should().Be(400);
-    result!.ProblemDetails.Detail.Should().Be(error);
+    result.StatusCode.Should().Be(400);
+    result.ProblemDetails.Status.Should().Be(400);
+    result.ProblemDetails.Detail.Should().Be(error);
   }
 
   [Fact]
@@ -45,11 +45,13 @@ public class ToOkHttpResultT
   {
     var error = "Error";
 
-    var result = (await Task.FromResult(Result.Failure<string>(error)).ToOkHttpResult()).Result as ProblemHttpResult;
+    var result = Assert.IsType<ProblemHttpResult>(
+      (await Task.FromResult(Result.Failure<string>(error)).ToOkHttpResult()).Result
+    );
 
-    result!.StatusCode.Should().Be(400);
-    result!.ProblemDetails.Status.Should().Be(400);
-    result!.ProblemDetails.Detail.Should().Be(error);
+    result.StatusCode.Should().Be(400);
+    result.ProblemDetails.Status.Should().Be(400);
+    result.ProblemDetails.Detail.Should().Be(error);
   }
 
   [Fact]
@@ -58,11 +60,11 @@ public class ToOkHttpResultT
     var statusCode = 418;
     var error = "Error";
 
-    var result = Result.Failure<string>(error).ToOkHttpResult(statusCode).Result as ProblemHttpResult;
+    var result = Assert.IsType<ProblemHttpResult>(Result.Failure<string>(error).ToOkHttpResult(statusCode).Result);
 
-    result!.StatusCode.Should().Be(statusCode);
-    result!.ProblemDetails.Status.Should().Be(statusCode);
-    result!.ProblemDetails.Detail.Should().Be(error);
+    result.StatusCode.Should().Be(statusCode);
+    result.ProblemDetails.Status.Should().Be(statusCode);
+    result.ProblemDetails.Detail.Should().Be(error);
   }
 
   [Fact]
@@ -71,12 +73,13 @@ public class ToOkHttpResultT
     var statusCode = 418;
     var error = "Error";
 
-    var result =
-      (await Task.FromResult(Result.Failure<string>(error)).ToOkHttpResult(statusCode)).Result as ProblemHttpResult;
+    var result = Assert.IsType<ProblemHttpResult>(
+      (await Task.FromResult(Result.Failure<string>(error)).ToOkHttpResult(statusCode)).Result
+    );
 
-    result!.StatusCode.Should().Be(statusCode);
-    result!.ProblemDetails.Status.Should().Be(statusCode);
-    result!.ProblemDetails.Detail.Should().Be(error);
+    result.StatusCode.Should().Be(statusCode);
+    result.ProblemDetails.Status.Should().Be(statusCode);
+    result.ProblemDetails.Detail.Should().Be(error);
   }
 
   [Fact]
@@ -85,13 +88,14 @@ public class ToOkHttpResultT
     var error = "Error";
     var customTitle = "Custom Title";
 
-    var result =
+    var result = Assert.IsType<ProblemHttpResult>(
       Result
         .Failure<string>(error)
         .ToOkHttpResult(customizeProblemDetails: problemDetails => problemDetails.Title = customTitle)
-        .Result as ProblemHttpResult;
+        .Result
+    );
 
-    result!.ProblemDetails.Title.Should().Be(customTitle);
+    result.ProblemDetails.Title.Should().Be(customTitle);
   }
 
   [Fact]
@@ -100,12 +104,13 @@ public class ToOkHttpResultT
     var error = "Error";
     var customTitle = "Custom Title";
 
-    var result =
+    var result = Assert.IsType<ProblemHttpResult>(
       (
         await Task.FromResult(Result.Failure<string>(error))
           .ToOkHttpResult(customizeProblemDetails: problemDetails => problemDetails.Title = customTitle)
-      ).Result as ProblemHttpResult;
+      ).Result
+    );
 
-    result!.ProblemDetails.Title.Should().Be(customTitle);
+    result.ProblemDetails.Title.Should().Be(customTitle);
   }
 }

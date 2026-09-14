@@ -1,126 +1,67 @@
-﻿using System.Text;
+using System.Text;
+using CSharpFunctionalExtensions.HttpResults.Generators.Analysis;
 using CSharpFunctionalExtensions.HttpResults.Generators.Builders;
-using CSharpFunctionalExtensions.HttpResults.Generators.Utils;
+using CSharpFunctionalExtensions.HttpResults.Generators.Discovery;
+using CSharpFunctionalExtensions.HttpResults.Generators.Emitters;
 using Microsoft.CodeAnalysis;
-using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Text;
 
 namespace CSharpFunctionalExtensions.HttpResults.Generators;
 
 /// <summary>
-///   A source generator that creates extension methods for mapping errors to results using classes implementing
-///   <see cref="IResultErrorMapper{T}" />.
+///   Generates HTTP-result mapping extensions and zero-configuration DI registrations from the symbols
+///   available to a consumer compilation.
 /// </summary>
 [Generator]
-internal class ResultExtensionsGenerator : IIncrementalGenerator
+internal sealed class ResultExtensionsGenerator : IIncrementalGenerator
 {
-  private const string ResultErrorMapperInterface = "IResultErrorMapper";
-
-  /// <summary>
-  ///   Initializes the source generator.
-  /// </summary>
-  /// <param name="context">The initialization context for the generator.</param>
   public void Initialize(IncrementalGeneratorInitializationContext context)
   {
-    var classDeclarations = context
-      .SyntaxProvider.CreateSyntaxProvider(
-        static (node, _) => node is ClassDeclarationSyntax,
-        static (context, _) =>
-        {
-          var classDeclaration = (ClassDeclarationSyntax)context.Node;
-          var classSymbol = context.SemanticModel.GetDeclaredSymbol(classDeclaration) as ITypeSymbol;
-          return (ClassDeclaration: classDeclaration, ClassSymbol: classSymbol);
-        }
-      )
-      .Where(static x => x.ClassSymbol != null && ImplementsResultErrorMapper(x.ClassSymbol))
-      .Select(static (x, _) => x.ClassDeclaration);
-
-    var compilationAndClasses = context.CompilationProvider.Combine(classDeclarations.Collect());
-
     context.RegisterSourceOutput(
-      compilationAndClasses,
-      static (context, source) =>
+      context.CompilationProvider,
+      static (productionContext, compilation) =>
       {
-        var (compilation, classDeclarations) = source;
+        var implementations = ImplementationScanner.Scan(compilation);
+        var mapperAnalysis = MapperAnalyzer.Analyze(compilation, implementations.SourceMappers);
+        var providerAnalysis = ProviderAnalyzer.Analyze(compilation, implementations.Providers);
 
-        var mapperClasses = new List<ClassDeclarationSyntax>();
+        foreach (var diagnostic in mapperAnalysis.Diagnostics.Concat(providerAnalysis.Diagnostics))
+          productionContext.ReportDiagnostic(diagnostic);
 
-        Parallel.ForEach(
-          classDeclarations,
-          classDeclaration =>
-          {
-            lock (mapperClasses)
-            {
-              mapperClasses.Add(classDeclaration);
-            }
-          }
+        AddSource(
+          productionContext,
+          ResultErrorMapperCacheEmitter.HintName,
+          ResultErrorMapperCacheEmitter.Emit(mapperAnalysis.Mappers)
         );
-
-        if (!ResultExtensionsGeneratorValidator.CheckRules(mapperClasses, context))
-          return;
-
-        var (fileName, sourceText) = CreateErrorMapperInstancesClass(mapperClasses, compilation);
-        context.AddSource(fileName, SourceText.From(sourceText, Encoding.UTF8));
-
-        var classBuilders = new List<ClassBuilder>
-        {
-          new ResultExtensionsClassBuilder(mapperClasses, compilation),
-          new UnitResultExtensionsClassBuilder(mapperClasses, compilation),
-        };
-
-        foreach (var classBuilder in classBuilders)
-          context.AddSource(classBuilder.SourceFileName, SourceText.From(classBuilder.Build(), Encoding.UTF8));
+        AddSource(
+          productionContext,
+          "StringErrorResultExtensions.g.cs",
+          new StringErrorResultExtensionsClassBuilder(providerAnalysis.Provider is not null).Build()
+        );
+        AddSource(
+          productionContext,
+          "ResultExtensions.g.cs",
+          new ResultExtensionsClassBuilder(mapperAnalysis.Mappers).Build()
+        );
+        AddSource(
+          productionContext,
+          "UnitResultExtensions.g.cs",
+          new UnitResultExtensionsClassBuilder(mapperAnalysis.Mappers).Build()
+        );
+        AddSource(
+          productionContext,
+          ServiceCollectionExtensionsEmitter.HintName,
+          ServiceCollectionExtensionsEmitter.Emit(
+            compilation,
+            providerAnalysis.Provider,
+            implementations.ReferencedServiceMappers,
+            mapperAnalysis.Mappers
+          )
+        );
       }
     );
   }
 
-  /// <summary>
-  ///   Creates a class to get singleton instances of the various <see cref="IResultErrorMapper{T}" />
-  /// </summary>
-  private static (string FileName, string SourceText) CreateErrorMapperInstancesClass(
-    List<ClassDeclarationSyntax> mapperClasses,
-    Compilation compilation
-  )
-  {
-    var sourceBuilder = new StringBuilder();
-
-    sourceBuilder.AppendLine("// <auto-generated/>");
-    sourceBuilder.AppendLine();
-    sourceBuilder.AppendLine("#nullable enable");
-    sourceBuilder.AppendLine();
-    sourceBuilder.AppendLine();
-
-    sourceBuilder.AppendLine("public static class ErrorMapperInstances {");
-
-    foreach (var mapper in mapperClasses)
-    {
-      var semanticModel = compilation.GetSemanticModel(mapper.SyntaxTree);
-
-      if (semanticModel.GetDeclaredSymbol(mapper) is not ITypeSymbol mapperSymbol)
-        continue;
-
-      var mapperType = TypeNameResolver.GetFullyQualifiedTypeName(mapperSymbol);
-      sourceBuilder.AppendLine($"    public static {mapperType} {mapper.Identifier.Text} {{ get; }} = new();");
-    }
-
-    sourceBuilder.AppendLine("}");
-
-    return ("ErrorMapperInstances.g.cs", sourceBuilder.ToString());
-  }
-
-  /// <summary>
-  ///   Checks if a class implements the <see cref="IResultErrorMapper{T}" /> interface.
-  /// </summary>
-  /// <param name="classSymbol">The symbol representing the class.</param>
-  /// <returns>True if the class implements the interface; otherwise, false.</returns>
-  private static bool ImplementsResultErrorMapper(ITypeSymbol? classSymbol)
-  {
-    if (classSymbol is null)
-      return false;
-
-    // Check all interfaces (direct and indirect)
-    return classSymbol.AllInterfaces.Any(interfaceSymbol =>
-      interfaceSymbol.Name.StartsWith(ResultErrorMapperInterface)
-    );
-  }
+  private static void AddSource(SourceProductionContext context, string hintName, string source) =>
+    context.AddSource(hintName, SourceText.From(source, Encoding.UTF8));
 }

@@ -11,10 +11,10 @@ public class ToJsonHttpResultT
   {
     var value = "foo";
 
-    var result = Result.Success(value).ToJsonHttpResult().Result as JsonHttpResult<string>;
+    var result = Assert.IsType<JsonHttpResult<string>>(Result.Success(value).ToJsonHttpResult().Result);
 
-    result!.StatusCode.Should().Be(200);
-    result!.Value.Should().Be(value);
+    result.StatusCode.Should().Be(200);
+    result.Value.Should().Be(value);
   }
 
   [Fact]
@@ -22,10 +22,12 @@ public class ToJsonHttpResultT
   {
     var value = "foo";
 
-    var result = (await Task.FromResult(Result.Success(value)).ToJsonHttpResult()).Result as JsonHttpResult<string>;
+    var result = Assert.IsType<JsonHttpResult<string>>(
+      (await Task.FromResult(Result.Success(value)).ToJsonHttpResult()).Result
+    );
 
-    result!.StatusCode.Should().Be(200);
-    result!.Value.Should().Be(value);
+    result.StatusCode.Should().Be(200);
+    result.Value.Should().Be(value);
   }
 
   [Fact]
@@ -34,10 +36,10 @@ public class ToJsonHttpResultT
     var statusCode = 210;
     var value = "foo";
 
-    var result = Result.Success(value).ToJsonHttpResult(statusCode).Result as JsonHttpResult<string>;
+    var result = Assert.IsType<JsonHttpResult<string>>(Result.Success(value).ToJsonHttpResult(statusCode).Result);
 
-    result!.StatusCode.Should().Be(statusCode);
-    result!.Value.Should().Be(value);
+    result.StatusCode.Should().Be(statusCode);
+    result.Value.Should().Be(value);
   }
 
   [Fact]
@@ -46,11 +48,12 @@ public class ToJsonHttpResultT
     var statusCode = 210;
     var value = "foo";
 
-    var result =
-      (await Task.FromResult(Result.Success(value)).ToJsonHttpResult(statusCode)).Result as JsonHttpResult<string>;
+    var result = Assert.IsType<JsonHttpResult<string>>(
+      (await Task.FromResult(Result.Success(value)).ToJsonHttpResult(statusCode)).Result
+    );
 
-    result!.StatusCode.Should().Be(statusCode);
-    result!.Value.Should().Be(value);
+    result.StatusCode.Should().Be(statusCode);
+    result.Value.Should().Be(value);
   }
 
   [Fact]
@@ -58,11 +61,11 @@ public class ToJsonHttpResultT
   {
     var error = "Error";
 
-    var result = Result.Failure<string>(error).ToJsonHttpResult().Result as ProblemHttpResult;
+    var result = Assert.IsType<ProblemHttpResult>(Result.Failure<string>(error).ToJsonHttpResult().Result);
 
-    result!.StatusCode.Should().Be(400);
-    result!.ProblemDetails.Status.Should().Be(400);
-    result!.ProblemDetails.Detail.Should().Be(error);
+    result.StatusCode.Should().Be(400);
+    result.ProblemDetails.Status.Should().Be(400);
+    result.ProblemDetails.Detail.Should().Be(error);
   }
 
   [Fact]
@@ -70,11 +73,13 @@ public class ToJsonHttpResultT
   {
     var error = "Error";
 
-    var result = (await Task.FromResult(Result.Failure<string>(error)).ToJsonHttpResult()).Result as ProblemHttpResult;
+    var result = Assert.IsType<ProblemHttpResult>(
+      (await Task.FromResult(Result.Failure<string>(error)).ToJsonHttpResult()).Result
+    );
 
-    result!.StatusCode.Should().Be(400);
-    result!.ProblemDetails.Status.Should().Be(400);
-    result!.ProblemDetails.Detail.Should().Be(error);
+    result.StatusCode.Should().Be(400);
+    result.ProblemDetails.Status.Should().Be(400);
+    result.ProblemDetails.Detail.Should().Be(error);
   }
 
   [Fact]
@@ -83,12 +88,13 @@ public class ToJsonHttpResultT
     var statusCode = 418;
     var error = "Error";
 
-    var result =
-      Result.Failure<string>(error).ToJsonHttpResult(failureStatusCode: statusCode).Result as ProblemHttpResult;
+    var result = Assert.IsType<ProblemHttpResult>(
+      Result.Failure<string>(error).ToJsonHttpResult(failureStatusCode: statusCode).Result
+    );
 
-    result!.StatusCode.Should().Be(statusCode);
-    result!.ProblemDetails.Status.Should().Be(statusCode);
-    result!.ProblemDetails.Detail.Should().Be(error);
+    result.StatusCode.Should().Be(statusCode);
+    result.ProblemDetails.Status.Should().Be(statusCode);
+    result.ProblemDetails.Detail.Should().Be(error);
   }
 
   [Fact]
@@ -97,13 +103,13 @@ public class ToJsonHttpResultT
     var statusCode = 418;
     var error = "Error";
 
-    var result =
+    var result = Assert.IsType<ProblemHttpResult>(
       (await Task.FromResult(Result.Failure<string>(error)).ToJsonHttpResult(failureStatusCode: statusCode)).Result
-      as ProblemHttpResult;
+    );
 
-    result!.StatusCode.Should().Be(statusCode);
-    result!.ProblemDetails.Status.Should().Be(statusCode);
-    result!.ProblemDetails.Detail.Should().Be(error);
+    result.StatusCode.Should().Be(statusCode);
+    result.ProblemDetails.Status.Should().Be(statusCode);
+    result.ProblemDetails.Detail.Should().Be(error);
   }
 
   [Fact]
@@ -112,13 +118,14 @@ public class ToJsonHttpResultT
     var error = "Error";
     var customTitle = "Custom Title";
 
-    var result =
+    var result = Assert.IsType<ProblemHttpResult>(
       Result
         .Failure<string>(error)
         .ToJsonHttpResult(customizeProblemDetails: problemDetails => problemDetails.Title = customTitle)
-        .Result as ProblemHttpResult;
+        .Result
+    );
 
-    result!.ProblemDetails.Title.Should().Be(customTitle);
+    result.ProblemDetails.Title.Should().Be(customTitle);
   }
 
   [Fact]
@@ -127,12 +134,13 @@ public class ToJsonHttpResultT
     var error = "Error";
     var customTitle = "Custom Title";
 
-    var result =
+    var result = Assert.IsType<ProblemHttpResult>(
       (
         await Task.FromResult(Result.Failure<string>(error))
           .ToJsonHttpResult(customizeProblemDetails: problemDetails => problemDetails.Title = customTitle)
-      ).Result as ProblemHttpResult;
+      ).Result
+    );
 
-    result!.ProblemDetails.Title.Should().Be(customTitle);
+    result.ProblemDetails.Title.Should().Be(customTitle);
   }
 }
