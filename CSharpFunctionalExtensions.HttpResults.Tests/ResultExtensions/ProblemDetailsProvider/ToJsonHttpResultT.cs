@@ -13,9 +13,9 @@ public class ToJsonHttpResultT_Context
   {
     using var http = TestHttpContextHelper.CreateWithProvider();
 
-    var result = Result.Failure<string>("Error").ToJsonHttpResult(http).Result as ProblemHttpResult;
+    var result = Assert.IsType<ProblemHttpResult>(Result.Failure<string>("Error").ToJsonHttpResult(http).Result);
 
-    result!.StatusCode.Should().Be(400);
+    result.StatusCode.Should().Be(400);
     result.ProblemDetails.Title.Should().Be(TestHttpContextHelper.ProviderTitle);
     result.ProblemDetails.Type.Should().Be(TestHttpContextHelper.ProviderType);
     result.ProblemDetails.Detail.Should().Be("Error");
@@ -40,11 +40,11 @@ public class ToJsonHttpResultT_Context
     const string customTitle = "Custom Title";
     using var http = TestHttpContextHelper.CreateWithProvider();
 
-    var result =
+    var result = Assert.IsType<ProblemHttpResult>(
       Result.Failure<string>("Error").ToJsonHttpResult(http, customizeProblemDetails: p => p.Title = customTitle).Result
-      as ProblemHttpResult;
+    );
 
-    result!.ProblemDetails.Title.Should().Be(customTitle);
+    result.ProblemDetails.Title.Should().Be(customTitle);
   }
 
   [Fact]
@@ -52,9 +52,10 @@ public class ToJsonHttpResultT_Context
   {
     using var http = TestHttpContextHelper.CreateWithProvider();
 
-    var problem =
-      (await Task.FromResult(Result.Failure<string>("Error")).ToJsonHttpResult(http)).Result as ProblemHttpResult;
-    problem!.ProblemDetails.Title.Should().Be(TestHttpContextHelper.ProviderTitle);
+    var problem = Assert.IsType<ProblemHttpResult>(
+      (await Task.FromResult(Result.Failure<string>("Error")).ToJsonHttpResult(http)).Result
+    );
+    problem.ProblemDetails.Title.Should().Be(TestHttpContextHelper.ProviderTitle);
     http.Recorder!.ReceivedContext.Should().BeSameAs(http.Context);
   }
 }

@@ -9,26 +9,28 @@ public class ResultProblemMapperCallbackTests
   [Fact]
   public void Callback_modifies_the_exact_ProblemHttpResult_returned_by_a_result_error_mapper()
   {
-    var mapped =
+    var mapped = Assert.IsType<ProblemHttpResult>(
       Result
         .Failure<string, ResultProblemError>(new ResultProblemError("failure"))
         .ToOkHttpResult(customizeProblemDetails: details => details.Title = "custom")
-        .Result as ProblemHttpResult;
+        .Result
+    );
 
-    mapped!.ProblemDetails.Detail.Should().Be("failure");
+    mapped.ProblemDetails.Detail.Should().Be("failure");
     mapped.ProblemDetails.Title.Should().Be("custom");
   }
 
   [Fact]
   public async Task Async_callback_modifies_the_exact_ProblemHttpResult_returned_by_a_result_error_mapper()
   {
-    var mapped =
+    var mapped = Assert.IsType<ProblemHttpResult>(
       (
         await Task.FromResult(Result.Failure<string, ResultProblemError>(new ResultProblemError("failure")))
           .ToOkHttpResult(customizeProblemDetails: details => details.Title = "custom")
-      ).Result as ProblemHttpResult;
+      ).Result
+    );
 
-    mapped!.ProblemDetails.Detail.Should().Be("failure");
+    mapped.ProblemDetails.Detail.Should().Be("failure");
     mapped.ProblemDetails.Title.Should().Be("custom");
   }
 }
