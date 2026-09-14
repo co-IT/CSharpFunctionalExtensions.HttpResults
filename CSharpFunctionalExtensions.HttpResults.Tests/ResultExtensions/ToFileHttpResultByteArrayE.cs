@@ -18,19 +18,20 @@ public class ToFileHttpResultByteArrayE
     var entityTag = new EntityTagHeaderValue("\"fooETag\"");
     var enableRangeProcessing = true;
 
-    var result =
+    var result = Assert.IsType<FileContentHttpResult>(
       Result
         .Success<byte[], DocumentMissingError>(value)
         .ToFileHttpResult(contentType, fileDownloadName, lastModified, entityTag, enableRangeProcessing)
-        .Result as FileContentHttpResult;
+        .Result
+    );
 
-    result!.FileContents.ToArray().Should().BeEquivalentTo(value);
-    result!.LastModified.Should().Be(lastModified);
-    result!.FileDownloadName.Should().Be(fileDownloadName);
-    result!.FileLength.Should().Be(value.Length);
-    result!.ContentType.Should().Be(contentType);
-    result!.EnableRangeProcessing.Should().Be(enableRangeProcessing);
-    result!.EntityTag.Should().Be(entityTag);
+    result.FileContents.ToArray().Should().BeEquivalentTo(value);
+    result.LastModified.Should().Be(lastModified);
+    result.FileDownloadName.Should().Be(fileDownloadName);
+    result.FileLength.Should().Be(value.Length);
+    result.ContentType.Should().Be(contentType);
+    result.EnableRangeProcessing.Should().Be(enableRangeProcessing);
+    result.EntityTag.Should().Be(entityTag);
   }
 
   [Fact]
@@ -43,19 +44,20 @@ public class ToFileHttpResultByteArrayE
     var entityTag = new EntityTagHeaderValue("\"fooETag\"");
     var enableRangeProcessing = true;
 
-    var result =
+    var result = Assert.IsType<FileContentHttpResult>(
       (
         await Task.FromResult(Result.Success<byte[], DocumentMissingError>(value))
           .ToFileHttpResult(contentType, fileDownloadName, lastModified, entityTag, enableRangeProcessing)
-      ).Result as FileContentHttpResult;
+      ).Result
+    );
 
-    result!.FileContents.ToArray().Should().BeEquivalentTo(value);
-    result!.LastModified.Should().Be(lastModified);
-    result!.FileDownloadName.Should().Be(fileDownloadName);
-    result!.FileLength.Should().Be(value.Length);
-    result!.ContentType.Should().Be(contentType);
-    result!.EnableRangeProcessing.Should().Be(enableRangeProcessing);
-    result!.EntityTag.Should().Be(entityTag);
+    result.FileContents.ToArray().Should().BeEquivalentTo(value);
+    result.LastModified.Should().Be(lastModified);
+    result.FileDownloadName.Should().Be(fileDownloadName);
+    result.FileLength.Should().Be(value.Length);
+    result.ContentType.Should().Be(contentType);
+    result.EnableRangeProcessing.Should().Be(enableRangeProcessing);
+    result.EntityTag.Should().Be(entityTag);
   }
 
   [Fact]
@@ -63,10 +65,12 @@ public class ToFileHttpResultByteArrayE
   {
     var error = new DocumentMissingError { DocumentId = Guid.NewGuid().ToString() };
 
-    var result = Result.Failure<byte[], DocumentMissingError>(error).ToFileHttpResult().Result as NotFound<string>;
+    var result = Assert.IsType<NotFound<string>>(
+      Result.Failure<byte[], DocumentMissingError>(error).ToFileHttpResult().Result
+    );
 
-    result!.StatusCode.Should().Be(404);
-    result!.Value.Should().Be(error.DocumentId);
+    result.StatusCode.Should().Be(404);
+    result.Value.Should().Be(error.DocumentId);
   }
 
   [Fact]
@@ -74,11 +78,11 @@ public class ToFileHttpResultByteArrayE
   {
     var error = new DocumentMissingError { DocumentId = Guid.NewGuid().ToString() };
 
-    var result =
+    var result = Assert.IsType<NotFound<string>>(
       (await Task.FromResult(Result.Failure<byte[], DocumentMissingError>(error)).ToFileHttpResult()).Result
-      as NotFound<string>;
+    );
 
-    result!.StatusCode.Should().Be(404);
-    result!.Value.Should().Be(error.DocumentId);
+    result.StatusCode.Should().Be(404);
+    result.Value.Should().Be(error.DocumentId);
   }
 }

@@ -18,12 +18,13 @@ public class ToServerSentEventsHttpResultIAsyncEnumerableT
 
     var asyncEnumerable = testValues.AsAsyncEnumerable();
 
-    var result =
-      Result.Success(asyncEnumerable).ToServerSentEventsHttpResult(eventType).Result as ServerSentEventsResult<int>;
+    var result = Assert.IsType<ServerSentEventsResult<int>>(
+      Result.Success(asyncEnumerable).ToServerSentEventsHttpResult(eventType).Result
+    );
 
-    var (response, values) = await result!.ExecuteAndGetResponseAndValues();
+    var (response, values) = await result.ExecuteAndGetResponseAndValues();
 
-    result!.StatusCode.Should().Be(200);
+    result.StatusCode.Should().Be(200);
     response.ContentType.Should().Be(MediaTypeNames.Text.EventStream);
     values.Select(v => v.Data).Should().Contain(testValues.Select(v => v.ToString()));
     values.Select(v => v.Event).Should().AllBe(eventType);
@@ -37,13 +38,13 @@ public class ToServerSentEventsHttpResultIAsyncEnumerableT
 
     var asyncEnumerable = testValues.AsAsyncEnumerable();
 
-    var result =
+    var result = Assert.IsType<ServerSentEventsResult<int>>(
       (await Task.FromResult(Result.Success(asyncEnumerable)).ToServerSentEventsHttpResult(eventType)).Result
-      as ServerSentEventsResult<int>;
+    );
 
-    var (response, values) = await result!.ExecuteAndGetResponseAndValues();
+    var (response, values) = await result.ExecuteAndGetResponseAndValues();
 
-    result!.StatusCode.Should().Be(200);
+    result.StatusCode.Should().Be(200);
     response.ContentType.Should().Be(MediaTypeNames.Text.EventStream);
     values.Select(v => v.Data).Should().Contain(testValues.Select(v => v.ToString()));
     values.Select(v => v.Event).Should().AllBe(eventType);
@@ -54,12 +55,13 @@ public class ToServerSentEventsHttpResultIAsyncEnumerableT
   {
     var error = "Error";
 
-    var result =
-      Result.Failure<IAsyncEnumerable<int>>(error).ToServerSentEventsHttpResult().Result as ProblemHttpResult;
+    var result = Assert.IsType<ProblemHttpResult>(
+      Result.Failure<IAsyncEnumerable<int>>(error).ToServerSentEventsHttpResult().Result
+    );
 
-    result!.StatusCode.Should().Be(400);
-    result!.ProblemDetails.Status.Should().Be(400);
-    result!.ProblemDetails.Detail.Should().Be(error);
+    result.StatusCode.Should().Be(400);
+    result.ProblemDetails.Status.Should().Be(400);
+    result.ProblemDetails.Detail.Should().Be(error);
   }
 
   [Fact]
@@ -67,13 +69,13 @@ public class ToServerSentEventsHttpResultIAsyncEnumerableT
   {
     var error = "Error";
 
-    var result =
+    var result = Assert.IsType<ProblemHttpResult>(
       (await Task.FromResult(Result.Failure<IAsyncEnumerable<int>>(error)).ToServerSentEventsHttpResult()).Result
-      as ProblemHttpResult;
+    );
 
-    result!.StatusCode.Should().Be(400);
-    result!.ProblemDetails.Status.Should().Be(400);
-    result!.ProblemDetails.Detail.Should().Be(error);
+    result.StatusCode.Should().Be(400);
+    result.ProblemDetails.Status.Should().Be(400);
+    result.ProblemDetails.Detail.Should().Be(error);
   }
 
   [Fact]
@@ -82,13 +84,13 @@ public class ToServerSentEventsHttpResultIAsyncEnumerableT
     var statusCode = 418;
     var error = "Error";
 
-    var result =
+    var result = Assert.IsType<ProblemHttpResult>(
       Result.Failure<IAsyncEnumerable<int>>(error).ToServerSentEventsHttpResult(failureStatusCode: statusCode).Result
-      as ProblemHttpResult;
+    );
 
-    result!.StatusCode.Should().Be(statusCode);
-    result!.ProblemDetails.Status.Should().Be(statusCode);
-    result!.ProblemDetails.Detail.Should().Be(error);
+    result.StatusCode.Should().Be(statusCode);
+    result.ProblemDetails.Status.Should().Be(statusCode);
+    result.ProblemDetails.Detail.Should().Be(error);
   }
 
   [Fact]
@@ -97,15 +99,16 @@ public class ToServerSentEventsHttpResultIAsyncEnumerableT
     var statusCode = 418;
     var error = "Error";
 
-    var result =
+    var result = Assert.IsType<ProblemHttpResult>(
       (
         await Task.FromResult(Result.Failure<IAsyncEnumerable<int>>(error))
           .ToServerSentEventsHttpResult(failureStatusCode: statusCode)
-      ).Result as ProblemHttpResult;
+      ).Result
+    );
 
-    result!.StatusCode.Should().Be(statusCode);
-    result!.ProblemDetails.Status.Should().Be(statusCode);
-    result!.ProblemDetails.Detail.Should().Be(error);
+    result.StatusCode.Should().Be(statusCode);
+    result.ProblemDetails.Status.Should().Be(statusCode);
+    result.ProblemDetails.Detail.Should().Be(error);
   }
 
   [Fact]
@@ -114,13 +117,14 @@ public class ToServerSentEventsHttpResultIAsyncEnumerableT
     var error = "Error";
     var customTitle = "Custom Title";
 
-    var result =
+    var result = Assert.IsType<ProblemHttpResult>(
       Result
         .Failure<IAsyncEnumerable<int>>(error)
         .ToServerSentEventsHttpResult(customizeProblemDetails: problemDetails => problemDetails.Title = customTitle)
-        .Result as ProblemHttpResult;
+        .Result
+    );
 
-    result!.ProblemDetails.Title.Should().Be(customTitle);
+    result.ProblemDetails.Title.Should().Be(customTitle);
   }
 
   [Fact]
@@ -129,13 +133,14 @@ public class ToServerSentEventsHttpResultIAsyncEnumerableT
     var error = "Error";
     var customTitle = "Custom Title";
 
-    var result =
+    var result = Assert.IsType<ProblemHttpResult>(
       (
         await Task.FromResult(Result.Failure<IAsyncEnumerable<int>>(error))
           .ToServerSentEventsHttpResult(customizeProblemDetails: problemDetails => problemDetails.Title = customTitle)
-      ).Result as ProblemHttpResult;
+      ).Result
+    );
 
-    result!.ProblemDetails.Title.Should().Be(customTitle);
+    result.ProblemDetails.Title.Should().Be(customTitle);
   }
 }
 

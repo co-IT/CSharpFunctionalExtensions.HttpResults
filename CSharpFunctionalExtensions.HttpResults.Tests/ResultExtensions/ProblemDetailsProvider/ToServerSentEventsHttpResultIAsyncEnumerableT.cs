@@ -16,9 +16,10 @@ public class ToServerSentEventsHttpResultIAsyncEnumerableT_Context
     using var http = TestHttpContextHelper.CreateWithoutProvider();
     var values = new[] { 1, 2 }.AsAsyncEnumerable();
 
-    var result =
-      Result.Success(values).ToServerSentEventsHttpResult(http, "number").Result as ServerSentEventsResult<int>;
-    var (_, events) = await result!.ExecuteAndGetResponseAndValues();
+    var result = Assert.IsType<ServerSentEventsResult<int>>(
+      Result.Success(values).ToServerSentEventsHttpResult(http, "number").Result
+    );
+    var (_, events) = await result.ExecuteAndGetResponseAndValues();
 
     events.Select(item => item.Data).Should().Contain(["1", "2"]);
   }
@@ -28,10 +29,11 @@ public class ToServerSentEventsHttpResultIAsyncEnumerableT_Context
   {
     using var http = TestHttpContextHelper.CreateWithProvider();
 
-    var result =
-      Result.Failure<IAsyncEnumerable<int>>("Error").ToServerSentEventsHttpResult(http).Result as ProblemHttpResult;
+    var result = Assert.IsType<ProblemHttpResult>(
+      Result.Failure<IAsyncEnumerable<int>>("Error").ToServerSentEventsHttpResult(http).Result
+    );
 
-    result!.ProblemDetails.Title.Should().Be(TestHttpContextHelper.ProviderTitle);
+    result.ProblemDetails.Title.Should().Be(TestHttpContextHelper.ProviderTitle);
     http.Recorder!.ReceivedContext.Should().BeSameAs(http.Context);
   }
 
@@ -40,13 +42,14 @@ public class ToServerSentEventsHttpResultIAsyncEnumerableT_Context
   {
     using var http = TestHttpContextHelper.CreateWithProvider();
 
-    var result =
+    var result = Assert.IsType<ProblemHttpResult>(
       (
         await Task.FromResult(Result.Failure<IAsyncEnumerable<int>>("Error"))
           .ToServerSentEventsHttpResult(http, eventType: "number", failureStatusCode: 418)
-      ).Result as ProblemHttpResult;
+      ).Result
+    );
 
-    result!.StatusCode.Should().Be(418);
+    result.StatusCode.Should().Be(418);
     http.Recorder!.ReceivedStatusCode.Should().Be(418);
   }
 
@@ -55,13 +58,14 @@ public class ToServerSentEventsHttpResultIAsyncEnumerableT_Context
   {
     using var http = TestHttpContextHelper.CreateWithProvider();
 
-    var result =
+    var result = Assert.IsType<ProblemHttpResult>(
       Result
         .Failure<IAsyncEnumerable<int>>("Error")
         .ToServerSentEventsHttpResult(http, customizeProblemDetails: details => details.Title = "custom")
-        .Result as ProblemHttpResult;
+        .Result
+    );
 
-    result!.ProblemDetails.Title.Should().Be("custom");
+    result.ProblemDetails.Title.Should().Be("custom");
   }
 }
 

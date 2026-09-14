@@ -1,4 +1,4 @@
-﻿using AwesomeAssertions;
+using AwesomeAssertions;
 using CSharpFunctionalExtensions.HttpResults.Tests.Shared;
 using Microsoft.AspNetCore.Http.HttpResults;
 
@@ -11,11 +11,12 @@ public class ToJsonHttpResultTE
   {
     var document = new Document { DocumentId = Guid.NewGuid().ToString() };
 
-    var result =
-      Result.Success<Document, DocumentMissingError>(document).ToJsonHttpResult().Result as JsonHttpResult<Document>;
+    var result = Assert.IsType<JsonHttpResult<Document>>(
+      Result.Success<Document, DocumentMissingError>(document).ToJsonHttpResult().Result
+    );
 
-    result!.StatusCode.Should().Be(200);
-    result!.Value!.DocumentId.Should().Be(document.DocumentId);
+    result.StatusCode.Should().Be(200);
+    result.Value!.DocumentId.Should().Be(document.DocumentId);
   }
 
   [Fact]
@@ -23,12 +24,12 @@ public class ToJsonHttpResultTE
   {
     var document = new Document { DocumentId = Guid.NewGuid().ToString() };
 
-    var result =
+    var result = Assert.IsType<JsonHttpResult<Document>>(
       (await Task.FromResult(Result.Success<Document, DocumentMissingError>(document)).ToJsonHttpResult()).Result
-      as JsonHttpResult<Document>;
+    );
 
-    result!.StatusCode.Should().Be(200);
-    result!.Value!.DocumentId.Should().Be(document.DocumentId);
+    result.StatusCode.Should().Be(200);
+    result.Value!.DocumentId.Should().Be(document.DocumentId);
   }
 
   [Fact]
@@ -37,11 +38,11 @@ public class ToJsonHttpResultTE
     var statusCode = 210;
     var document = new Document { DocumentId = Guid.NewGuid().ToString() };
 
-    var result =
+    var result = Assert.IsType<JsonHttpResult<Document>>(
       Result.Success<Document, DocumentMissingError>(document).ToJsonHttpResult(statusCode).Result
-      as JsonHttpResult<Document>;
+    );
 
-    result!.StatusCode.Should().Be(statusCode);
+    result.StatusCode.Should().Be(statusCode);
   }
 
   [Fact]
@@ -50,12 +51,13 @@ public class ToJsonHttpResultTE
     var statusCode = 210;
     var document = new Document { DocumentId = Guid.NewGuid().ToString() };
 
-    var result =
+    var result = Assert.IsType<JsonHttpResult<Document>>(
       (
         await Task.FromResult(Result.Success<Document, DocumentMissingError>(document)).ToJsonHttpResult(statusCode)
-      ).Result as JsonHttpResult<Document>;
+      ).Result
+    );
 
-    result!.StatusCode.Should().Be(statusCode);
+    result.StatusCode.Should().Be(statusCode);
   }
 
   [Fact]
@@ -63,10 +65,12 @@ public class ToJsonHttpResultTE
   {
     var error = new DocumentMissingError { DocumentId = Guid.NewGuid().ToString() };
 
-    var result = Result.Failure<Document, DocumentMissingError>(error).ToJsonHttpResult().Result as NotFound<string>;
+    var result = Assert.IsType<NotFound<string>>(
+      Result.Failure<Document, DocumentMissingError>(error).ToJsonHttpResult().Result
+    );
 
-    result!.StatusCode.Should().Be(404);
-    result!.Value.Should().Be(error.DocumentId);
+    result.StatusCode.Should().Be(404);
+    result.Value.Should().Be(error.DocumentId);
   }
 
   [Fact]
@@ -74,11 +78,11 @@ public class ToJsonHttpResultTE
   {
     var error = new DocumentMissingError { DocumentId = Guid.NewGuid().ToString() };
 
-    var result =
+    var result = Assert.IsType<NotFound<string>>(
       (await Task.FromResult(Result.Failure<Document, DocumentMissingError>(error)).ToJsonHttpResult()).Result
-      as NotFound<string>;
+    );
 
-    result!.StatusCode.Should().Be(404);
-    result!.Value.Should().Be(error.DocumentId);
+    result.StatusCode.Should().Be(404);
+    result.Value.Should().Be(error.DocumentId);
   }
 }

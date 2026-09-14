@@ -13,9 +13,9 @@ public class ToContentHttpResultString_Context
   {
     using var http = TestHttpContextHelper.CreateWithProvider();
 
-    var result = Result.Failure<string>("Error").ToContentHttpResult(http).Result as ProblemHttpResult;
+    var result = Assert.IsType<ProblemHttpResult>(Result.Failure<string>("Error").ToContentHttpResult(http).Result);
 
-    result!.ProblemDetails.Title.Should().Be(TestHttpContextHelper.ProviderTitle);
+    result.ProblemDetails.Title.Should().Be(TestHttpContextHelper.ProviderTitle);
     http.Recorder!.ReceivedContext.Should().BeSameAs(http.Context);
   }
 
@@ -34,13 +34,14 @@ public class ToContentHttpResultString_Context
   {
     using var http = TestHttpContextHelper.CreateWithProvider();
 
-    var result =
+    var result = Assert.IsType<ProblemHttpResult>(
       Result
         .Failure<string>("Error")
         .ToContentHttpResult(http, customizeProblemDetails: p => p.Title = "Custom Title")
-        .Result as ProblemHttpResult;
+        .Result
+    );
 
-    result!.ProblemDetails.Title.Should().Be("Custom Title");
+    result.ProblemDetails.Title.Should().Be("Custom Title");
   }
 
   [Fact]
@@ -48,10 +49,11 @@ public class ToContentHttpResultString_Context
   {
     using var http = TestHttpContextHelper.CreateWithProvider();
 
-    var result =
-      (await Task.FromResult(Result.Failure<string>("Error")).ToContentHttpResult(http)).Result as ProblemHttpResult;
+    var result = Assert.IsType<ProblemHttpResult>(
+      (await Task.FromResult(Result.Failure<string>("Error")).ToContentHttpResult(http)).Result
+    );
 
-    result!.ProblemDetails.Title.Should().Be(TestHttpContextHelper.ProviderTitle);
+    result.ProblemDetails.Title.Should().Be(TestHttpContextHelper.ProviderTitle);
     http.Recorder!.ReceivedContext.Should().BeSameAs(http.Context);
   }
 }

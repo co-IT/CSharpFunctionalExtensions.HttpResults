@@ -19,15 +19,16 @@ public class ToServerSentEventsHttpResultIAsyncEnumerableTE
 
     var asyncEnumerable = testValues.AsAsyncEnumerable();
 
-    var result =
+    var result = Assert.IsType<ServerSentEventsResult<int>>(
       Result
         .Success<IAsyncEnumerable<int>, DocumentMissingError>(asyncEnumerable)
         .ToServerSentEventsHttpResult(eventType)
-        .Result as ServerSentEventsResult<int>;
+        .Result
+    );
 
-    var (response, values) = await result!.ExecuteAndGetResponseAndValues();
+    var (response, values) = await result.ExecuteAndGetResponseAndValues();
 
-    result!.StatusCode.Should().Be(200);
+    result.StatusCode.Should().Be(200);
     response.ContentType.Should().Be(MediaTypeNames.Text.EventStream);
     values.Select(v => v.Data).Should().Contain(testValues.Select(v => v.ToString()));
     values.Select(v => v.Event).Should().AllBe(eventType);
@@ -41,15 +42,16 @@ public class ToServerSentEventsHttpResultIAsyncEnumerableTE
 
     var asyncEnumerable = testValues.AsAsyncEnumerable();
 
-    var result =
+    var result = Assert.IsType<ServerSentEventsResult<int>>(
       (
         await Task.FromResult(Result.Success<IAsyncEnumerable<int>, DocumentMissingError>(asyncEnumerable))
           .ToServerSentEventsHttpResult(eventType)
-      ).Result as ServerSentEventsResult<int>;
+      ).Result
+    );
 
-    var (response, values) = await result!.ExecuteAndGetResponseAndValues();
+    var (response, values) = await result.ExecuteAndGetResponseAndValues();
 
-    result!.StatusCode.Should().Be(200);
+    result.StatusCode.Should().Be(200);
     response.ContentType.Should().Be(MediaTypeNames.Text.EventStream);
     values.Select(v => v.Data).Should().Contain(testValues.Select(v => v.ToString()));
     values.Select(v => v.Event).Should().AllBe(eventType);
@@ -60,12 +62,12 @@ public class ToServerSentEventsHttpResultIAsyncEnumerableTE
   {
     var error = new DocumentMissingError { DocumentId = Guid.NewGuid().ToString() };
 
-    var result =
+    var result = Assert.IsType<NotFound<string>>(
       Result.Failure<IAsyncEnumerable<int>, DocumentMissingError>(error).ToServerSentEventsHttpResult().Result
-      as NotFound<string>;
+    );
 
-    result!.StatusCode.Should().Be(404);
-    result!.Value.Should().Be(error.DocumentId);
+    result.StatusCode.Should().Be(404);
+    result.Value.Should().Be(error.DocumentId);
   }
 
   [Fact]
@@ -73,14 +75,15 @@ public class ToServerSentEventsHttpResultIAsyncEnumerableTE
   {
     var error = new DocumentMissingError { DocumentId = Guid.NewGuid().ToString() };
 
-    var result =
+    var result = Assert.IsType<NotFound<string>>(
       (
         await Task.FromResult(Result.Failure<IAsyncEnumerable<int>, DocumentMissingError>(error))
           .ToServerSentEventsHttpResult()
-      ).Result as NotFound<string>;
+      ).Result
+    );
 
-    result!.StatusCode.Should().Be(404);
-    result!.Value.Should().Be(error.DocumentId);
+    result.StatusCode.Should().Be(404);
+    result.Value.Should().Be(error.DocumentId);
   }
 }
 

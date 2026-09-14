@@ -12,12 +12,13 @@ public class ToAcceptedHttpResultTE
     var document = new Document { DocumentId = Guid.NewGuid().ToString() };
     Func<Document, Uri> uri = x => new Uri($"http://localhost/documents/{x.DocumentId}");
 
-    var result =
-      Result.Success<Document, DocumentCreationError>(document).ToAcceptedHttpResult(uri).Result as Accepted<Document>;
+    var result = Assert.IsType<Accepted<Document>>(
+      Result.Success<Document, DocumentCreationError>(document).ToAcceptedHttpResult(uri).Result
+    );
 
-    result!.StatusCode.Should().Be(202);
-    result!.Value.Should().Be(document);
-    result!.Location.Should().Be(uri(document).AbsoluteUri);
+    result.StatusCode.Should().Be(202);
+    result.Value.Should().Be(document);
+    result.Location.Should().Be(uri(document).AbsoluteUri);
   }
 
   [Fact]
@@ -26,14 +27,15 @@ public class ToAcceptedHttpResultTE
     var document = new Document { DocumentId = Guid.NewGuid().ToString() };
     Func<Document, Uri> uri = x => new Uri($"http://localhost/documents/{x.DocumentId}");
 
-    var result =
+    var result = Assert.IsType<Accepted<Document>>(
       (
         await Task.FromResult(Result.Success<Document, DocumentCreationError>(document)).ToAcceptedHttpResult(uri)
-      ).Result as Accepted<Document>;
+      ).Result
+    );
 
-    result!.StatusCode.Should().Be(202);
-    result!.Value.Should().Be(document);
-    result!.Location.Should().Be(uri(document).AbsoluteUri);
+    result.StatusCode.Should().Be(202);
+    result.Value.Should().Be(document);
+    result.Location.Should().Be(uri(document).AbsoluteUri);
   }
 
   [Fact]
@@ -43,11 +45,12 @@ public class ToAcceptedHttpResultTE
 
     Func<Document, Uri> uri = x => new Uri($"http://localhost/documents/{x.DocumentId}");
 
-    var result =
-      Result.Failure<Document, DocumentCreationError>(error).ToAcceptedHttpResult(uri).Result as Conflict<string>;
+    var result = Assert.IsType<Conflict<string>>(
+      Result.Failure<Document, DocumentCreationError>(error).ToAcceptedHttpResult(uri).Result
+    );
 
-    result!.StatusCode.Should().Be(409);
-    result!.Value.Should().Be(error.DocumentId);
+    result.StatusCode.Should().Be(409);
+    result.Value.Should().Be(error.DocumentId);
   }
 
   [Fact]
@@ -57,11 +60,11 @@ public class ToAcceptedHttpResultTE
 
     Func<Document, Uri> uri = x => new Uri($"http://localhost/documents/{x.DocumentId}");
 
-    var result =
+    var result = Assert.IsType<Conflict<string>>(
       (await Task.FromResult(Result.Failure<Document, DocumentCreationError>(error)).ToAcceptedHttpResult(uri)).Result
-      as Conflict<string>;
+    );
 
-    result!.StatusCode.Should().Be(409);
-    result!.Value.Should().Be(error.DocumentId);
+    result.StatusCode.Should().Be(409);
+    result.Value.Should().Be(error.DocumentId);
   }
 }

@@ -14,16 +14,17 @@ public class ToAcceptedAtRouteHttpResultT
     var routeName = "documents";
     var routeValueKey = "id";
 
-    var result =
+    var result = Assert.IsType<AcceptedAtRoute<Document>>(
       Result
         .Success(document)
         .ToAcceptedAtRouteHttpResult(routeName, x => new Dictionary<string, string> { { routeValueKey, x.DocumentId } })
-        .Result as AcceptedAtRoute<Document>;
+        .Result
+    );
 
-    result!.StatusCode.Should().Be(202);
-    result!.Value.Should().Be(document);
-    result!.RouteName.Should().Be(routeName);
-    result!.RouteValues[routeValueKey].Should().Be(document.DocumentId);
+    result.StatusCode.Should().Be(202);
+    result.Value.Should().Be(document);
+    result.RouteName.Should().Be(routeName);
+    result.RouteValues[routeValueKey].Should().Be(document.DocumentId);
   }
 
   [Fact]
@@ -33,19 +34,20 @@ public class ToAcceptedAtRouteHttpResultT
     var routeName = "documents";
     var routeValueKey = "id";
 
-    var result =
+    var result = Assert.IsType<AcceptedAtRoute<Document>>(
       (
         await Task.FromResult(Result.Success(document))
           .ToAcceptedAtRouteHttpResult(
             routeName,
             x => new Dictionary<string, string> { { routeValueKey, x.DocumentId } }
           )
-      ).Result as AcceptedAtRoute<Document>;
+      ).Result
+    );
 
-    result!.StatusCode.Should().Be(202);
-    result!.Value.Should().Be(document);
-    result!.RouteName.Should().Be(routeName);
-    result!.RouteValues[routeValueKey].Should().Be(document.DocumentId);
+    result.StatusCode.Should().Be(202);
+    result.Value.Should().Be(document);
+    result.RouteName.Should().Be(routeName);
+    result.RouteValues[routeValueKey].Should().Be(document.DocumentId);
   }
 
   [Fact]
@@ -53,11 +55,11 @@ public class ToAcceptedAtRouteHttpResultT
   {
     var error = "Error";
 
-    var result = Result.Failure<Document>(error).ToAcceptedAtRouteHttpResult().Result as ProblemHttpResult;
+    var result = Assert.IsType<ProblemHttpResult>(Result.Failure<Document>(error).ToAcceptedAtRouteHttpResult().Result);
 
-    result!.StatusCode.Should().Be(400);
-    result!.ProblemDetails.Status.Should().Be(400);
-    result!.ProblemDetails.Detail.Should().Be(error);
+    result.StatusCode.Should().Be(400);
+    result.ProblemDetails.Status.Should().Be(400);
+    result.ProblemDetails.Detail.Should().Be(error);
   }
 
   [Fact]
@@ -65,13 +67,13 @@ public class ToAcceptedAtRouteHttpResultT
   {
     var error = "Error";
 
-    var result =
+    var result = Assert.IsType<ProblemHttpResult>(
       (await Task.FromResult(Result.Failure<Document>(error)).ToAcceptedAtRouteHttpResult()).Result
-      as ProblemHttpResult;
+    );
 
-    result!.StatusCode.Should().Be(400);
-    result!.ProblemDetails.Status.Should().Be(400);
-    result!.ProblemDetails.Detail.Should().Be(error);
+    result.StatusCode.Should().Be(400);
+    result.ProblemDetails.Status.Should().Be(400);
+    result.ProblemDetails.Detail.Should().Be(error);
   }
 
   [Fact]
@@ -80,13 +82,13 @@ public class ToAcceptedAtRouteHttpResultT
     var statusCode = 418;
     var error = "Error";
 
-    var result =
+    var result = Assert.IsType<ProblemHttpResult>(
       Result.Failure<Document>(error).ToAcceptedAtRouteHttpResult(failureStatusCode: statusCode).Result
-      as ProblemHttpResult;
+    );
 
-    result!.StatusCode.Should().Be(statusCode);
-    result!.ProblemDetails.Status.Should().Be(statusCode);
-    result!.ProblemDetails.Detail.Should().Be(error);
+    result.StatusCode.Should().Be(statusCode);
+    result.ProblemDetails.Status.Should().Be(statusCode);
+    result.ProblemDetails.Detail.Should().Be(error);
   }
 
   [Fact]
@@ -95,15 +97,16 @@ public class ToAcceptedAtRouteHttpResultT
     var statusCode = 418;
     var error = "Error";
 
-    var result =
+    var result = Assert.IsType<ProblemHttpResult>(
       (
         await Task.FromResult(Result.Failure<Document>(error))
           .ToAcceptedAtRouteHttpResult(failureStatusCode: statusCode)
-      ).Result as ProblemHttpResult;
+      ).Result
+    );
 
-    result!.StatusCode.Should().Be(statusCode);
-    result!.ProblemDetails.Status.Should().Be(statusCode);
-    result!.ProblemDetails.Detail.Should().Be(error);
+    result.StatusCode.Should().Be(statusCode);
+    result.ProblemDetails.Status.Should().Be(statusCode);
+    result.ProblemDetails.Detail.Should().Be(error);
   }
 
   [Fact]
@@ -112,13 +115,14 @@ public class ToAcceptedAtRouteHttpResultT
     var error = "Error";
     var customTitle = "Custom Title";
 
-    var result =
+    var result = Assert.IsType<ProblemHttpResult>(
       Result
         .Failure<Document>(error)
         .ToAcceptedAtRouteHttpResult(customizeProblemDetails: problemDetails => problemDetails.Title = customTitle)
-        .Result as ProblemHttpResult;
+        .Result
+    );
 
-    result!.ProblemDetails.Title.Should().Be(customTitle);
+    result.ProblemDetails.Title.Should().Be(customTitle);
   }
 
   [Fact]
@@ -127,12 +131,13 @@ public class ToAcceptedAtRouteHttpResultT
     var error = "Error";
     var customTitle = "Custom Title";
 
-    var result =
+    var result = Assert.IsType<ProblemHttpResult>(
       (
         await Task.FromResult(Result.Failure<Document>(error))
           .ToAcceptedAtRouteHttpResult(customizeProblemDetails: problemDetails => problemDetails.Title = customTitle)
-      ).Result as ProblemHttpResult;
+      ).Result
+    );
 
-    result!.ProblemDetails.Title.Should().Be(customTitle);
+    result.ProblemDetails.Title.Should().Be(customTitle);
   }
 }

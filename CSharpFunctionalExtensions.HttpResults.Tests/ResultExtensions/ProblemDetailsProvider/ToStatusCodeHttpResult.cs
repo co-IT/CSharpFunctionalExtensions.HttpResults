@@ -13,10 +13,11 @@ public class ToStatusCodeHttpResult_Context
   {
     using var http = TestHttpContextHelper.CreateWithProvider();
 
-    var result =
-      Result.Failure("Error").ToStatusCodeHttpResult(http, successStatusCode: 200).Result as ProblemHttpResult;
+    var result = Assert.IsType<ProblemHttpResult>(
+      Result.Failure("Error").ToStatusCodeHttpResult(http, successStatusCode: 200).Result
+    );
 
-    result!.StatusCode.Should().Be(400);
+    result.StatusCode.Should().Be(400);
     result.ProblemDetails.Title.Should().Be(TestHttpContextHelper.ProviderTitle);
     result.ProblemDetails.Type.Should().Be(TestHttpContextHelper.ProviderType);
     result.ProblemDetails.Detail.Should().Be("Error");
@@ -41,11 +42,11 @@ public class ToStatusCodeHttpResult_Context
     const string customTitle = "Custom Title";
     using var http = TestHttpContextHelper.CreateWithProvider();
 
-    var result =
+    var result = Assert.IsType<ProblemHttpResult>(
       Result.Failure("Error").ToStatusCodeHttpResult(http, customizeProblemDetails: p => p.Title = customTitle).Result
-      as ProblemHttpResult;
+    );
 
-    result!.ProblemDetails.Title.Should().Be(customTitle);
+    result.ProblemDetails.Title.Should().Be(customTitle);
   }
 
   [Fact]
@@ -53,11 +54,12 @@ public class ToStatusCodeHttpResult_Context
   {
     using var http = TestHttpContextHelper.CreateWithProvider();
 
-    var problem =
+    var problem = Assert.IsType<ProblemHttpResult>(
       (
         await Task.FromResult(Result.Failure<string>("Error")).ToStatusCodeHttpResult(http, successStatusCode: 200)
-      ).Result as ProblemHttpResult;
-    problem!.ProblemDetails.Title.Should().Be(TestHttpContextHelper.ProviderTitle);
+      ).Result
+    );
+    problem.ProblemDetails.Title.Should().Be(TestHttpContextHelper.ProviderTitle);
     http.Recorder!.ReceivedContext.Should().BeSameAs(http.Context);
   }
 }

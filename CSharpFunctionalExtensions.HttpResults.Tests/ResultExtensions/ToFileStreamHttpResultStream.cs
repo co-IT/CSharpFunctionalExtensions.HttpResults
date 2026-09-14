@@ -20,22 +20,23 @@ public class ToFileStreamHttpResultStream
     var entityTag = new EntityTagHeaderValue("\"fooETag\"");
     var enableRangeProcessing = true;
 
-    var result =
+    var result = Assert.IsType<FileStreamHttpResult>(
       Result
         .Success(sourceStream)
         .ToFileStreamHttpResult(contentType, fileDownloadName, lastModified, entityTag, enableRangeProcessing)
-        .Result as FileStreamHttpResult;
+        .Result
+    );
 
     using var resultStream = new MemoryStream();
-    result!.FileStream.Position = 0;
-    result!.FileStream.CopyTo(resultStream);
+    result.FileStream.Position = 0;
+    result.FileStream.CopyTo(resultStream);
     resultStream.ToArray().Should().BeEquivalentTo(value);
-    result!.LastModified.Should().Be(lastModified);
-    result!.FileDownloadName.Should().Be(fileDownloadName);
-    result!.FileLength.Should().Be(value.Length);
-    result!.ContentType.Should().Be(contentType);
-    result!.EnableRangeProcessing.Should().Be(enableRangeProcessing);
-    result!.EntityTag.Should().Be(entityTag);
+    result.LastModified.Should().Be(lastModified);
+    result.FileDownloadName.Should().Be(fileDownloadName);
+    result.FileLength.Should().Be(value.Length);
+    result.ContentType.Should().Be(contentType);
+    result.EnableRangeProcessing.Should().Be(enableRangeProcessing);
+    result.EntityTag.Should().Be(entityTag);
   }
 
   [Fact]
@@ -50,22 +51,23 @@ public class ToFileStreamHttpResultStream
     var entityTag = new EntityTagHeaderValue("\"fooETag\"");
     var enableRangeProcessing = true;
 
-    var result =
+    var result = Assert.IsType<FileStreamHttpResult>(
       (
         await Task.FromResult(Result.Success(sourceStream))
           .ToFileStreamHttpResult(contentType, fileDownloadName, lastModified, entityTag, enableRangeProcessing)
-      ).Result as FileStreamHttpResult;
+      ).Result
+    );
 
     await using var resultStream = new MemoryStream();
-    result!.FileStream.Position = 0;
-    await result!.FileStream.CopyToAsync(resultStream, TestContext.Current.CancellationToken);
+    result.FileStream.Position = 0;
+    await result.FileStream.CopyToAsync(resultStream, TestContext.Current.CancellationToken);
     resultStream.ToArray().Should().BeEquivalentTo(value);
-    result!.LastModified.Should().Be(lastModified);
-    result!.FileDownloadName.Should().Be(fileDownloadName);
-    result!.FileLength.Should().Be(value.Length);
-    result!.ContentType.Should().Be(contentType);
-    result!.EnableRangeProcessing.Should().Be(enableRangeProcessing);
-    result!.EntityTag.Should().Be(entityTag);
+    result.LastModified.Should().Be(lastModified);
+    result.FileDownloadName.Should().Be(fileDownloadName);
+    result.FileLength.Should().Be(value.Length);
+    result.ContentType.Should().Be(contentType);
+    result.EnableRangeProcessing.Should().Be(enableRangeProcessing);
+    result.EntityTag.Should().Be(entityTag);
   }
 
   [Fact]
@@ -73,11 +75,11 @@ public class ToFileStreamHttpResultStream
   {
     var error = "Error";
 
-    var result = Result.Failure<Stream>(error).ToFileStreamHttpResult().Result as ProblemHttpResult;
+    var result = Assert.IsType<ProblemHttpResult>(Result.Failure<Stream>(error).ToFileStreamHttpResult().Result);
 
-    result!.StatusCode.Should().Be(400);
-    result!.ProblemDetails.Status.Should().Be(400);
-    result!.ProblemDetails.Detail.Should().Be(error);
+    result.StatusCode.Should().Be(400);
+    result.ProblemDetails.Status.Should().Be(400);
+    result.ProblemDetails.Detail.Should().Be(error);
   }
 
   [Fact]
@@ -85,12 +87,13 @@ public class ToFileStreamHttpResultStream
   {
     var error = "Error";
 
-    var result =
-      (await Task.FromResult(Result.Failure<Stream>(error)).ToFileStreamHttpResult()).Result as ProblemHttpResult;
+    var result = Assert.IsType<ProblemHttpResult>(
+      (await Task.FromResult(Result.Failure<Stream>(error)).ToFileStreamHttpResult()).Result
+    );
 
-    result!.StatusCode.Should().Be(400);
-    result!.ProblemDetails.Status.Should().Be(400);
-    result!.ProblemDetails.Detail.Should().Be(error);
+    result.StatusCode.Should().Be(400);
+    result.ProblemDetails.Status.Should().Be(400);
+    result.ProblemDetails.Detail.Should().Be(error);
   }
 
   [Fact]
@@ -99,12 +102,13 @@ public class ToFileStreamHttpResultStream
     var statusCode = 418;
     var error = "Error";
 
-    var result =
-      Result.Failure<Stream>(error).ToFileStreamHttpResult(failureStatusCode: statusCode).Result as ProblemHttpResult;
+    var result = Assert.IsType<ProblemHttpResult>(
+      Result.Failure<Stream>(error).ToFileStreamHttpResult(failureStatusCode: statusCode).Result
+    );
 
-    result!.StatusCode.Should().Be(statusCode);
-    result!.ProblemDetails.Status.Should().Be(statusCode);
-    result!.ProblemDetails.Detail.Should().Be(error);
+    result.StatusCode.Should().Be(statusCode);
+    result.ProblemDetails.Status.Should().Be(statusCode);
+    result.ProblemDetails.Detail.Should().Be(error);
   }
 
   [Fact]
@@ -113,14 +117,15 @@ public class ToFileStreamHttpResultStream
     var statusCode = 418;
     var error = "Error";
 
-    var result =
+    var result = Assert.IsType<ProblemHttpResult>(
       (
         await Task.FromResult(Result.Failure<Stream>(error)).ToFileStreamHttpResult(failureStatusCode: statusCode)
-      ).Result as ProblemHttpResult;
+      ).Result
+    );
 
-    result!.StatusCode.Should().Be(statusCode);
-    result!.ProblemDetails.Status.Should().Be(statusCode);
-    result!.ProblemDetails.Detail.Should().Be(error);
+    result.StatusCode.Should().Be(statusCode);
+    result.ProblemDetails.Status.Should().Be(statusCode);
+    result.ProblemDetails.Detail.Should().Be(error);
   }
 
   [Fact]
@@ -129,13 +134,14 @@ public class ToFileStreamHttpResultStream
     var error = "Error";
     var customTitle = "Custom Title";
 
-    var result =
+    var result = Assert.IsType<ProblemHttpResult>(
       Result
         .Failure<Stream>(error)
         .ToFileStreamHttpResult(customizeProblemDetails: problemDetails => problemDetails.Title = customTitle)
-        .Result as ProblemHttpResult;
+        .Result
+    );
 
-    result!.ProblemDetails.Title.Should().Be(customTitle);
+    result.ProblemDetails.Title.Should().Be(customTitle);
   }
 
   [Fact]
@@ -144,12 +150,13 @@ public class ToFileStreamHttpResultStream
     var error = "Error";
     var customTitle = "Custom Title";
 
-    var result =
+    var result = Assert.IsType<ProblemHttpResult>(
       (
         await Task.FromResult(Result.Failure<Stream>(error))
           .ToFileStreamHttpResult(customizeProblemDetails: problemDetails => problemDetails.Title = customTitle)
-      ).Result as ProblemHttpResult;
+      ).Result
+    );
 
-    result!.ProblemDetails.Title.Should().Be(customTitle);
+    result.ProblemDetails.Title.Should().Be(customTitle);
   }
 }

@@ -30,10 +30,11 @@ public class ServiceMapperFamilyTests
   {
     using var context = Context();
 
-    var result =
-      Result.Failure<string, ServiceDocumentError>(Error).ToOkHttpResult(context).Result as ProblemHttpResult;
+    var result = Assert.IsType<ProblemHttpResult>(
+      Result.Failure<string, ServiceDocumentError>(Error).ToOkHttpResult(context).Result
+    );
 
-    result!.ProblemDetails.Detail.Should().Be("resolved-by-di:d1");
+    result.ProblemDetails.Detail.Should().Be("resolved-by-di:d1");
   }
 
   [Fact]
@@ -41,11 +42,11 @@ public class ServiceMapperFamilyTests
   {
     using var context = Context();
 
-    var result =
+    var result = Assert.IsType<ProblemHttpResult>(
       Result.Failure<string, ServiceDocumentError>(Error).ToStatusCodeHttpResult(context, successStatusCode: 200).Result
-      as ProblemHttpResult;
+    );
 
-    result!.StatusCode.Should().Be(404);
+    result.StatusCode.Should().Be(404);
   }
 
   [Fact]
@@ -53,10 +54,11 @@ public class ServiceMapperFamilyTests
   {
     using var context = Context();
 
-    var result =
-      Result.Failure<string, ServiceDocumentError>(Error).ToJsonHttpResult(context).Result as ProblemHttpResult;
+    var result = Assert.IsType<ProblemHttpResult>(
+      Result.Failure<string, ServiceDocumentError>(Error).ToJsonHttpResult(context).Result
+    );
 
-    result!.ProblemDetails.Title.Should().Be("Document not found");
+    result.ProblemDetails.Title.Should().Be("Document not found");
   }
 
   [Fact]
@@ -64,10 +66,11 @@ public class ServiceMapperFamilyTests
   {
     using var context = Context();
 
-    var result =
-      Result.Failure<string, ServiceDocumentError>(Error).ToNoContentHttpResult(context).Result as ProblemHttpResult;
+    var result = Assert.IsType<ProblemHttpResult>(
+      Result.Failure<string, ServiceDocumentError>(Error).ToNoContentHttpResult(context).Result
+    );
 
-    result!.ProblemDetails.Detail.Should().Be("resolved-by-di:d1");
+    result.ProblemDetails.Detail.Should().Be("resolved-by-di:d1");
   }
 
   [Fact]
@@ -75,10 +78,11 @@ public class ServiceMapperFamilyTests
   {
     using var context = Context();
 
-    var result =
-      UnitResult.Failure<ServiceDocumentError>(Error).ToNoContentHttpResult(context).Result as ProblemHttpResult;
+    var result = Assert.IsType<ProblemHttpResult>(
+      UnitResult.Failure<ServiceDocumentError>(Error).ToNoContentHttpResult(context).Result
+    );
 
-    result!.ProblemDetails.Detail.Should().Be("resolved-by-di:d1");
+    result.ProblemDetails.Detail.Should().Be("resolved-by-di:d1");
   }
 
   [Fact]
@@ -86,10 +90,11 @@ public class ServiceMapperFamilyTests
   {
     using var context = Context();
 
-    var result =
-      UnitResult.Failure<ServiceDocumentError>(Error).ToStatusCodeHttpResult(context).Result as ProblemHttpResult;
+    var result = Assert.IsType<ProblemHttpResult>(
+      UnitResult.Failure<ServiceDocumentError>(Error).ToStatusCodeHttpResult(context).Result
+    );
 
-    result!.ProblemDetails.Detail.Should().Be("resolved-by-di:d1");
+    result.ProblemDetails.Detail.Should().Be("resolved-by-di:d1");
   }
 
   [Fact]
@@ -97,13 +102,14 @@ public class ServiceMapperFamilyTests
   {
     using var context = Context();
 
-    var result =
+    var result = Assert.IsType<ProblemHttpResult>(
       Result
         .Failure<string, ServiceDocumentError>(Error)
         .ToCreatedHttpResult(context, uri: _ => new Uri("https://example.test/created"))
-        .Result as ProblemHttpResult;
+        .Result
+    );
 
-    result!.ProblemDetails.Detail.Should().Be("resolved-by-di:d1");
+    result.ProblemDetails.Detail.Should().Be("resolved-by-di:d1");
   }
 
   [Fact]
@@ -111,11 +117,11 @@ public class ServiceMapperFamilyTests
   {
     using var context = Context();
 
-    var result =
+    var result = Assert.IsType<ProblemHttpResult>(
       (await Task.FromResult(Result.Failure<string, ServiceDocumentError>(Error)).ToCreatedHttpResult(context)).Result
-      as ProblemHttpResult;
+    );
 
-    result!.ProblemDetails.Detail.Should().Be("resolved-by-di:d1");
+    result.ProblemDetails.Detail.Should().Be("resolved-by-di:d1");
   }
 
   [Fact]
@@ -123,13 +129,14 @@ public class ServiceMapperFamilyTests
   {
     using var context = Context();
 
-    var result =
+    var result = Assert.IsType<ProblemHttpResult>(
       Result
         .Failure<string, ServiceDocumentError>(Error)
         .ToCreatedAtRouteHttpResult(context, routeValues: _ => new { id = "d1" })
-        .Result as ProblemHttpResult;
+        .Result
+    );
 
-    result!.ProblemDetails.Detail.Should().Be("resolved-by-di:d1");
+    result.ProblemDetails.Detail.Should().Be("resolved-by-di:d1");
   }
 
   [Fact]
@@ -137,13 +144,14 @@ public class ServiceMapperFamilyTests
   {
     using var context = Context();
 
-    var result =
+    var result = Assert.IsType<ProblemHttpResult>(
       Result
         .Failure<string, ServiceDocumentError>(Error)
         .ToAcceptedHttpResult(_ => new Uri("https://example.test/accepted"), context)
-        .Result as ProblemHttpResult;
+        .Result
+    );
 
-    result!.ProblemDetails.Detail.Should().Be("resolved-by-di:d1");
+    result.ProblemDetails.Detail.Should().Be("resolved-by-di:d1");
   }
 
   [Fact]
@@ -151,13 +159,14 @@ public class ServiceMapperFamilyTests
   {
     using var context = Context();
 
-    var result =
+    var result = Assert.IsType<ProblemHttpResult>(
       Result
         .Failure<string, ServiceDocumentError>(Error)
         .ToAcceptedAtRouteHttpResult(context, routeName: "document")
-        .Result as ProblemHttpResult;
+        .Result
+    );
 
-    result!.ProblemDetails.Detail.Should().Be("resolved-by-di:d1");
+    result.ProblemDetails.Detail.Should().Be("resolved-by-di:d1");
   }
 
   [Fact]
@@ -165,10 +174,11 @@ public class ServiceMapperFamilyTests
   {
     using var context = Context();
 
-    var result =
-      Result.Failure<byte[], ServiceDocumentError>(Error).ToFileHttpResult(context).Result as ProblemHttpResult;
+    var result = Assert.IsType<ProblemHttpResult>(
+      Result.Failure<byte[], ServiceDocumentError>(Error).ToFileHttpResult(context).Result
+    );
 
-    result!.ProblemDetails.Detail.Should().Be("resolved-by-di:d1");
+    result.ProblemDetails.Detail.Should().Be("resolved-by-di:d1");
   }
 
   [Fact]
@@ -176,10 +186,11 @@ public class ServiceMapperFamilyTests
   {
     using var context = Context();
 
-    var result =
-      Result.Failure<Stream, ServiceDocumentError>(Error).ToFileStreamHttpResult(context).Result as ProblemHttpResult;
+    var result = Assert.IsType<ProblemHttpResult>(
+      Result.Failure<Stream, ServiceDocumentError>(Error).ToFileStreamHttpResult(context).Result
+    );
 
-    result!.ProblemDetails.Detail.Should().Be("resolved-by-di:d1");
+    result.ProblemDetails.Detail.Should().Be("resolved-by-di:d1");
   }
 
   [Fact]
@@ -187,10 +198,11 @@ public class ServiceMapperFamilyTests
   {
     using var context = Context();
 
-    var result =
-      Result.Failure<string, ServiceDocumentError>(Error).ToContentHttpResult(context).Result as ProblemHttpResult;
+    var result = Assert.IsType<ProblemHttpResult>(
+      Result.Failure<string, ServiceDocumentError>(Error).ToContentHttpResult(context).Result
+    );
 
-    result!.ProblemDetails.Detail.Should().Be("resolved-by-di:d1");
+    result.ProblemDetails.Detail.Should().Be("resolved-by-di:d1");
   }
 
 #if NET10_0_OR_GREATER
@@ -199,13 +211,14 @@ public class ServiceMapperFamilyTests
   {
     using var context = Context();
 
-    var result =
+    var result = Assert.IsType<ProblemHttpResult>(
       (
         await Task.FromResult(Result.Failure<IAsyncEnumerable<string>, ServiceDocumentError>(Error))
           .ToServerSentEventsHttpResult(context)
-      ).Result as ProblemHttpResult;
+      ).Result
+    );
 
-    result!.ProblemDetails.Detail.Should().Be("resolved-by-di:d1");
+    result.ProblemDetails.Detail.Should().Be("resolved-by-di:d1");
   }
 #endif
 
@@ -238,13 +251,14 @@ public class ServiceMapperFamilyTests
   {
     using var context = Context();
 
-    var result =
+    var result = Assert.IsType<ProblemHttpResult>(
       Result
         .Failure<string, ServiceDocumentError>(Error)
         .ToOkHttpResult(context, customizeProblemDetails: p => p.Title = "Edge Case")
-        .Result as ProblemHttpResult;
+        .Result
+    );
 
-    result!.ProblemDetails.Title.Should().Be("Edge Case");
+    result.ProblemDetails.Title.Should().Be("Edge Case");
     result.ProblemDetails.Detail.Should().Be("resolved-by-di:d1");
   }
 }

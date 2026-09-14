@@ -1,4 +1,4 @@
-﻿using AwesomeAssertions;
+using AwesomeAssertions;
 using CSharpFunctionalExtensions.HttpResults.ResultExtensions;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Xunit;
@@ -91,16 +91,18 @@ public class ProblemDetailsMappingProviderTests
     var title = "Foo";
     var type = "Bar";
 
-    var result =
-      Result.Failure(error).ToStatusCodeHttpResult(failureStatusCode: failureStatusCode).Result as ProblemHttpResult;
-    result!.ProblemDetails.Title.Should().BeNull();
-    result!.ProblemDetails.Type.Should().BeNull();
+    var result = Assert.IsType<ProblemHttpResult>(
+      Result.Failure(error).ToStatusCodeHttpResult(failureStatusCode: failureStatusCode).Result
+    );
+    result.ProblemDetails.Title.Should().BeNull();
+    result.ProblemDetails.Type.Should().BeNull();
 
     ProblemDetailsMappingProvider.AddOrUpdateMapping(failureStatusCode, title, type);
 
-    result =
-      Result.Failure(error).ToStatusCodeHttpResult(failureStatusCode: failureStatusCode).Result as ProblemHttpResult;
-    result!.ProblemDetails.Title.Should().Be(title);
-    result!.ProblemDetails.Type.Should().Be(type);
+    result = Assert.IsType<ProblemHttpResult>(
+      Result.Failure(error).ToStatusCodeHttpResult(failureStatusCode: failureStatusCode).Result
+    );
+    result.ProblemDetails.Title.Should().Be(title);
+    result.ProblemDetails.Type.Should().Be(type);
   }
 }

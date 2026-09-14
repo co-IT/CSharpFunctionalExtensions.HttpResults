@@ -1,4 +1,4 @@
-﻿using AwesomeAssertions;
+using AwesomeAssertions;
 using CSharpFunctionalExtensions.HttpResults.Tests.Shared;
 using Microsoft.AspNetCore.Http.HttpResults;
 
@@ -11,10 +11,12 @@ public class ToOkHttpResultTE
   {
     var document = new Document { DocumentId = Guid.NewGuid().ToString() };
 
-    var result = Result.Success<Document, DocumentMissingError>(document).ToOkHttpResult().Result as Ok<Document>;
+    var result = Assert.IsType<Ok<Document>>(
+      Result.Success<Document, DocumentMissingError>(document).ToOkHttpResult().Result
+    );
 
-    result!.StatusCode.Should().Be(200);
-    result!.Value!.DocumentId.Should().Be(document.DocumentId);
+    result.StatusCode.Should().Be(200);
+    result.Value!.DocumentId.Should().Be(document.DocumentId);
   }
 
   [Fact]
@@ -22,12 +24,12 @@ public class ToOkHttpResultTE
   {
     var document = new Document { DocumentId = Guid.NewGuid().ToString() };
 
-    var result =
+    var result = Assert.IsType<Ok<Document>>(
       (await Task.FromResult(Result.Success<Document, DocumentMissingError>(document)).ToOkHttpResult()).Result
-      as Ok<Document>;
+    );
 
-    result!.StatusCode.Should().Be(200);
-    result!.Value!.DocumentId.Should().Be(document.DocumentId);
+    result.StatusCode.Should().Be(200);
+    result.Value!.DocumentId.Should().Be(document.DocumentId);
   }
 
   [Fact]
@@ -35,10 +37,12 @@ public class ToOkHttpResultTE
   {
     var error = new DocumentMissingError { DocumentId = Guid.NewGuid().ToString() };
 
-    var result = Result.Failure<Document, DocumentMissingError>(error).ToOkHttpResult().Result as NotFound<string>;
+    var result = Assert.IsType<NotFound<string>>(
+      Result.Failure<Document, DocumentMissingError>(error).ToOkHttpResult().Result
+    );
 
-    result!.StatusCode.Should().Be(404);
-    result!.Value.Should().Be(error.DocumentId);
+    result.StatusCode.Should().Be(404);
+    result.Value.Should().Be(error.DocumentId);
   }
 
   [Fact]
@@ -46,11 +50,11 @@ public class ToOkHttpResultTE
   {
     var error = new DocumentMissingError { DocumentId = Guid.NewGuid().ToString() };
 
-    var result =
+    var result = Assert.IsType<NotFound<string>>(
       (await Task.FromResult(Result.Failure<Document, DocumentMissingError>(error)).ToOkHttpResult()).Result
-      as NotFound<string>;
+    );
 
-    result!.StatusCode.Should().Be(404);
-    result!.Value.Should().Be(error.DocumentId);
+    result.StatusCode.Should().Be(404);
+    result.Value.Should().Be(error.DocumentId);
   }
 }
